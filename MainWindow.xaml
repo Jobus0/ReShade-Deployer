@@ -1,0 +1,51 @@
+﻿<ui:UiWindow x:Class="ReShadeInstaller.MainWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             mc:Ignorable="d"
+             ResizeMode="NoResize"
+             Icon="ReShade.ico"
+             ExtendsContentIntoTitleBar="True"
+             WindowBackdropType="Mica"
+             Title="ReShade Installer"
+             FontSize="13"
+             SizeToContent="Height"
+             MinWidth="300" Width="300">
+    <StackPanel>
+        <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Installer" Icon="ReShade.ico" ShowMaximize="False" CanMaximize="False" Padding="7" />
+        <Separator />
+        <DockPanel Margin="12, 0, 0, 0">
+            <Label VerticalAlignment="Center" Padding="3 3 3 3">ReShade DLL version:</Label>
+            <Label Name="VersionLabel" VerticalAlignment="Center" Padding="0 3 3 3" FontWeight="Bold"/>
+            <ui:Button Name="UpdateButton" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="7, 5, 10, 5" Icon="ArrowDownload16" FontSize="13" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
+                       ToolTip="Globally update your ReShade DLL files to the latest version.">
+                Update
+            </ui:Button>
+        </DockPanel>
+        <Separator />
+        <StackPanel Margin="12">
+            <GroupBox Header="Target API" Padding="3, 0" BorderThickness="0" Background="#44000000">
+                <GroupBox.ToolTip>
+                    Select the rendering API that the game uses.
+                    If you are unsure, check the API section of the game's PCGamingWiki page.
+                </GroupBox.ToolTip>
+                <StackPanel>
+                    <RadioButton Name="DxgiRadioButton" FontSize="13" Content="DirectX 10 or later" ToolTip="dxgi.dll" IsChecked="True" />
+                    <RadioButton Name="D3d9RadioButton" FontSize="13" Content="DirectX 9" ToolTip="d3d9.dll" />
+                    <RadioButton Name="OpenglRadioButton" FontSize="13" Content="OpenGL" ToolTip="opengl32.dll" />
+                    <RadioButton Name="VulkanRadioButton" FontSize="13" Content="Vulkan" ToolTip="Creates no DLL. Requires that you have installed ReShade for Vulkan globally through the official installer." />
+                </StackPanel>
+            </GroupBox>
+            <CheckBox Name="AddonSupportCheckBox" Margin="7" FontSize="13" Content="Addon Support" ToolTip="Enable this if you plan to install a ReShade addon to the game." />
+            <ui:Button Name="SelectGameButton" Height="50" HorizontalAlignment="Stretch" Content="Select Game" Appearance="Primary">
+                <ui:Button.ToolTip>
+                    Pick the game exe you want to install ReShade to.
+                    Make sure you have picked the correct Target API above first.
+                    If you are unsure, check the API section of the game's PCGamingWiki page.
+                </ui:Button.ToolTip>
+            </ui:Button>
+        </StackPanel>
+    </StackPanel>
+</ui:UiWindow>
