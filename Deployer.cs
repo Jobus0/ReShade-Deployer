@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Win32;
 
 namespace ReShadeInstaller;
@@ -20,7 +21,23 @@ public static class Deployer
             if (File.Exists(".\\ReShadePreset.ini"))
                 PresetDeployer.Deploy(directoryName);
                 
-            MessageBox.Show("ReShade successfully installed!", "ReShade Installer");
+            string message = """
+                ReShade was successfully installed!
+                """;
+            
+            var messageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = "Success",
+                Content = new TextBlock {Text = message, TextWrapping = TextWrapping.Wrap},
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.Height,
+                ButtonLeftName = "Continue",
+                ButtonRightName = "Exit",
+                Width = 260
+            };
+            messageBox.ButtonLeftClick += (_, _) => messageBox.Close();
+            messageBox.ButtonRightClick += (_, _) => Application.Current.Shutdown();
+            messageBox.ShowDialog();
         }
     }
 

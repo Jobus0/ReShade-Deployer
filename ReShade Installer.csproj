@@ -7,18 +7,28 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <ApplicationIcon>ReShade.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DebugType>none</DebugType>
+        <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
-      <PackageReference Include="WPF-UI" Version="2.1.0" />
+        <PackageReference Include="SevenZipExtractor" Version="1.0.17"/>
+        <PackageReference Include="WPF-UI" Version="2.1.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="ReShade.ico" />
-      <Resource Include="ReShade.ico">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
+        <None Remove="ReShade.ico"/>
+        <Resource Include="ReShade.ico">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Resource>
     </ItemGroup>
 
 </Project>

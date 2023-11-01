@@ -12,6 +12,7 @@
              Title="ReShade Installer"
              FontSize="13"
              SizeToContent="Height"
+             WindowStartupLocation="CenterScreen"
              MinWidth="300" Width="300">
     <StackPanel>
         <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Installer" Icon="ReShade.ico" ShowMaximize="False" CanMaximize="False" Padding="7" />

@@ -1,19 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Wpf.Ui.Controls;
-using MessageBox = System.Windows.MessageBox;
 
 namespace ReShadeInstaller
 {
@@ -22,22 +10,38 @@ namespace ReShadeInstaller
     /// </summary>
     public partial class MainWindow
     {
+        private bool closing;
+        
         public MainWindow()
         {
             InitializeComponent();
+            
+            UpdateButton.Click += UpdateButtonOnClick;
+            SelectGameButton.Click += SelectGameButtonOnClick;
+            
+            Loaded += OnLoaded;
+        }
 
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
             if (Deployer.TryGetReShadeVersion(out string? version))
                 VersionLabel.Content = version;
             else
                 FirstTimeSetup();
-            
-            UpdateButton.Click += UpdateButtonOnClick;
-            SelectGameButton.Click += SelectGameButtonOnClick;
         }
 
         private void SelectGameButtonOnClick(object sender, RoutedEventArgs e)
         {
+            Hide();
             Deployer.InstallReShadeForExecutable(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
+            
+            if (!closing)
+                Show();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            closing = true;
         }
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
@@ -47,29 +51,37 @@ namespace ReShadeInstaller
 
         private void FirstTimeSetup()
         {
+            SelectGameButton.IsEnabled = false;
+            
             string message = """
                 ReShade Installer will now download ReShade and set up the required folder structure into the current folder.
 
                 This includes the Shaders and Textures folders, where you will place your shader and texture files.
 
-                If you wish to keep these files elsewhere, press 'Cancel' and move the program to another folder first.
+                If you wish to keep these files elsewhere, press 'Exit' and move the program first.
                 """;
             
-            if (MessageBox.Show(message, "First-Time Setup", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+            var messageBox = new Wpf.Ui.Controls.MessageBox
             {
-                DownloadReShade();
-            }
-            else
-            {
-                Application.Current.Shutdown();
-            }
+                Title = "First-Time Setup",
+                Content = new TextBlock {Text = message, TextWrapping = TextWrapping.Wrap},
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.Height,
+                ButtonLeftName = "Continue",
+                ButtonRightName = "Exit",
+                Width = 360
+            };
+            messageBox.ButtonLeftClick += (_, _) => { messageBox.Close(); DownloadReShade(); };
+            messageBox.ButtonRightClick += (_, _) => Application.Current.Shutdown();
+            messageBox.ShowDialog();
         }
 
         private async void DownloadReShade()
         {
-            IsEnabled = false;
+            SelectGameButton.IsEnabled = false;
+            UpdateButton.IsEnabled = false;
             await Downloader.DownloadReShade();
-            IsEnabled = true;
+            SelectGameButton.IsEnabled = true;
         }
         
         private string GetCheckedApi()
