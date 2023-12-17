@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -50,36 +51,23 @@ public static class Downloader
             throw;
         }
 
+        const string innerArchiveName = "[0]";
+        string innerArchivePath = Path.Combine(directoryPath, innerArchiveName);
         try
         {
             using ArchiveFile archiveFile = new ArchiveFile(zipPath);
-            foreach (Entry entry in archiveFile.Entries)
-            {
-                if (entry.FileName == "[0]")
-                {
-                    entry.Extract(entry.FileName);
+            archiveFile.Entries.First(e => e.FileName == innerArchiveName).Extract(innerArchivePath);
+            archiveFile.Extract(e => e.FileName == innerArchiveName ? e.FileName : null);
 
-                    using ArchiveFile innerArchiveFile = new ArchiveFile("[0]");
-                    foreach (Entry innerEntry in innerArchiveFile.Entries)
-                    {
-                        if (innerEntry.FileName is "ReShade32.dll" or "ReShade64.dll")
-                        {
-                            innerEntry.Extract(innerEntry.FileName);
-                            string finalPath = Path.Combine(directoryPath, innerEntry.FileName);
-                            
-                            if (File.Exists(finalPath))
-                                File.Delete(finalPath);
-                            
-                            File.Move(innerEntry.FileName, finalPath);
-                        }
-                    }
-                }
-            }
+            using ArchiveFile innerArchiveFile = new ArchiveFile(innerArchivePath);
+            innerArchiveFile.Extract(innerEntry => innerEntry.FileName is "ReShade32.dll" or "ReShade64.dll"
+                ? Path.Combine(directoryPath, innerEntry.FileName)
+                : null);
         }
         finally
         {
             File.Delete(zipPath);
-            File.Delete("[0]");
+            File.Delete(innerArchivePath);
         }
     }
     
