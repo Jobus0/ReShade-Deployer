@@ -20,12 +20,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="SevenZipExtractor" Version="1.0.17"/>
-        <PackageReference Include="WPF-UI" Version="2.1.0"/>
+        <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
+        <PackageReference Include="WPF-UI" Version="2.1.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="ReShade.ico"/>
+        <None Remove="ReShade.ico" />
         <Resource Include="ReShade.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Resource>

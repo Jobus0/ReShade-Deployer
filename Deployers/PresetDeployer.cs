@@ -7,9 +7,13 @@ namespace ReShadeInstaller;
 
 public static class PresetDeployer
 {
-    public static void Deploy(string installPath)
+    /// <summary>
+    /// Deploy ReShadePreset.ini to a directory.
+    /// </summary>
+    /// <param name="directoryPath">Path of the directory to write ReShadePreset.ini to.</param>
+    public static void Deploy(string directoryPath)
     {
-        string path = installPath + "\\ReShadePreset.ini";
+        string path = directoryPath + "\\ReShadePreset.ini";
 
         if (File.Exists(path))
         {

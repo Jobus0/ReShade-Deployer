@@ -4,9 +4,13 @@ namespace ReShadeInstaller;
 
 public static class IniDeployer
 {
-    public static void Deploy(string gameDirectoryPath)
+    /// <summary>
+    /// Deploy ReShade.ini to a directory.
+    /// </summary>
+    /// <param name="directoryPath">Path of the directory to write ReShade.ini to.</param>
+    public static void Deploy(string directoryPath)
     {
-        string path = gameDirectoryPath + "\\ReShade.ini";
+        string path = directoryPath + "\\ReShade.ini";
         
         if (File.Exists(path))
             File.Delete(path);
@@ -14,12 +18,16 @@ public static class IniDeployer
         WriteReShadeIni(path);
     }
 
-    private static void WriteReShadeIni(string reShadeIniPath)
+    /// <summary>
+    /// Create a new ReShade.ini at the given path using the values of a local ReShade.ini file, or fallback to a new minimal one.
+    /// </summary>
+    /// <param name="directoryPath">Path of the directory to write ReShade.ini to.</param>
+    private static void WriteReShadeIni(string directoryPath)
     {
         if (File.Exists(".\\ReShade.ini"))
         {
             using StreamReader streamReader = new StreamReader(".\\ReShade.ini");
-            using StreamWriter streamWriter = new StreamWriter(reShadeIniPath);
+            using StreamWriter streamWriter = new StreamWriter(directoryPath);
             while (!streamReader.EndOfStream)
             {
                 string str = streamReader.ReadLine()!;
@@ -34,13 +42,17 @@ public static class IniDeployer
         }
         else
         {
-            WriteReShadeIniFallback(reShadeIniPath);
+            WriteReShadeIniFallback(directoryPath);
         }
     }
 
-    private static void WriteReShadeIniFallback(string reShadeIniPath)
+    /// <summary>
+    /// Create a new minimal ReShade.ini at the given path.
+    /// </summary>
+    /// <param name="directoryPath">Path of the directory to write ReShade.ini to.</param>
+    private static void WriteReShadeIniFallback(string directoryPath)
     {
-        File.WriteAllText(reShadeIniPath, $"""
+        File.WriteAllText(directoryPath, $"""
             [GENERAL]
             EffectSearchPaths={Paths.Shaders}
             TextureSearchPaths={Paths.Textures}

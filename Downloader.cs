@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -7,6 +8,9 @@ using SevenZipExtractor;
 
 namespace ReShadeInstaller;
 
+/// <summary>
+/// Provides methods for downloading and extracting official ReShade files.
+/// </summary>
 public static class Downloader
 {
     public static async Task DownloadReShade()
@@ -62,8 +66,10 @@ public static class Downloader
                         {
                             innerEntry.Extract(innerEntry.FileName);
                             string finalPath = Path.Combine(directoryPath, innerEntry.FileName);
+                            
                             if (File.Exists(finalPath))
                                 File.Delete(finalPath);
+                            
                             File.Move(innerEntry.FileName, finalPath);
                         }
                     }
@@ -77,6 +83,9 @@ public static class Downloader
         }
     }
     
+    /// <summary>
+    /// Create all the directories used by ReShade Installer.
+    /// </summary>
     public static void CreateDirectories()
     {
         Directory.CreateDirectory(Paths.Shaders);
@@ -84,5 +93,24 @@ public static class Downloader
         Directory.CreateDirectory(Paths.Dlls);
         Directory.CreateDirectory(Paths.AddonDlls);
         Directory.CreateDirectory(Paths.Cache);
+    }
+    
+    /// <summary>
+    /// Check the file attribute of the downloaded ReShade DLL and get its version.
+    /// </summary>
+    /// <param name="version">The version string of the ReShade DLL.</param>
+    /// <returns>True if the file exists, false otherwise.</returns>
+    public static bool TryGetInstalledReShadeVersion(out string? version)
+    {
+        string path = Path.Combine(Paths.Dlls, "ReShade64.dll");
+        if (File.Exists(path))
+        {
+            string fileVersion = FileVersionInfo.GetVersionInfo(path).FileVersion!;
+            version = fileVersion.Substring(0, fileVersion.LastIndexOf('.'));
+            return true;
+        }
+
+        version = null;
+        return false;
     }
 }

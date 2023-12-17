@@ -6,9 +6,16 @@ namespace ReShadeInstaller;
 
 public static class DllDeployer
 {
-    public static void Deploy(string gameDirectoryPath, string dllPath, string exePath, string api)
+    /// <summary>
+    /// Deploy ReShade DLL to a game directory.
+    /// </summary>
+    /// <param name="directoryPath">Path of the directory to put the DLL symlink in.</param>
+    /// <param name="executablePath">Path of the game executable.</param>
+    /// <param name="dllPath">Path of the local downloaded ReShade DLL.</param>
+    /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
+    public static void Deploy(string directoryPath, string executablePath, string dllPath, string api)
     {
-        bool flag = GetMachineType(exePath) == MachineType.x64;
+        bool flag = GetMachineType(executablePath) == MachineType.x64;
 
         if (api == "vulkan")
         {
@@ -16,7 +23,7 @@ public static class DllDeployer
             return;
         }
 
-        string symlinkPath = Path.Combine(gameDirectoryPath, api + ".dll");
+        string symlinkPath = Path.Combine(directoryPath, api + ".dll");
             
         if (File.Exists(symlinkPath))
             File.Delete(symlinkPath);

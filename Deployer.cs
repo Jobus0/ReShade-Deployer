@@ -1,47 +1,70 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 
 namespace ReShadeInstaller;
 
+/// <summary>
+/// Provides methods for installing ReShade for an executable, including deploying DLLs, INI files, and presets.
+/// </summary>
 public static class Deployer
 {
-    public static void InstallReShadeForExecutable(string api, bool addonSupport)
+    /// <summary>
+    /// Opens a file dialog for selecting an executable, then deploys ReShade for that executable.
+    /// </summary>
+    /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
+    /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
+    public static void SelectExecutableAndInstallReShade(string api, bool addonSupport)
     {
-        if (TrySelectExecutable(out string fileName))
+        if (TrySelectExecutable(out string executablePath))
         {
-            string dllPath = addonSupport ? Paths.AddonDlls : Paths.Dlls;
-            string directoryName = Path.GetDirectoryName(fileName)!;
-                
-            DllDeployer.Deploy(directoryName, dllPath, fileName, api);
-            IniDeployer.Deploy(directoryName);
-                
-            if (File.Exists(".\\ReShadePreset.ini"))
-                PresetDeployer.Deploy(directoryName);
-                
-            string message = """
-                ReShade was successfully installed!
-                """;
-            
-            var messageBox = new Wpf.Ui.Controls.MessageBox
-            {
-                Title = "Success",
-                Content = new TextBlock {Text = message, TextWrapping = TextWrapping.Wrap},
-                ResizeMode = ResizeMode.NoResize,
-                SizeToContent = SizeToContent.Height,
-                ButtonLeftName = "Continue",
-                ButtonRightName = "Exit",
-                Width = 260
-            };
-            messageBox.ButtonLeftClick += (_, _) => messageBox.Close();
-            messageBox.ButtonRightClick += (_, _) => Application.Current.Shutdown();
-            messageBox.ShowDialog();
+            InstallReShadeForExecutable(api, addonSupport, executablePath);
         }
     }
 
-    private static bool TrySelectExecutable(out string fileName)
+    /// <summary>
+    /// Deploys ReShade for a specified executable.
+    /// </summary>
+    /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
+    /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
+    /// <param name="executablePath">Path of the game executable.</param>
+    public static void InstallReShadeForExecutable(string api, bool addonSupport, string executablePath)
+    {
+        string dllPath = addonSupport ? Paths.AddonDlls : Paths.Dlls;
+        string directoryPath = Path.GetDirectoryName(executablePath)!;
+
+        DllDeployer.Deploy(directoryPath, executablePath, dllPath, api);
+        IniDeployer.Deploy(directoryPath);
+                
+        if (File.Exists(".\\ReShadePreset.ini"))
+            PresetDeployer.Deploy(directoryPath);
+                
+        string message = """
+                ReShade was successfully installed!
+                """;
+            
+        var messageBox = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = "Success",
+            Content = new TextBlock {Text = message, TextWrapping = TextWrapping.Wrap},
+            ResizeMode = ResizeMode.NoResize,
+            SizeToContent = SizeToContent.Height,
+            ButtonLeftName = "Continue",
+            ButtonRightName = "Exit",
+            Width = 260
+        };
+        messageBox.ButtonLeftClick += (_, _) => messageBox.Close();
+        messageBox.ButtonRightClick += (_, _) => Application.Current.Shutdown();
+        messageBox.ShowDialog();
+    }
+
+    /// <summary>
+    /// Opens a file dialog for selecting an executable.
+    /// </summary>
+    /// <param name="executablePath">Path of the selected game executable.</param>
+    /// <returns>True if a file was selected, false if cancelled.</returns>
+    private static bool TrySelectExecutable(out string executablePath)
     {
         OpenFileDialog openFileDialog = new OpenFileDialog();
         openFileDialog.Title = "Select the game's runtime executable.";
@@ -49,21 +72,7 @@ public static class Deployer
 
         bool result = openFileDialog.ShowDialog() ?? false;
 
-        fileName = openFileDialog.FileName;
+        executablePath = openFileDialog.FileName;
         return result;
-    }
-
-    public static bool TryGetReShadeVersion(out string? version)
-    {
-        string path = Path.Combine(Paths.Dlls, "ReShade64.dll");
-        if (File.Exists(path))
-        {
-            string fileVersion = FileVersionInfo.GetVersionInfo(path).FileVersion!;
-            version = fileVersion.Substring(0, fileVersion.LastIndexOf('.'));
-            return true;
-        }
-
-        version = null;
-        return false;
     }
 }

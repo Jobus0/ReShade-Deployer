@@ -24,7 +24,7 @@ namespace ReShadeInstaller
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (Deployer.TryGetReShadeVersion(out string? version))
+            if (Downloader.TryGetInstalledReShadeVersion(out string? version))
                 VersionLabel.Content = version;
             else
                 FirstTimeSetup();
@@ -33,7 +33,7 @@ namespace ReShadeInstaller
         private void SelectGameButtonOnClick(object sender, RoutedEventArgs e)
         {
             Hide();
-            Deployer.InstallReShadeForExecutable(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
+            Deployer.SelectExecutableAndInstallReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
             
             if (!closing)
                 Show();
