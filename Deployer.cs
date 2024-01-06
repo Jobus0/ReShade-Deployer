@@ -3,10 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 
-namespace ReShadeInstaller;
+namespace ReShadeDeployer;
 
 /// <summary>
-/// Provides methods for installing ReShade for an executable, including deploying DLLs, INI files, and presets.
+/// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
 public static class Deployer
 {
@@ -15,11 +15,11 @@ public static class Deployer
     /// </summary>
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
-    public static void SelectExecutableAndInstallReShade(string api, bool addonSupport)
+    public static void SelectExecutableAndDeployReShade(string api, bool addonSupport)
     {
         if (TrySelectExecutable(out string executablePath))
         {
-            InstallReShadeForExecutable(api, addonSupport, executablePath);
+            DeployReShadeForExecutable(api, addonSupport, executablePath);
         }
     }
 
@@ -29,7 +29,7 @@ public static class Deployer
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
     /// <param name="executablePath">Path of the game executable.</param>
-    public static void InstallReShadeForExecutable(string api, bool addonSupport, string executablePath)
+    public static void DeployReShadeForExecutable(string api, bool addonSupport, string executablePath)
     {
         string dllPath = addonSupport ? Paths.AddonDlls : Paths.Dlls;
         string directoryPath = Path.GetDirectoryName(executablePath)!;
@@ -41,7 +41,7 @@ public static class Deployer
             PresetDeployer.Deploy(directoryPath);
                 
         string message = """
-                ReShade was successfully installed!
+                ReShade was successfully deployed!
                 """;
             
         var messageBox = new Wpf.Ui.Controls.MessageBox

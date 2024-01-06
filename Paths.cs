@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace ReShadeInstaller;
+namespace ReShadeDeployer;
 
 /// <summary>
 /// Paths to different sub-directories within the application directory.

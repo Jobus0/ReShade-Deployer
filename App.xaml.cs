@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ReShadeInstaller
+namespace ReShadeDeployer
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace ReShadeInstaller;
+namespace ReShadeDeployer;
 
 public static class SymbolicLink
 {

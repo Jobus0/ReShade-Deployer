@@ -1,4 +1,4 @@
-﻿<ui:UiWindow x:Class="ReShadeInstaller.MainWindow"
+﻿<ui:UiWindow x:Class="ReShadeDeployer.MainWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,16 +9,16 @@
              Icon="ReShade.ico"
              ExtendsContentIntoTitleBar="True"
              WindowBackdropType="Mica"
-             Title="ReShade Installer"
+             Title="ReShade Deployer"
              FontSize="13"
              SizeToContent="Height"
              WindowStartupLocation="CenterScreen"
              MinWidth="300" Width="300">
     <StackPanel>
-        <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Installer" Icon="ReShade.ico" ShowMaximize="False" CanMaximize="False" Padding="7" />
+        <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="ReShade.ico" ShowMaximize="False" CanMaximize="False" Padding="7" />
         <Separator />
         <DockPanel Margin="12, 0, 0, 0">
-            <Label VerticalAlignment="Center" Padding="3 3 3 3">ReShade DLL version:</Label>
+            <Label VerticalAlignment="Center" Padding="3 3 3 3">ReShade version:</Label>
             <Label Name="VersionLabel" VerticalAlignment="Center" Padding="0 3 3 3" FontWeight="Bold"/>
             <ui:Button Name="UpdateButton" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="7, 5, 10, 5" Icon="ArrowDownload16" FontSize="13" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
                        ToolTip="Globally update your ReShade DLL files to the latest version.">
@@ -42,7 +42,7 @@
             <CheckBox Name="AddonSupportCheckBox" Margin="7" FontSize="13" Content="Addon Support" ToolTip="Enable this if you plan to install a ReShade addon to the game." />
             <ui:Button Name="SelectGameButton" Height="50" HorizontalAlignment="Stretch" Content="Select Game" Appearance="Primary">
                 <ui:Button.ToolTip>
-                    Pick the game exe you want to install ReShade to.
+                    Pick the game exe you want to deploy ReShade to.
                     Make sure you have picked the correct Target API above first.
                     If you are unsure, check the API section of the game's PCGamingWiki page.
                 </ui:Button.ToolTip>

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows;
 
-namespace ReShadeInstaller;
+namespace ReShadeDeployer;
 
 public static class DllDeployer
 {

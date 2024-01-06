@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Wpf.Ui.Common;
 
-namespace ReShadeInstaller;
+namespace ReShadeDeployer;
 
 public static class PresetDeployer
 {

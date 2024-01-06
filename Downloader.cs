@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using SevenZipExtractor;
 
-namespace ReShadeInstaller;
+namespace ReShadeDeployer;
 
 /// <summary>
 /// Provides methods for downloading and extracting official ReShade files.
@@ -72,7 +72,7 @@ public static class Downloader
     }
     
     /// <summary>
-    /// Create all the directories used by ReShade Installer.
+    /// Create all the directories used by ReShade Deployer.
     /// </summary>
     public static void CreateDirectories()
     {
@@ -88,7 +88,7 @@ public static class Downloader
     /// </summary>
     /// <param name="version">The version string of the ReShade DLL.</param>
     /// <returns>True if the file exists, false otherwise.</returns>
-    public static bool TryGetInstalledReShadeVersion(out string? version)
+    public static bool TryGetLocalReShadeVersion(out string? version)
     {
         string path = Path.Combine(Paths.Dlls, "ReShade64.dll");
         if (File.Exists(path))

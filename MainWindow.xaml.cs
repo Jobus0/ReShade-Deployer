@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace ReShadeInstaller
+namespace ReShadeDeployer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -24,7 +24,7 @@ namespace ReShadeInstaller
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (Downloader.TryGetInstalledReShadeVersion(out string? version))
+            if (Downloader.TryGetLocalReShadeVersion(out string? version))
                 VersionLabel.Content = version;
             else
                 FirstTimeSetup();
@@ -33,7 +33,7 @@ namespace ReShadeInstaller
         private void SelectGameButtonOnClick(object sender, RoutedEventArgs e)
         {
             Hide();
-            Deployer.SelectExecutableAndInstallReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
+            Deployer.SelectExecutableAndDeployReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
             
             if (!closing)
                 Show();
@@ -54,7 +54,7 @@ namespace ReShadeInstaller
             SelectGameButton.IsEnabled = false;
             
             string message = """
-                ReShade Installer will now download ReShade and set up the required folder structure into the current folder.
+                ReShade Deployer will now download ReShade and set up the required folder structure into the current folder.
 
                 This includes the Shaders and Textures folders, where you will place your shader and texture files.
 

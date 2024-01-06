@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReShade Installer", "ReShade Installer.csproj", "{35A69A66-7BBB-45C3-A813-04C57DA35DC9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReShade Deployer", "ReShade Deployer.csproj", "{35A69A66-7BBB-45C3-A813-04C57DA35DC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

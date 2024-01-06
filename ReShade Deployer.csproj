@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net7.0-windows</TargetFramework>
-        <RootNamespace>ReShade_Installer</RootNamespace>
+        <RootNamespace>ReShade_Deployer</RootNamespace>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <ApplicationIcon>ReShade.ico</ApplicationIcon>
