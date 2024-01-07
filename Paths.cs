@@ -14,4 +14,6 @@ public static class Paths
     public static readonly string Dlls = Path.Combine(Root, "lib", "ReShade");
     public static readonly string AddonDlls = Path.Combine(Root, "lib", "ReShade-Addons");
     public static readonly string Cache = Path.Combine(Root, "lib", "Cache");
+    public static readonly string ReShadeIni = Path.Combine(Root, "ReShade.ini");
+    public static readonly string ReShadePresetIni = Path.Combine(Root, "ReShadePreset.ini");
 }

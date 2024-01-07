@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,19 +12,27 @@ namespace ReShadeDeployer
     public partial class MainWindow
     {
         private bool closing;
+        private static string? TargetExecutablePath => ((App)Application.Current).TargetExecutablePath;
         
         public MainWindow()
         {
             InitializeComponent();
-            
-            UpdateButton.Click += UpdateButtonOnClick;
-            SelectGameButton.Click += SelectGameButtonOnClick;
-            
+
             Loaded += OnLoaded;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            if (!string.IsNullOrEmpty(TargetExecutablePath))
+            {
+                SelectGameButton.Content = "Deploy to " + Path.GetFileNameWithoutExtension(TargetExecutablePath);
+                SelectGameButton.ToolTip = """
+                    Make sure you have picked the correct Target API above first.
+                    
+                    If you are unsure, check the API section of the game's PCGamingWiki page.
+                    """;
+            }
+                
             if (Downloader.TryGetLocalReShadeVersion(out string? version))
                 VersionLabel.Content = version;
             else
@@ -33,7 +42,11 @@ namespace ReShadeDeployer
         private void SelectGameButtonOnClick(object sender, RoutedEventArgs e)
         {
             Hide();
-            Deployer.SelectExecutableAndDeployReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
+            
+            if (string.IsNullOrEmpty(TargetExecutablePath))
+                Deployer.SelectExecutableAndDeployReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
+            else
+                Deployer.DeployReShadeForExecutable(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true, TargetExecutablePath);
             
             if (!closing)
                 Show();
@@ -99,6 +112,28 @@ namespace ReShadeDeployer
                 return "vulkan";
             
             throw new Exception("No API selected!");
+        }
+
+        private void RightClickDeployMenuItem_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            item.IsChecked = RegistryHelper.IsContextMenuActionRegistered("Deploy ReShade");
+        }
+        
+        private void RightClickDeployMenuItem_OnChecked(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            bool isChecked = item.IsChecked;
+            
+            if (isChecked)
+                RegistryHelper.RegisterContextMenuAction("Deploy ReShade", Environment.ProcessPath! + " \"%1\"", Environment.ProcessPath! + ",0");
+            else
+                RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
+        }
+
+        private void SettingsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            (sender as Button)!.ContextMenu.IsOpen = true;
         }
     }
 }

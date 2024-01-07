@@ -17,13 +17,20 @@
     <StackPanel>
         <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="ReShade.ico" ShowMaximize="False" CanMaximize="False" Padding="7" />
         <Separator />
-        <DockPanel Margin="12, 0, 0, 0">
+        <DockPanel Margin="12, 0, 0, 0" LastChildFill="False">
             <Label VerticalAlignment="Center" Padding="3 3 3 3">ReShade version:</Label>
             <Label Name="VersionLabel" VerticalAlignment="Center" Padding="0 3 3 3" FontWeight="Bold"/>
-            <ui:Button Name="UpdateButton" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="7, 5, 10, 5" Icon="ArrowDownload16" FontSize="13" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
-                       ToolTip="Globally update your ReShade DLL files to the latest version.">
-                Update
+            <ui:Button VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="7, 5, 8, 5" Icon="Settings16" FontSize="13" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
+                       ToolTip="Deployer config options." Click="SettingsButton_OnClick">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Context Menu Deploy" IsCheckable="True" IsChecked="False" Loaded="RightClickDeployMenuItem_OnLoaded" Click="RightClickDeployMenuItem_OnChecked"
+                                  ToolTip="Add a 'Deploy ReShade' option to the exe context (right-click) menu."/>
+                    </ContextMenu>
+                </Button.ContextMenu>
             </ui:Button>
+            <ui:Button Name="UpdateButton" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="7, 5, 8, 5" Icon="ArrowDownload16" FontSize="13" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
+                       ToolTip="Globally update your ReShade DLL files to the latest version." Click="UpdateButtonOnClick"/>
         </DockPanel>
         <Separator />
         <StackPanel Margin="12">
@@ -40,7 +47,7 @@
                 </StackPanel>
             </GroupBox>
             <CheckBox Name="AddonSupportCheckBox" Margin="7" FontSize="13" Content="Addon Support" ToolTip="Enable this if you plan to install a ReShade addon to the game." />
-            <ui:Button Name="SelectGameButton" Height="50" HorizontalAlignment="Stretch" Content="Select Game" Appearance="Primary">
+            <ui:Button Name="SelectGameButton" Height="50" HorizontalAlignment="Stretch" Content="Select Game" Appearance="Primary" Click="SelectGameButtonOnClick">
                 <ui:Button.ToolTip>
                     Pick the game exe you want to deploy ReShade to.
                     Make sure you have picked the correct Target API above first.

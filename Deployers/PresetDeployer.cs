@@ -41,6 +41,6 @@ public static class PresetDeployer
                 return;
         }
                 
-        File.Copy(".\\ReShadePreset.ini", path, true);
+        File.Copy(Paths.ReShadePresetIni, path, true);
     }
 }

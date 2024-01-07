@@ -24,9 +24,9 @@ public static class IniDeployer
     /// <param name="directoryPath">Path of the directory to write ReShade.ini to.</param>
     private static void WriteReShadeIni(string directoryPath)
     {
-        if (File.Exists(".\\ReShade.ini"))
+        if (File.Exists(Paths.ReShadeIni))
         {
-            using StreamReader streamReader = new StreamReader(".\\ReShade.ini");
+            using StreamReader streamReader = new StreamReader(Paths.ReShadeIni);
             using StreamWriter streamWriter = new StreamWriter(directoryPath);
             while (!streamReader.EndOfStream)
             {

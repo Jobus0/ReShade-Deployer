@@ -37,7 +37,7 @@ public static class Deployer
         DllDeployer.Deploy(directoryPath, executablePath, dllPath, api);
         IniDeployer.Deploy(directoryPath);
                 
-        if (File.Exists(".\\ReShadePreset.ini"))
+        if (File.Exists(Paths.ReShadePresetIni))
             PresetDeployer.Deploy(directoryPath);
                 
         string message = """
