@@ -94,7 +94,12 @@ namespace ReShadeDeployer
             SelectGameButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
             await Downloader.DownloadReShade();
-            SelectGameButton.IsEnabled = true;
+            
+            if (Downloader.TryGetLocalReShadeVersion(out string? version))
+            {
+                VersionLabel.Content = version;
+                SelectGameButton.IsEnabled = true;
+            }
         }
         
         private string GetCheckedApi()
