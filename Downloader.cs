@@ -56,8 +56,9 @@ public static class Downloader
         try
         {
             using ArchiveFile archiveFile = new ArchiveFile(zipPath);
-            archiveFile.Entries.First(e => e.FileName == innerArchiveName).Extract(innerArchivePath);
-            archiveFile.Extract(e => e.FileName == innerArchiveName ? e.FileName : null);
+            archiveFile.Extract(e => e.FileName == innerArchiveName
+                ? innerArchivePath
+                : null);
 
             using ArchiveFile innerArchiveFile = new ArchiveFile(innerArchivePath);
             innerArchiveFile.Extract(innerEntry => innerEntry.FileName is "ReShade32.dll" or "ReShade64.dll"
