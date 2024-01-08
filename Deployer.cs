@@ -39,19 +39,15 @@ public static class Deployer
                 
         if (File.Exists(Paths.ReShadePresetIni))
             PresetDeployer.Deploy(directoryPath);
-                
-        string message = """
-                ReShade was successfully deployed!
-                """;
-            
+
         var messageBox = new Wpf.Ui.Controls.MessageBox
         {
-            Title = "Success",
-            Content = new TextBlock {Text = message, TextWrapping = TextWrapping.Wrap},
+            Title = UIStrings.DeploySuccess_Title,
+            Content = new TextBlock {Text = UIStrings.DeploySuccess, TextWrapping = TextWrapping.Wrap},
             ResizeMode = ResizeMode.NoResize,
             SizeToContent = SizeToContent.Height,
-            ButtonLeftName = "Continue",
-            ButtonRightName = "Exit",
+            ButtonLeftName = UIStrings.Continue,
+            ButtonRightName = UIStrings.Exit,
             Width = 260
         };
         messageBox.ButtonLeftClick += (_, _) => messageBox.Close();
@@ -67,7 +63,7 @@ public static class Deployer
     private static bool TrySelectExecutable(out string executablePath)
     {
         OpenFileDialog openFileDialog = new OpenFileDialog();
-        openFileDialog.Title = "Select the game's runtime executable.";
+        openFileDialog.Title = UIStrings.OpenFileDialog_Title;
         openFileDialog.Filter = "Select EXE|*.exe";
 
         bool result = openFileDialog.ShowDialog() ?? false;

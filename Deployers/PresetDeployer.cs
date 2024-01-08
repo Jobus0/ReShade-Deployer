@@ -17,21 +17,15 @@ public static class PresetDeployer
 
         if (File.Exists(path))
         {
-            string message = """
-                ReShadePreset.ini already exists.
-
-                Would you like to overwrite it?"
-                """;
-            
             var messageBox = new Wpf.Ui.Controls.MessageBox
             {
-                Title = "Overwrite Preset",
-                Content = new TextBlock {Text = message, TextWrapping = TextWrapping.Wrap},
+                Title = UIStrings.PresetOverwrite_Title,
+                Content = new TextBlock {Text = UIStrings.PresetOverwrite, TextWrapping = TextWrapping.Wrap},
                 ResizeMode = ResizeMode.NoResize,
                 SizeToContent = SizeToContent.Height,
-                ButtonLeftName = "Yes, overwrite file",
+                ButtonLeftName = UIStrings.PresetOverwrite_Yes,
                 ButtonLeftAppearance = ControlAppearance.Danger,
-                ButtonRightName = "No, keep old file",
+                ButtonRightName = UIStrings.PresetOverwrite_No,
                 Width = 300
             };
             messageBox.ButtonLeftClick += (_, _) => {messageBox.DialogResult = true; messageBox.Close();};

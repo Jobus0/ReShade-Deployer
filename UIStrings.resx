@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="VersionPrefix" xml:space="preserve">
+		<value>ReShade version:</value>
+	</data>
+
+	<data name="TargetAPI" xml:space="preserve">
+		<value>Target API</value>
+	</data>
+	<data name="TargetAPI_Tooltip" xml:space="preserve">
+		<value>Select the rendering API that the game uses.
+If you are unsure, check the API section of the game's PCGamingWiki page.</value>
+	</data>
+
+	<data name="Update_Tooltip" xml:space="preserve">
+		<value>Globally update your ReShade DLL files to the latest version.</value>
+	</data>
+	<data name="Settings_Tooltip" xml:space="preserve">
+		<value>Settings</value>
+	</data>
+
+	<data name="ContextMenuDeploy" xml:space="preserve">
+		<value>Context Menu Deploy</value>
+	</data>
+	<data name="ContextMenuDeploy_Tooltip" xml:space="preserve">
+		<value>Add a 'Deploy ReShade' option to the exe context (right-click) menu.</value>
+	</data>
+
+	<data name="DirectX10" xml:space="preserve">
+		<value>DirectX 10 or later</value>
+	</data>
+	<data name="DirectX10_Tooltip" xml:space="preserve">
+		<value>dxgi.dll</value>
+	</data>
+
+	<data name="DirectX9" xml:space="preserve">
+		<value>DirectX 9</value>
+	</data>
+	<data name="DirectX9_Tooltip" xml:space="preserve">
+		<value>d3d9.dll</value>
+	</data>
+
+	<data name="OpenGL" xml:space="preserve">
+		<value>OpenGL</value>
+	</data>
+	<data name="OpenGL_Tooltip" xml:space="preserve">
+		<value>opengl32.dll</value>
+	</data>
+
+	<data name="Vulkan" xml:space="preserve">
+		<value>Vulkan</value>
+	</data>
+	<data name="Vulkan_Tooltip" xml:space="preserve">
+		<value>Creates no DLL. Requires that you have installed ReShade for Vulkan globally through the official installer.</value>
+	</data>
+	<data name="Vulkan_Info" xml:space="preserve">
+		<value>If you haven't already, install ReShade for Vulkan globally through the official ReShade installer. This program will setup the rest.</value>
+	</data>
+
+	<data name="Addon" xml:space="preserve">
+		<value>Addon Support</value>
+	</data>
+	<data name="Addon_Tooltip" xml:space="preserve">
+		<value>Enable this if you plan to install a ReShade addon to the game.</value>
+	</data>
+
+	<data name="DeployButton" xml:space="preserve">
+		<value>Select Game</value>
+	</data>
+	<data name="DeployButton_Tooltip" xml:space="preserve">
+		<value>Pick the game exe you want to deploy ReShade to.
+Make sure you have picked the correct Target API above first.
+If you are unsure, check the API section of the game's PCGamingWiki page.</value>
+	</data>
+
+	<data name="DeployButton_Targeted" xml:space="preserve">
+		<value>Deploy to {0}</value>
+	</data>
+	<data name="DeployButton_Targeted_Tooltip" xml:space="preserve">
+		<value>Make sure you have picked the correct Target API above first.
+If you are unsure, check the API section of the game's PCGamingWiki page.</value>
+	</data>
+
+	<data name="Continue" xml:space="preserve">
+		<value>Continue</value>
+	</data>
+	<data name="Exit" xml:space="preserve">
+		<value>Exit</value>
+	</data>
+
+	<data name="FirstTimeSetup_Title" xml:space="preserve">
+		<value>First-Time Setup</value>
+	</data>
+	<data name="FirstTimeSetup" xml:space="preserve">
+		<value>ReShade Deployer will now download ReShade and set up the required folder structure into the current folder.
+
+This includes the Shaders and Textures folders, where you will place your shader and texture files.
+
+If you wish to keep these files elsewhere, press 'Exit' and move the program first.</value>
+	</data>
+
+	<data name="PresetOverwrite_Title" xml:space="preserve">
+		<value>Overwrite Preset</value>
+	</data>
+	<data name="PresetOverwrite" xml:space="preserve">
+		<value>ReShadePreset.ini already exists.
+
+Would you like to overwrite it?</value>
+	</data>
+	<data name="PresetOverwrite_Yes" xml:space="preserve">
+		<value>Yes, overwrite file</value>
+	</data>
+	<data name="PresetOverwrite_No" xml:space="preserve">
+		<value>No, keep old file</value>
+	</data>
+
+	<data name="DeploySuccess_Title" xml:space="preserve">
+		<value>Success</value>
+	</data>
+	<data name="DeploySuccess" xml:space="preserve">
+		<value>ReShade was successfully deployed!</value>
+	</data>
+
+	<data name="OpenFileDialog_Title" xml:space="preserve">
+		<value>Select the game's runtime executable.</value>
+	</data>
+
+	<data name="ConnectionError" xml:space="preserve">
+		<value>ReShade website (https://reshade.me) is down or the connection was blocked.</value>
+	</data>
+	<data name="DownloadError" xml:space="preserve">
+		<value>Failed to access '{0}'. Please report to the developer.</value>
+	</data>
+</root>

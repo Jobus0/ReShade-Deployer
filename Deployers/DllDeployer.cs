@@ -19,7 +19,7 @@ public static class DllDeployer
 
         if (api == "vulkan")
         {
-            MessageBox.Show("If you haven't already, install ReShade for Vulkan globally through the normal ReShade installer. This program will setup the rest.");
+            MessageBox.Show(UIStrings.Vulkan_Info);
             return;
         }
 

@@ -25,7 +25,7 @@ public static class Downloader
         }
         catch
         {
-            MessageBox.Show("ReShade website (https://reshade.me) is down or the connection was blocked.");
+            MessageBox.Show(UIStrings.ConnectionError);
             throw;
         }
         
@@ -47,7 +47,7 @@ public static class Downloader
         }
         catch
         {
-            MessageBox.Show($"Failed to access '{url}'. Please report to the developer.");
+            MessageBox.Show(string.Format(UIStrings.DownloadError, url));
             throw;
         }
 

@@ -25,12 +25,8 @@ namespace ReShadeDeployer
         {
             if (!string.IsNullOrEmpty(TargetExecutablePath))
             {
-                SelectGameButton.Content = "Deploy to " + Path.GetFileNameWithoutExtension(TargetExecutablePath);
-                SelectGameButton.ToolTip = """
-                    Make sure you have picked the correct Target API above first.
-                    
-                    If you are unsure, check the API section of the game's PCGamingWiki page.
-                    """;
+                SelectGameButton.Content = string.Format(UIStrings.DeployButton_Targeted, Path.GetFileNameWithoutExtension(TargetExecutablePath));
+                SelectGameButton.ToolTip = UIStrings.DeployButton_Targeted_Tooltip;
             }
                 
             if (Downloader.TryGetLocalReShadeVersion(out string? version))
@@ -61,27 +57,19 @@ namespace ReShadeDeployer
         {
             DownloadReShade();
         }
-
+        
         private void FirstTimeSetup()
         {
             SelectGameButton.IsEnabled = false;
-            
-            string message = """
-                ReShade Deployer will now download ReShade and set up the required folder structure into the current folder.
 
-                This includes the Shaders and Textures folders, where you will place your shader and texture files.
-
-                If you wish to keep these files elsewhere, press 'Exit' and move the program first.
-                """;
-            
             var messageBox = new Wpf.Ui.Controls.MessageBox
             {
-                Title = "First-Time Setup",
-                Content = new TextBlock {Text = message, TextWrapping = TextWrapping.Wrap},
+                Title = UIStrings.FirstTimeSetup_Title,
+                Content = new TextBlock {Text = UIStrings.FirstTimeSetup, TextWrapping = TextWrapping.Wrap},
                 ResizeMode = ResizeMode.NoResize,
                 SizeToContent = SizeToContent.Height,
-                ButtonLeftName = "Continue",
-                ButtonRightName = "Exit",
+                ButtonLeftName = UIStrings.Continue,
+                ButtonRightName = UIStrings.Exit,
                 Width = 360
             };
             messageBox.ButtonLeftClick += (_, _) => { messageBox.Close(); DownloadReShade(); };

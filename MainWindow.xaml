@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:rd="clr-namespace:ReShadeDeployer"
              mc:Ignorable="d"
              ResizeMode="NoResize"
              Icon="ReShade.ico"
@@ -18,41 +19,32 @@
         <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="ReShade.ico" ShowMaximize="False" CanMaximize="False" Padding="7" />
         <Separator />
         <DockPanel Margin="12, 0, 0, 0" LastChildFill="False">
-            <Label VerticalAlignment="Center" Padding="3 3 3 3">ReShade version:</Label>
-            <Label Name="VersionLabel" VerticalAlignment="Center" Padding="0 3 3 3" FontWeight="Bold"/>
+            <Label VerticalAlignment="Center" Padding="3 3 3 3" Content="{x:Static rd:UIStrings.VersionPrefix}" />
+            <Label Name="VersionLabel" VerticalAlignment="Center" Padding="0 3 3 3" FontWeight="Bold" />
             <ui:Button VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="7, 5, 8, 5" Icon="Settings16" FontSize="13" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
-                       ToolTip="Deployer config options." Click="SettingsButton_OnClick">
+                       ToolTip="{x:Static rd:UIStrings.Settings_Tooltip}" Click="SettingsButton_OnClick">
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Context Menu Deploy" IsCheckable="True" IsChecked="False" Loaded="RightClickDeployMenuItem_OnLoaded" Click="RightClickDeployMenuItem_OnChecked"
-                                  ToolTip="Add a 'Deploy ReShade' option to the exe context (right-click) menu."/>
+                        <MenuItem Header="{x:Static rd:UIStrings.ContextMenuDeploy}" IsCheckable="True" IsChecked="False" Loaded="RightClickDeployMenuItem_OnLoaded" Click="RightClickDeployMenuItem_OnChecked"
+                                  ToolTip="{x:Static rd:UIStrings.ContextMenuDeploy_Tooltip}" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </ui:Button>
             <ui:Button Name="UpdateButton" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="7, 5, 8, 5" Icon="ArrowDownload16" FontSize="13" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
-                       ToolTip="Globally update your ReShade DLL files to the latest version." Click="UpdateButtonOnClick"/>
+                       ToolTip="{x:Static rd:UIStrings.Update_Tooltip}" Click="UpdateButtonOnClick" />
         </DockPanel>
         <Separator />
         <StackPanel Margin="12">
-            <GroupBox Header="Target API" Padding="3, 0" BorderThickness="0" Background="#44000000">
-                <GroupBox.ToolTip>
-                    Select the rendering API that the game uses.
-                    If you are unsure, check the API section of the game's PCGamingWiki page.
-                </GroupBox.ToolTip>
+            <GroupBox Header="{x:Static rd:UIStrings.TargetAPI}" Padding="3, 0" BorderThickness="0" Background="#44000000" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}">
                 <StackPanel>
-                    <RadioButton Name="DxgiRadioButton" FontSize="13" Content="DirectX 10 or later" ToolTip="dxgi.dll" IsChecked="True" />
-                    <RadioButton Name="D3d9RadioButton" FontSize="13" Content="DirectX 9" ToolTip="d3d9.dll" />
-                    <RadioButton Name="OpenglRadioButton" FontSize="13" Content="OpenGL" ToolTip="opengl32.dll" />
-                    <RadioButton Name="VulkanRadioButton" FontSize="13" Content="Vulkan" ToolTip="Creates no DLL. Requires that you have installed ReShade for Vulkan globally through the official installer." />
+                    <RadioButton Name="DxgiRadioButton" FontSize="13" Content="{x:Static rd:UIStrings.DirectX10}" ToolTip="{x:Static rd:UIStrings.DirectX10_Tooltip}" IsChecked="True" />
+                    <RadioButton Name="D3d9RadioButton" FontSize="13" Content="{x:Static rd:UIStrings.DirectX9}" ToolTip="{x:Static rd:UIStrings.DirectX9_Tooltip}" />
+                    <RadioButton Name="OpenglRadioButton" FontSize="13" Content="{x:Static rd:UIStrings.OpenGL}" ToolTip="{x:Static rd:UIStrings.OpenGL_Tooltip}" />
+                    <RadioButton Name="VulkanRadioButton" FontSize="13" Content="{x:Static rd:UIStrings.Vulkan}" ToolTip="{x:Static rd:UIStrings.Vulkan_Tooltip}" />
                 </StackPanel>
             </GroupBox>
-            <CheckBox Name="AddonSupportCheckBox" Margin="7" FontSize="13" Content="Addon Support" ToolTip="Enable this if you plan to install a ReShade addon to the game." />
-            <ui:Button Name="SelectGameButton" Height="50" HorizontalAlignment="Stretch" Content="Select Game" Appearance="Primary" Click="SelectGameButtonOnClick">
-                <ui:Button.ToolTip>
-                    Pick the game exe you want to deploy ReShade to.
-                    Make sure you have picked the correct Target API above first.
-                    If you are unsure, check the API section of the game's PCGamingWiki page.
-                </ui:Button.ToolTip>
+            <CheckBox Name="AddonSupportCheckBox" Margin="7" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}" />
+            <ui:Button Name="SelectGameButton" Height="50" HorizontalAlignment="Stretch" Appearance="Primary" Content="{x:Static rd:UIStrings.DeployButton}" ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}" Click="SelectGameButtonOnClick">
             </ui:Button>
         </StackPanel>
     </StackPanel>
