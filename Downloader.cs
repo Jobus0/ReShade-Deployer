@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -25,8 +26,8 @@ public static class Downloader
         }
         catch
         {
-            MessageBox.Show(UIStrings.ConnectionError);
-            throw;
+            MessageBox.Show(UIStrings.ConnectionError, UIStrings.ConnectionError_Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
         }
         
         CreateDirectories();
@@ -47,8 +48,8 @@ public static class Downloader
         }
         catch
         {
-            MessageBox.Show(string.Format(UIStrings.DownloadError, url));
-            throw;
+            MessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
         }
 
         const string innerArchiveName = "[0]";
@@ -64,6 +65,14 @@ public static class Downloader
             innerArchiveFile.Extract(innerEntry => innerEntry.FileName is "ReShade32.dll" or "ReShade64.dll"
                 ? Path.Combine(directoryPath, innerEntry.FileName)
                 : null);
+        }
+        catch (IOException)
+        {
+            MessageBox.Show(string.Format(UIStrings.AccessError, url), UIStrings.AccessError_Title, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.GetType() + ": " + e.Message, UIStrings.AccessError_Title, MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
         {

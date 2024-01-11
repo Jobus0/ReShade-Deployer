@@ -143,10 +143,24 @@ Would you like to overwrite it?</value>
 		<value>Select the game's runtime executable.</value>
 	</data>
 
+	<data name="ConnectionError_Title" xml:space="preserve">
+		<value>Connection Failed</value>
+	</data>
 	<data name="ConnectionError" xml:space="preserve">
 		<value>ReShade website (https://reshade.me) is down or the connection was blocked.</value>
 	</data>
+	
+	<data name="DownloadError_Title" xml:space="preserve">
+		<value>Download Failed</value>
+	</data>
 	<data name="DownloadError" xml:space="preserve">
 		<value>Failed to access '{0}'. Please report to the developer.</value>
+	</data>
+	
+	<data name="AccessError_Title" xml:space="preserve">
+		<value>Extraction Failed</value>
+	</data>
+	<data name="AccessError" xml:space="preserve">
+		<value>Extraction failed because write-access was denied. Exit all other programs that use ReShade and try again.</value>
 	</data>
 </root>

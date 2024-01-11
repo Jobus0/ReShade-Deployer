@@ -60,6 +60,24 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extraction failed because write-access was denied. Exit all other programs that use ReShade and try again..
+        /// </summary>
+        public static string AccessError {
+            get {
+                return ResourceManager.GetString("AccessError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extraction Failed.
+        /// </summary>
+        public static string AccessError_Title {
+            get {
+                return ResourceManager.GetString("AccessError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Addon Support.
         /// </summary>
         public static string Addon {
@@ -83,6 +101,15 @@ namespace ReShadeDeployer {
         public static string ConnectionError {
             get {
                 return ResourceManager.GetString("ConnectionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection Failed.
+        /// </summary>
+        public static string ConnectionError_Title {
+            get {
+                return ResourceManager.GetString("ConnectionError_Title", resourceCulture);
             }
         }
         
@@ -212,6 +239,15 @@ namespace ReShadeDeployer {
         public static string DownloadError {
             get {
                 return ResourceManager.GetString("DownloadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download Failed.
+        /// </summary>
+        public static string DownloadError_Title {
+            get {
+                return ResourceManager.GetString("DownloadError_Title", resourceCulture);
             }
         }
         
