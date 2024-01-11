@@ -20,6 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="ini-parser-new" Version="2.6.2" />
         <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
         <PackageReference Include="WPF-UI" Version="2.1.0" />
     </ItemGroup>

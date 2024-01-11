@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,9 +14,13 @@ namespace ReShadeDeployer
     {
         private bool closing;
         private static string? TargetExecutablePath => ((App)Application.Current).TargetExecutablePath;
+
+        private readonly Config config;
         
         public MainWindow()
         {
+            config = new Config();
+            
             InitializeComponent();
 
             Loaded += OnLoaded;
@@ -28,11 +33,40 @@ namespace ReShadeDeployer
                 SelectGameButton.Content = string.Format(UIStrings.DeployButton_Targeted, Path.GetFileNameWithoutExtension(TargetExecutablePath));
                 SelectGameButton.ToolTip = UIStrings.DeployButton_Targeted_Tooltip;
             }
-                
-            if (Downloader.TryGetLocalReShadeVersion(out string? version))
+            
+            if (Downloader.TryGetLocalReShadeVersion(out string version))
+            {
                 VersionLabel.Content = version;
+                CheckForNewVersion(version);
+            }
             else
+            {
                 FirstTimeSetup();
+            }
+        }
+
+        private async void CheckForNewVersion(string localVersion)
+        {
+            string latestVersion = config.LatestVersion;
+            if (DateTime.Now - config.LatestVersionCheckDate > TimeSpan.FromDays(7))
+            {
+                try
+                {
+                    latestVersion = await Downloader.GetLatestOnlineReShadeVersion();
+                    
+                    config.LatestVersion = latestVersion;
+                    config.LatestVersionCheckDate = DateTime.Now;
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+            }
+
+            if (localVersion != latestVersion)
+            {
+                UpdateButton.Content = latestVersion;
+            }
         }
 
         private void SelectGameButtonOnClick(object sender, RoutedEventArgs e)
@@ -81,13 +115,20 @@ namespace ReShadeDeployer
         {
             SelectGameButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
+
             await Downloader.DownloadReShade();
             
-            if (Downloader.TryGetLocalReShadeVersion(out string? version))
+            if (Downloader.TryGetLocalReShadeVersion(out string version))
             {
                 VersionLabel.Content = version;
                 SelectGameButton.IsEnabled = true;
+                UpdateButton.Content = string.Empty;
+
+                config.LatestVersion = version;
+                config.LatestVersionCheckDate = DateTime.Now;
             }
+            
+            UpdateButton.IsEnabled = true;
         }
         
         private string GetCheckedApi()

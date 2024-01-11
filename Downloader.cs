@@ -15,14 +15,37 @@ namespace ReShadeDeployer;
 /// </summary>
 public static class Downloader
 {
+    private const string WebsiteUrl = "https://reshade.me";
+
+    /// <summary>
+    /// Retrieves the content of a website using an HTTP GET request.
+    /// </summary>
+    /// <returns>The website content as a string.</returns>
+    private static async Task<string> GetWebsiteContent()
+    {
+        using var httpClient = new HttpClient();
+        return await httpClient.GetStringAsync(WebsiteUrl);
+    }
+    
+    /// <summary>
+    /// Extracts the version number from a download URL.
+    /// </summary>
+    /// <param name="downloadUrl">The download URL string.</param>
+    /// <returns>The version number extracted from the download URL.</returns>
+    private static string UrlToVersion(string downloadUrl)
+    {
+        return Regex.Match(downloadUrl, @"\d+(\.\d+)*").ToString();
+    }
+    
+    /// <summary>
+    /// Download the latest version of ReShade (including add-on support version) from the official website and extract it into the lib folder.
+    /// </summary>
     public static async Task DownloadReShade()
     {
-        string websiteUrl = "https://reshade.me";
-        string input;
+        string websiteContent;
         try
         {
-            using HttpClient httpClient = new HttpClient();
-            input = await httpClient.GetStringAsync(websiteUrl);
+            websiteContent = await GetWebsiteContent();
         }
         catch
         {
@@ -32,8 +55,16 @@ public static class Downloader
         
         CreateDirectories();
 
-        await DownloadAndExtract(websiteUrl + Regex.Match(input, "/downloads/\\S*.exe"), Paths.Dlls);
-        await DownloadAndExtract(websiteUrl + Regex.Match(input, "/downloads/\\S*_Addon.exe"), Paths.AddonDlls);
+        string downloadUrl = Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString();
+        
+        if (TryGetLocalReShadeVersion(out string localVersion) && localVersion == UrlToVersion(downloadUrl))
+        {
+            MessageBox.Show("You are already on the latest version.", UIStrings.Update, MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        
+        await DownloadAndExtract(WebsiteUrl + downloadUrl, Paths.Dlls);
+        await DownloadAndExtract(WebsiteUrl + Regex.Match(websiteContent, "/downloads/\\S*_Addon.exe"), Paths.AddonDlls);
     }
 
     private static async Task DownloadAndExtract(string url, string directoryPath)
@@ -98,7 +129,7 @@ public static class Downloader
     /// </summary>
     /// <param name="version">The version string of the ReShade DLL.</param>
     /// <returns>True if the file exists, false otherwise.</returns>
-    public static bool TryGetLocalReShadeVersion(out string? version)
+    public static bool TryGetLocalReShadeVersion(out string version)
     {
         string path = Path.Combine(Paths.Dlls, "ReShade64.dll");
         if (File.Exists(path))
@@ -108,7 +139,17 @@ public static class Downloader
             return true;
         }
 
-        version = null;
+        version = string.Empty;
         return false;
+    }
+    
+    /// <summary>
+    /// Get the latest version number of ReShade from the official website. Throws an exception if the website is not reachable.
+    /// </summary>
+    /// <returns>Latest version number, formatted like "1.0.0".</returns>
+    public static async Task<string> GetLatestOnlineReShadeVersion()
+    {
+        var websiteContent = await GetWebsiteContent();
+        return UrlToVersion(Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString());
     }
 }

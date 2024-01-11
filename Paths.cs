@@ -16,4 +16,5 @@ public static class Paths
     public static readonly string Cache = Path.Combine(Root, "lib", "Cache");
     public static readonly string ReShadeIni = Path.Combine(Root, "ReShade.ini");
     public static readonly string ReShadePresetIni = Path.Combine(Root, "ReShadePreset.ini");
+    public static readonly string ConfigIni = Path.Combine(Root, "lib", "Config.ini");
 }

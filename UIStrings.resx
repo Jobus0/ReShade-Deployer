@@ -30,6 +30,9 @@
 If you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
 
+	<data name="Update" xml:space="preserve">
+		<value>Update</value>
+	</data>
 	<data name="Update_Tooltip" xml:space="preserve">
 		<value>Globally update your ReShade DLL files to the latest version.</value>
 	</data>
