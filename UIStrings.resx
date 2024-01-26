@@ -79,10 +79,10 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 	</data>
 
 	<data name="Addon" xml:space="preserve">
-		<value>Addon Support</value>
+		<value>Add-on Support</value>
 	</data>
 	<data name="Addon_Tooltip" xml:space="preserve">
-		<value>Enable this if you plan to install a ReShade addon to the game.</value>
+		<value>Enable this if you plan to install a ReShade add-on to the game.</value>
 	</data>
 
 	<data name="DeployButton" xml:space="preserve">

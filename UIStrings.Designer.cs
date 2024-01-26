@@ -78,7 +78,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Addon Support.
+        ///   Looks up a localized string similar to Add-on Support.
         /// </summary>
         public static string Addon {
             get {
@@ -87,7 +87,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this if you plan to install a ReShade addon to the game..
+        ///   Looks up a localized string similar to Enable this if you plan to install a ReShade add-on to the game..
         /// </summary>
         public static string Addon_Tooltip {
             get {
