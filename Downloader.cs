@@ -59,7 +59,7 @@ public static class Downloader
         
         if (TryGetLocalReShadeVersion(out string localVersion) && localVersion == UrlToVersion(downloadUrl))
         {
-            MessageBox.Show("You are already on the latest version.", UIStrings.Update, MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(UIStrings.UpdateError, UIStrings.Update, MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         

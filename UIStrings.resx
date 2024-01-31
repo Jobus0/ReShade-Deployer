@@ -152,6 +152,10 @@ Would you like to overwrite it?</value>
 	<data name="ConnectionError" xml:space="preserve">
 		<value>ReShade website (https://reshade.me) is down or the connection was blocked.</value>
 	</data>
+
+	<data name="UpdateError" xml:space="preserve">
+		<value>You are already on the latest version.</value>
+	</data>
 	
 	<data name="DownloadError_Title" xml:space="preserve">
 		<value>Download Failed</value>
