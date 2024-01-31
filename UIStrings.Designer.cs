@@ -87,7 +87,9 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this if you plan to install a ReShade add-on to the game..
+        ///   Looks up a localized string similar to Enable this if you plan to install a ReShade add-on to the game.
+        ///
+        ///Warning: Intended for singleplayer games only and may cause bans in multiplayer games..
         /// </summary>
         public static string Addon_Tooltip {
             get {
@@ -430,7 +432,9 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates no DLL. Requires that you have installed ReShade for Vulkan globally through the official installer..
+        ///   Looks up a localized string similar to Creates no DLL.
+        ///
+        ///Requires that you have installed ReShade for Vulkan globally through the official installer..
         /// </summary>
         public static string Vulkan_Tooltip {
             get {

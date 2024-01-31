@@ -72,7 +72,9 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 		<value>Vulkan</value>
 	</data>
 	<data name="Vulkan_Tooltip" xml:space="preserve">
-		<value>Creates no DLL. Requires that you have installed ReShade for Vulkan globally through the official installer.</value>
+		<value>Creates no DLL.
+
+Requires that you have installed ReShade for Vulkan globally through the official installer.</value>
 	</data>
 	<data name="Vulkan_Info" xml:space="preserve">
 		<value>If you haven't already, install ReShade for Vulkan globally through the official ReShade installer. This program will setup the rest.</value>
@@ -82,7 +84,9 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 		<value>Add-on Support</value>
 	</data>
 	<data name="Addon_Tooltip" xml:space="preserve">
-		<value>Enable this if you plan to install a ReShade add-on to the game.</value>
+		<value>Enable this if you plan to install a ReShade add-on to the game.
+
+Warning: Intended for singleplayer games only and may cause bans in multiplayer games.</value>
 	</data>
 
 	<data name="DeployButton" xml:space="preserve">
