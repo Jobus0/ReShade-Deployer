@@ -47,6 +47,17 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 		<value>Add a 'Deploy ReShade' option to the exe context (right-click) menu.</value>
 	</data>
 
+	<data name="About" xml:space="preserve">
+		<value>About ReShade Deployer</value>
+	</data>
+
+	<data name="About_Info" xml:space="preserve">
+		<value>Version: {0}
+
+Copyright © 2024 Jobus
+https://github.com/Jobus0/reshade-deployer</value>
+	</data>
+
 	<data name="DirectX10" xml:space="preserve">
 		<value>DirectX 10 or later</value>
 	</data>

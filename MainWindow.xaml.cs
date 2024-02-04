@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using Button = System.Windows.Controls.Button;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace ReShadeDeployer
 {
@@ -163,6 +166,11 @@ namespace ReShadeDeployer
                 RegistryHelper.RegisterContextMenuAction("Deploy ReShade", Environment.ProcessPath! + " \"%1\"", Environment.ProcessPath! + ",0");
             else
                 RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
+        }
+        
+        private void AboutMenuItem_OnClicked(object sender, RoutedEventArgs e)
+        {
+            WpfMessageBox.Show(string.Format(UIStrings.About_Info, Assembly.GetExecutingAssembly().GetName().Version), UIStrings.About);
         }
 
         private void SettingsButton_OnClick(object sender, RoutedEventArgs e)

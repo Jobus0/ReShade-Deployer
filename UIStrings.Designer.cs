@@ -60,6 +60,27 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About ReShade Deployer.
+        /// </summary>
+        public static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version: {0}
+        ///
+        ///Copyright © 2024 Jobus
+        ///https://github.com/Jobus0/reshade-deployer.
+        /// </summary>
+        public static string About_Info {
+            get {
+                return ResourceManager.GetString("About_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extraction failed because write-access was denied. Exit all other programs that use ReShade and try again..
         /// </summary>
         public static string AccessError {
