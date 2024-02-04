@@ -19,7 +19,7 @@ public static class DllDeployer
 
         if (api == "vulkan")
         {
-            MessageBox.Show(UIStrings.Vulkan_Info);
+            WpfMessageBox.Show(UIStrings.Vulkan_Info, UIStrings.Notice);
             return;
         }
 

@@ -106,11 +106,18 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 If you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
 
+	<data name="Notice" xml:space="preserve">
+		<value>Notice</value>
+	</data>
+
 	<data name="Continue" xml:space="preserve">
 		<value>Continue</value>
 	</data>
 	<data name="Exit" xml:space="preserve">
 		<value>Exit</value>
+	</data>
+	<data name="OK" xml:space="preserve">
+		<value>OK</value>
 	</data>
 
 	<data name="FirstTimeSetup_Title" xml:space="preserve">

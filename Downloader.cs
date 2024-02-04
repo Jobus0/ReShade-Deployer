@@ -49,7 +49,7 @@ public static class Downloader
         }
         catch
         {
-            MessageBox.Show(UIStrings.ConnectionError, UIStrings.ConnectionError_Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            WpfMessageBox.Show(UIStrings.ConnectionError, UIStrings.ConnectionError_Title);
             return;
         }
         
@@ -59,7 +59,7 @@ public static class Downloader
         
         if (TryGetLocalReShadeVersion(out string localVersion) && localVersion == UrlToVersion(downloadUrl))
         {
-            MessageBox.Show(UIStrings.UpdateError, UIStrings.Update, MessageBoxButton.OK, MessageBoxImage.Information);
+            WpfMessageBox.Show(UIStrings.UpdateError, UIStrings.Update);
             return;
         }
         
@@ -79,7 +79,7 @@ public static class Downloader
         }
         catch
         {
-            MessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            WpfMessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
             return;
         }
 
@@ -99,11 +99,11 @@ public static class Downloader
         }
         catch (IOException)
         {
-            MessageBox.Show(string.Format(UIStrings.AccessError, url), UIStrings.AccessError_Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            WpfMessageBox.Show(string.Format(UIStrings.AccessError, url), UIStrings.AccessError_Title);
         }
         catch (Exception e)
         {
-            MessageBox.Show(e.GetType() + ": " + e.Message, UIStrings.AccessError_Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            WpfMessageBox.Show(e.GetType() + ": " + e.Message, UIStrings.AccessError_Title);
         }
         finally
         {
