@@ -6,23 +6,35 @@ using IniParser.Model;
 
 namespace ReShadeDeployer;
 
+/// <summary>
+/// Handles the reading and writing of Config.ini. Writing to file is deferred so that it is only done once even if multiple changes are made at once.
+/// </summary>
 public class Config
 {
     private readonly FileIniDataParser iniParser;
     private IniData? ini;
 
+    /// <summary>
+    /// An ini value was recently modified and is awaiting a save to file.
+    /// </summary>
     private bool awaitingSave;
     
-    public string LatestVersion
+    /// <summary>
+    /// Represents the latest online ReShade version number.
+    /// </summary>
+    public string LatestVersionNumber
     {
-        get => Read("LatestVersion");
-        set => Write("LatestVersion", value);
+        get => Read(nameof(LatestVersionNumber));
+        set => Write(nameof(LatestVersionNumber), value);
     }
     
-    public DateTime LatestVersionCheckDate
+    /// <summary>
+    /// Represents the date of the last check for a new ReShade version.
+    /// </summary>
+    public DateTime LatestVersionNumberCheckDate
     {
-        get => DateTime.TryParse(Read("LatestVersionCheckDate"), out DateTime value) ? value : default;
-        set => Write("LatestVersionCheckDate", value.ToString("yyyy-MM-dd"));
+        get => DateTime.TryParse(Read(nameof(LatestVersionNumberCheckDate)), out DateTime value) ? value : default;
+        set => Write(nameof(LatestVersionNumberCheckDate), value.ToString("yyyy-MM-dd"));
     }
 
     public Config()
@@ -30,6 +42,9 @@ public class Config
         iniParser = new FileIniDataParser();
     }
 
+    /// <summary>
+    /// Load ini data from Config.ini if it exists; otherwise create a new one.
+    /// </summary>
     private void InitializeIni()
     {
         if (File.Exists(Paths.ConfigIni))
@@ -38,6 +53,9 @@ public class Config
             ini = new IniData();
     }
 
+    /// <summary>
+    /// Read a value by key from Config.ini
+    /// </summary>
     private string Read(string key)
     {
         if (ini == null)
@@ -46,6 +64,9 @@ public class Config
         return ini!.Global[key];
     }
     
+    /// <summary>
+    /// Write a value by key to Config.ini
+    /// </summary>
     private void Write(string key, string value)
     {
         if (ini == null)
@@ -58,6 +79,9 @@ public class Config
         DeferredSave();
     }
 
+    /// <summary>
+    /// Trigger a delayed save to Config.ini. Ignored if save is already in progress.
+    /// </summary>
     private async void DeferredSave()
     {
         if (awaitingSave)

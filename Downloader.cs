@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
 using SevenZipExtractor;
 
 namespace ReShadeDeployer;
@@ -13,7 +11,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for downloading and extracting official ReShade files.
 /// </summary>
-public static class Downloader
+public static partial class Downloader
 {
     private const string WebsiteUrl = "https://reshade.me";
 
@@ -34,8 +32,11 @@ public static class Downloader
     /// <returns>The version number extracted from the download URL.</returns>
     private static string UrlToVersion(string downloadUrl)
     {
-        return Regex.Match(downloadUrl, @"\d+(\.\d+)*").ToString();
+        return UrlToVersionRegex().Match(downloadUrl).ToString();
     }
+    
+    [GeneratedRegex("\\d+(\\.\\d+)*")]
+    private static partial Regex UrlToVersionRegex();
     
     /// <summary>
     /// Download the latest version of ReShade (including add-on support version) from the official website and extract it into the lib folder.
@@ -53,6 +54,7 @@ public static class Downloader
             return;
         }
         
+        // Make sure the required folders exist
         CreateDirectories();
 
         string downloadUrl = Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString();
@@ -63,10 +65,16 @@ public static class Downloader
             return;
         }
         
+        // Download the standard and the add-on supported ReShade files.
         await DownloadAndExtract(WebsiteUrl + downloadUrl, Paths.Dlls);
         await DownloadAndExtract(WebsiteUrl + Regex.Match(websiteContent, "/downloads/\\S*_Addon.exe"), Paths.AddonDlls);
     }
 
+    /// <summary>
+    /// Takes an URL to an official ReShade installer, downloads it, and extracts the inner .dll file into the specified folder.
+    /// </summary>
+    /// <param name="url">URL to an official ReShade installer.</param>
+    /// <param name="directoryPath">Directory to extract .dll into.</param>
     private static async Task DownloadAndExtract(string url, string directoryPath)
     {
         string zipPath = Path.Combine(directoryPath, "ReShade.exe");
@@ -82,6 +90,10 @@ public static class Downloader
             WpfMessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
             return;
         }
+        
+        // Getting the .dll from the installer executable requires two steps of extraction.
+        // First, extract the outer '[0]' archive, which contains the .dll files (x86 and x64).
+        // Second, extract the .dll files from said archive into the specified directory.
 
         const string innerArchiveName = "[0]";
         string innerArchivePath = Path.Combine(directoryPath, innerArchiveName);

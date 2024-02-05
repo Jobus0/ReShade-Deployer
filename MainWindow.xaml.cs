@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using Button = System.Windows.Controls.Button;
@@ -50,15 +49,15 @@ namespace ReShadeDeployer
 
         private async void CheckForNewVersion(string localVersion)
         {
-            string latestVersion = config.LatestVersion;
-            if (DateTime.Now - config.LatestVersionCheckDate > TimeSpan.FromDays(7))
+            string latestVersion = config.LatestVersionNumber;
+            if (DateTime.Now - config.LatestVersionNumberCheckDate > TimeSpan.FromDays(7))
             {
                 try
                 {
                     latestVersion = await Downloader.GetLatestOnlineReShadeVersionNumber();
                     
-                    config.LatestVersion = latestVersion;
-                    config.LatestVersionCheckDate = DateTime.Now;
+                    config.LatestVersionNumber = latestVersion;
+                    config.LatestVersionNumberCheckDate = DateTime.Now;
                 }
                 catch (Exception)
                 {
@@ -95,8 +94,13 @@ namespace ReShadeDeployer
             DownloadReShade();
         }
         
+        /// <summary>
+        /// Creates a message box explaining that the required folder structure will be
+        /// created in the current folder, and if accepted, downloads the latest ReShade.
+        /// </summary>
         private void FirstTimeSetup()
         {
+            // Disable buttons until ReShade is downloaded
             SelectGameButton.IsEnabled = false;
 
             var messageBox = new Wpf.Ui.Controls.MessageBox
@@ -116,6 +120,7 @@ namespace ReShadeDeployer
 
         private async void DownloadReShade()
         {
+            // Disable buttons until ReShade is downloaded
             SelectGameButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
 
@@ -124,11 +129,14 @@ namespace ReShadeDeployer
             if (Downloader.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
-                SelectGameButton.IsEnabled = true;
-                UpdateButton.Content = string.Empty;
 
-                config.LatestVersion = version;
-                config.LatestVersionCheckDate = DateTime.Now;
+                config.LatestVersionNumber = version;
+                config.LatestVersionNumberCheckDate = DateTime.Now;
+                
+                // Remove version label from the update button, keeping only the icon
+                UpdateButton.Content = string.Empty;
+                
+                SelectGameButton.IsEnabled = true;
             }
             
             UpdateButton.IsEnabled = true;
@@ -168,14 +176,15 @@ namespace ReShadeDeployer
                 RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
         }
         
-        private void AboutMenuItem_OnClicked(object sender, RoutedEventArgs e)
+        private void AboutMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             WpfMessageBox.Show(string.Format(UIStrings.About_Info, Assembly.GetExecutingAssembly().GetName().Version), UIStrings.About);
         }
 
         private void SettingsButton_OnClick(object sender, RoutedEventArgs e)
         {
-            (sender as Button)!.ContextMenu.IsOpen = true;
+            var button = (Button)sender;
+            button.ContextMenu!.IsOpen = true;
         }
     }
 }

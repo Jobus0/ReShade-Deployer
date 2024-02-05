@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Windows;
 
 namespace ReShadeDeployer;
 
@@ -15,8 +14,6 @@ public static class DllDeployer
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     public static void Deploy(string directoryPath, string executablePath, string dllPath, string api)
     {
-        bool flag = GetMachineType(executablePath) == MachineType.x64;
-
         if (api == "vulkan")
         {
             WpfMessageBox.Show(UIStrings.Vulkan_Info, UIStrings.Notice);
@@ -27,24 +24,25 @@ public static class DllDeployer
             
         if (File.Exists(symlinkPath))
             File.Delete(symlinkPath);
-            
-        SymbolicLink.CreateSymbolicLink(symlinkPath, Path.Combine(dllPath, flag ? "ReShade64.dll" : "ReShade32.dll"), 0);
+        
+        SymbolicLink.CreateSymbolicLink(symlinkPath, Path.Combine(dllPath, IsX64(executablePath) ? "ReShade64.dll" : "ReShade32.dll"), 0);
     }
 
-    private static MachineType GetMachineType(string fileName)
+    /// <summary>
+    /// Determines whether the specified executable file was built for x64 architecture.
+    /// </summary>
+    /// <param name="fileName">The path of the executable file to check.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified file was built for x64 architecture; otherwise, <c>false</c>.
+    /// </returns>
+    private static bool IsX64(string fileName)
     {
+        const ushort machineTypeX64 = 34404;
+        
         byte[] buffer = new byte[4096];
         using (Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-            stream.Read(buffer, 0, 4096);
-        int int32 = BitConverter.ToInt32(buffer, 60);
-        return (MachineType)BitConverter.ToUInt16(buffer, int32 + 4);
-    }
-
-    private enum MachineType
-    {
-        Native = 0,
-        I386 = 332, // 0x0000014C
-        Itanium = 512, // 0x00000200
-        x64 = 34404, // 0x00008664
+            _ = stream.Read(buffer, 0, buffer.Length);
+        int peHeaderLocation = BitConverter.ToInt32(buffer, 60);
+        return BitConverter.ToUInt16(buffer, peHeaderLocation + 4) == machineTypeX64;
     }
 }

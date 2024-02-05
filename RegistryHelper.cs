@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 
 namespace ReShadeDeployer;
 
-public class RegistryHelper
+public static class RegistryHelper
 {
     private static string ActionNameToPath(string actionName)
     {

@@ -29,13 +29,16 @@ public static partial class WpfMessageBox
             Content = UIStrings.OK,
             Width = 120
         };
-        button.Click += (o, args) => messageBox.Close();
+        button.Click += (_, _) => messageBox.Close();
         footer.Children.Add(button);
         messageBox.Footer = footer;
         
         messageBox.ShowDialog();
     }
 
+    /// <summary>
+    /// Convert any string http links in a TextBlock to clickable hyperlinks.
+    /// </summary>
     private static void ConvertStringLinksToHyperlinks(TextBlock textBlock)
     {
         string text = textBlock.Text;
