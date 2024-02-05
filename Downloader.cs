@@ -57,7 +57,7 @@ public static class Downloader
 
         string downloadUrl = Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString();
         
-        if (TryGetLocalReShadeVersion(out string localVersion) && localVersion == UrlToVersion(downloadUrl))
+        if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == UrlToVersion(downloadUrl))
         {
             WpfMessageBox.Show(UIStrings.UpdateError, UIStrings.Update);
             return;
@@ -129,7 +129,7 @@ public static class Downloader
     /// </summary>
     /// <param name="version">The version string of the ReShade DLL.</param>
     /// <returns>True if the file exists, false otherwise.</returns>
-    public static bool TryGetLocalReShadeVersion(out string version)
+    public static bool TryGetLocalReShadeVersionNumber(out string version)
     {
         string path = Path.Combine(Paths.Dlls, "ReShade64.dll");
         if (File.Exists(path))
@@ -147,7 +147,7 @@ public static class Downloader
     /// Get the latest version number of ReShade from the official website. Throws an exception if the website is not reachable.
     /// </summary>
     /// <returns>Latest version number, formatted like "1.0.0".</returns>
-    public static async Task<string> GetLatestOnlineReShadeVersion()
+    public static async Task<string> GetLatestOnlineReShadeVersionNumber()
     {
         var websiteContent = await GetWebsiteContent();
         return UrlToVersion(Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString());

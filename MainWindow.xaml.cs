@@ -37,7 +37,7 @@ namespace ReShadeDeployer
                 SelectGameButton.ToolTip = UIStrings.DeployButton_Targeted_Tooltip;
             }
             
-            if (Downloader.TryGetLocalReShadeVersion(out string version))
+            if (Downloader.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
                 CheckForNewVersion(version);
@@ -55,7 +55,7 @@ namespace ReShadeDeployer
             {
                 try
                 {
-                    latestVersion = await Downloader.GetLatestOnlineReShadeVersion();
+                    latestVersion = await Downloader.GetLatestOnlineReShadeVersionNumber();
                     
                     config.LatestVersion = latestVersion;
                     config.LatestVersionCheckDate = DateTime.Now;
@@ -121,7 +121,7 @@ namespace ReShadeDeployer
 
             await Downloader.DownloadReShade();
             
-            if (Downloader.TryGetLocalReShadeVersion(out string version))
+            if (Downloader.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
                 SelectGameButton.IsEnabled = true;
