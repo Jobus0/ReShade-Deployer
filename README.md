@@ -13,7 +13,7 @@ Those who want to:
 ## Features
 A minimal installer program that lets you:
 - Pick graphics API (DirectX 10 or later, DirectX 9, OpenGL, Vulkan).
-- Automatically pick between 64-bit and 32-bit by analysing the executable.
+- Automatically pick the rendering API and 32/64-bit versions by analysing the executable.
 - Toggle a checkbox to install the 'Add-on Support' version.
 - Add a 'Deploy ReShade' option to Window's context (right-click) menu for .exe files and shortcuts.
   - This will open the normal program window, but the 'Select Game' button is replaced by a 'Deploy to Game.exe' button so you don't need to navigate to the executable.
@@ -48,14 +48,15 @@ There are two ways to use ReShade Deployer: Running it normally, or running it f
 
 ### Normal
 1. Run the program.
-2. Select the target graphics API (DirectX, Vulkan, etc) that the game uses. If you are unsure, check the API section of the game's [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home) page.
-3. Press the 'Select Game' button and navigate to the game's .exe.
-4. If an existing ReShade preset is detected, it will ask whether to overwrite it.
+2. Select the game you want to deploy ReShade to using the 'Select Game' button.
+3. The target graphics API (DirectX, Vulkan, etc) should be automatically selected. If not, select it manually. If you are unsure, check the API section of the game's [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home) page.
+4. Press the 'Deploy to Game' button.
+5. If an existing ReShade preset is detected, it will ask whether to overwrite it.
 
 ### Context Menu
 To enable this, run the program, and from the settings (cogwheel) list, check the **Context Menu Deploy** option.
 1. Right-click any game .exe or shortcut in Windows's file explorer or desktop, and select 'Deploy ReShade'.
-2. Select the target graphics API (DirectX, Vulkan, etc) that the game uses. If you are unsure, check the API section of the game's [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home) page.
+2. The target graphics API (DirectX, Vulkan, etc) should be automatically selected. If not, select it manually. If you are unsure, check the API section of the game's [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home) page.
 3. Press the 'Deploy to Game' button.
 4. If an existing ReShade preset is detected, it will ask whether to overwrite it.
 
