@@ -37,6 +37,9 @@
         </DockPanel>
         <Separator />
         <StackPanel Margin="12">
+            <ui:Button Name="SelectGameButton" Icon="Open16" Appearance="Primary" HorizontalAlignment="Stretch" ClipToBounds="True" Margin="0, 0, 0, 10" Click="SelectGameButton_OnClick">
+                <TextBlock DockPanel.Dock="Right" Text="{x:Static rd:UIStrings.SelectGameButton}" FontSize="13"/>
+            </ui:Button>
             <GroupBox Header="{x:Static rd:UIStrings.TargetAPI}" Padding="3, 0" BorderThickness="0" Background="#44000000" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}">
                 <StackPanel>
                     <RadioButton Name="DxgiRadioButton" FontSize="13" Content="{x:Static rd:UIStrings.DirectX10}" ToolTip="{x:Static rd:UIStrings.DirectX10_Tooltip}" IsChecked="True" />
@@ -46,7 +49,7 @@
                 </StackPanel>
             </GroupBox>
             <CheckBox Name="AddonSupportCheckBox" Margin="7" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}" />
-            <ui:Button Name="SelectGameButton" Height="50" HorizontalAlignment="Stretch" Appearance="Primary" Content="{x:Static rd:UIStrings.DeployButton}" ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}" Click="SelectGameButtonOnClick">
+            <ui:Button Name="DeployButton" Height="50" HorizontalAlignment="Stretch" IsEnabled="False" Appearance="Primary" Content="{x:Static rd:UIStrings.DeployButton}" ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}" Click="DeployButton_OnClick">
             </ui:Button>
         </StackPanel>
     </StackPanel>

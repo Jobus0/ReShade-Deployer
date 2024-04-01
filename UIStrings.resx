@@ -100,21 +100,20 @@ Requires that you have installed ReShade for Vulkan globally through the officia
 Warning: Intended for singleplayer games only and may cause bans in multiplayer games.</value>
 	</data>
 
-	<data name="DeployButton" xml:space="preserve">
+	<data name="SelectGameButton" xml:space="preserve">
 		<value>Select Game</value>
 	</data>
+
+	<data name="DeployButton" xml:space="preserve">
+		<value>Deploy To Game</value>
+	</data>
 	<data name="DeployButton_Tooltip" xml:space="preserve">
-		<value>Pick the game exe you want to deploy ReShade to.
-Make sure you have picked the correct Target API above first.
+		<value>Make sure you have picked the correct Target API above first.
 If you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
 
 	<data name="DeployButton_Targeted" xml:space="preserve">
-		<value>Deploy to {0}</value>
-	</data>
-	<data name="DeployButton_Targeted_Tooltip" xml:space="preserve">
-		<value>Make sure you have picked the correct Target API above first.
-If you are unsure, check the API section of the game's PCGamingWiki page.</value>
+		<value>Deploy To {0}</value>
 	</data>
 
 	<data name="Notice" xml:space="preserve">

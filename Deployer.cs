@@ -60,7 +60,7 @@ public static class Deployer
     /// </summary>
     /// <param name="executablePath">Path of the selected game executable.</param>
     /// <returns>True if a file was selected, false if cancelled.</returns>
-    private static bool TrySelectExecutable(out string executablePath)
+    public static bool TrySelectExecutable(out string executablePath)
     {
         OpenFileDialog openFileDialog = new OpenFileDialog();
         openFileDialog.Title = UIStrings.OpenFileDialog_Title;

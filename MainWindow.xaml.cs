@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Wpf.Ui.Common;
 using Button = System.Windows.Controls.Button;
 using MenuItem = System.Windows.Controls.MenuItem;
 
@@ -15,7 +17,15 @@ namespace ReShadeDeployer
     public partial class MainWindow
     {
         private bool closing;
-        private static string? TargetExecutablePath => ((App)Application.Current).TargetExecutablePath;
+
+        /// <summary>
+        /// Executable path from the launch arguments. Used when deployed from the context menu.
+        /// </summary>
+        public string? TargetExecutablePath
+        {
+            get => ((App)Application.Current).TargetExecutablePath;
+            set => ((App)Application.Current).TargetExecutablePath = value;
+        }
 
         private readonly Config config;
         
@@ -34,6 +44,7 @@ namespace ReShadeDeployer
             {
                 SelectGameButton.Content = string.Format(UIStrings.DeployButton_Targeted, Path.GetFileNameWithoutExtension(TargetExecutablePath));
                 SelectGameButton.ToolTip = UIStrings.DeployButton_Targeted_Tooltip;
+                TargetedContentSelectGameButton();
             }
             
             if (Downloader.TryGetLocalReShadeVersionNumber(out string version))
@@ -71,7 +82,7 @@ namespace ReShadeDeployer
             }
         }
 
-        private void SelectGameButtonOnClick(object sender, RoutedEventArgs e)
+        private void DeployButton_OnClick(object sender, RoutedEventArgs e)
         {
             Hide();
             
@@ -101,7 +112,7 @@ namespace ReShadeDeployer
         private void FirstTimeSetup()
         {
             // Disable buttons until ReShade is downloaded
-            SelectGameButton.IsEnabled = false;
+            DeployButton.IsEnabled = false;
 
             var messageBox = new Wpf.Ui.Controls.MessageBox
             {
@@ -121,7 +132,7 @@ namespace ReShadeDeployer
         private async void DownloadReShade()
         {
             // Disable buttons until ReShade is downloaded
-            SelectGameButton.IsEnabled = false;
+            DeployButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
 
             await Downloader.DownloadReShade();
@@ -136,7 +147,7 @@ namespace ReShadeDeployer
                 // Remove version label from the update button, keeping only the icon
                 UpdateButton.Content = string.Empty;
                 
-                SelectGameButton.IsEnabled = true;
+                DeployButton.IsEnabled = true;
             }
             
             UpdateButton.IsEnabled = true;
@@ -185,6 +196,25 @@ namespace ReShadeDeployer
         {
             var button = (Button)sender;
             button.ContextMenu!.IsOpen = true;
+        }
+
+        private void TargetedContentSelectGameButton()
+        {
+            SelectGameButton.Content = TargetExecutablePath;
+            SelectGameButton.Appearance = ControlAppearance.Secondary;
+            
+            DeployButton.Content = string.Format(UIStrings.DeployButton_Targeted, Path.GetFileNameWithoutExtension(TargetExecutablePath));
+            DeployButton.ToolTip = UIStrings.DeployButton_Targeted_Tooltip;
+            DeployButton.IsEnabled = true;
+        }
+
+        private void SelectGameButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (Deployer.TrySelectExecutable(out string executablePath))
+            {
+                TargetExecutablePath = executablePath;
+                TargetedContentSelectGameButton();
+            }
         }
     }
 }

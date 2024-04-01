@@ -164,7 +164,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Game.
+        ///   Looks up a localized string similar to Deploy To Game.
         /// </summary>
         public static string DeployButton {
             get {
@@ -173,7 +173,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy to {0}.
+        ///   Looks up a localized string similar to Deploy To {0}.
         /// </summary>
         public static string DeployButton_Targeted {
             get {
@@ -183,17 +183,6 @@ namespace ReShadeDeployer {
         
         /// <summary>
         ///   Looks up a localized string similar to Make sure you have picked the correct Target API above first.
-        ///If you are unsure, check the API section of the game&apos;s PCGamingWiki page..
-        /// </summary>
-        public static string DeployButton_Targeted_Tooltip {
-            get {
-                return ResourceManager.GetString("DeployButton_Targeted_Tooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pick the game exe you want to deploy ReShade to.
-        ///Make sure you have picked the correct Target API above first.
         ///If you are unsure, check the API section of the game&apos;s PCGamingWiki page..
         /// </summary>
         public static string DeployButton_Tooltip {
@@ -385,6 +374,15 @@ namespace ReShadeDeployer {
         public static string PresetOverwrite_Yes {
             get {
                 return ResourceManager.GetString("PresetOverwrite_Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Game.
+        /// </summary>
+        public static string SelectGameButton {
+            get {
+                return ResourceManager.GetString("SelectGameButton", resourceCulture);
             }
         }
         
