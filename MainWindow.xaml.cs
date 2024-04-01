@@ -146,7 +146,8 @@ namespace ReShadeDeployer
                 // Remove version label from the update button, keeping only the icon
                 UpdateButton.Content = string.Empty;
                 
-                DeployButton.IsEnabled = true;
+                if (!string.IsNullOrEmpty(TargetExecutablePath))
+                    DeployButton.IsEnabled = true;
             }
             
             UpdateButton.IsEnabled = true;
