@@ -12,6 +12,7 @@
         <Version>1.0.0</Version>
         <IsPackable>false</IsPackable>
         <Company>Jobus</Company>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

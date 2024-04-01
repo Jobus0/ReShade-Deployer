@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using ReShade.Setup.Utilities;
 using Wpf.Ui.Common;
 using Button = System.Windows.Controls.Button;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -42,8 +42,7 @@ namespace ReShadeDeployer
         {
             if (!string.IsNullOrEmpty(TargetExecutablePath))
             {
-                SelectGameButton.Content = string.Format(UIStrings.DeployButton_Targeted, Path.GetFileNameWithoutExtension(TargetExecutablePath));
-                SelectGameButton.ToolTip = UIStrings.DeployButton_Targeted_Tooltip;
+                TargetedContentAutoSelectAPI();
                 TargetedContentSelectGameButton();
             }
             
@@ -152,6 +151,22 @@ namespace ReShadeDeployer
             
             UpdateButton.IsEnabled = true;
         }
+
+        private void SetCheckedApi(string api)
+        {
+            VulkanRadioButton.IsChecked = api == "vulkan";
+            DxgiRadioButton.IsChecked = api == "dxgi";
+            D3d9RadioButton.IsChecked = api == "d3d9";
+            OpenglRadioButton.IsChecked = api == "opengl32";
+        }
+        
+        private void HighlightApi(string api)
+        {
+            VulkanRadioButton.FontWeight = api == "vulkan" ? FontWeights.Bold : FontWeights.Normal;
+            DxgiRadioButton.FontWeight = api == "dxgi" ? FontWeights.Bold : FontWeights.Normal;
+            D3d9RadioButton.FontWeight = api == "d3d9" ? FontWeights.Bold : FontWeights.Normal;
+            OpenglRadioButton.FontWeight = api == "opengl32" ? FontWeights.Bold : FontWeights.Normal;
+        }
         
         private string GetCheckedApi()
         {
@@ -204,8 +219,43 @@ namespace ReShadeDeployer
             SelectGameButton.Appearance = ControlAppearance.Secondary;
             
             DeployButton.Content = string.Format(UIStrings.DeployButton_Targeted, Path.GetFileNameWithoutExtension(TargetExecutablePath));
-            DeployButton.ToolTip = UIStrings.DeployButton_Targeted_Tooltip;
             DeployButton.IsEnabled = true;
+        }
+
+        private void TargetedContentAutoSelectAPI()
+        {
+            var parser = new ExecutableParser(TargetExecutablePath!);
+
+            bool isD3D9 = parser.ModulesContain("d3d9");
+            bool isDXGI = parser.ModulesContain("dxgi", "d3d1", "GFSDK"); // Assume DXGI when GameWorks SDK is in use
+            bool isOpenGL = parser.ModulesContain("opengl32");
+            bool isVulkan = parser.ModulesContain("vulkan-1");
+                
+            // A game might include multiple APIs, so prioritize: Vulkan > DXGI > D3D9 > OpenGL
+            if (isVulkan)
+            {
+                SetCheckedApi("vulkan");
+                HighlightApi("vulkan");
+            }
+            else if (isDXGI)
+            {
+                SetCheckedApi("dxgi");
+                HighlightApi("dxgi");
+            }
+            else if (isD3D9)
+            {
+                SetCheckedApi("d3d9");
+                HighlightApi("d3d9");
+            }
+            else if (isOpenGL)
+            {
+                SetCheckedApi("opengl32");
+                HighlightApi("opengl32");
+            }
+            else
+            {
+                HighlightApi(string.Empty);
+            }
         }
 
         private void SelectGameButton_OnClick(object sender, RoutedEventArgs e)
@@ -213,6 +263,7 @@ namespace ReShadeDeployer
             if (Deployer.TrySelectExecutable(out string executablePath))
             {
                 TargetExecutablePath = executablePath;
+                TargetedContentAutoSelectAPI();
                 TargetedContentSelectGameButton();
             }
         }

@@ -183,6 +183,7 @@ namespace ReShadeDeployer {
         
         /// <summary>
         ///   Looks up a localized string similar to Make sure you have picked the correct Target API above first.
+        ///
         ///If you are unsure, check the API section of the game&apos;s PCGamingWiki page..
         /// </summary>
         public static string DeployButton_Tooltip {
@@ -406,7 +407,10 @@ namespace ReShadeDeployer {
         
         /// <summary>
         ///   Looks up a localized string similar to Select the rendering API that the game uses.
-        ///If you are unsure, check the API section of the game&apos;s PCGamingWiki page..
+        ///
+        ///When selecting a game, the executable will be scanned to try to automatically select the correct API.
+        ///
+        ///Otherwise, if you are unsure, check the API section of the game&apos;s PCGamingWiki page..
         /// </summary>
         public static string TargetAPI_Tooltip {
             get {

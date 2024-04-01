@@ -27,7 +27,10 @@
 	</data>
 	<data name="TargetAPI_Tooltip" xml:space="preserve">
 		<value>Select the rendering API that the game uses.
-If you are unsure, check the API section of the game's PCGamingWiki page.</value>
+
+When selecting a game, the executable will be scanned to try to automatically select the correct API.
+
+Otherwise, if you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
 
 	<data name="Update" xml:space="preserve">
@@ -109,6 +112,7 @@ Warning: Intended for singleplayer games only and may cause bans in multiplayer 
 	</data>
 	<data name="DeployButton_Tooltip" xml:space="preserve">
 		<value>Make sure you have picked the correct Target API above first.
+
 If you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
 
