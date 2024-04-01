@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace ReShadeDeployer;
@@ -23,7 +24,29 @@ public static class DllDeployer
         string symlinkPath = Path.Combine(directoryPath, api + ".dll");
             
         if (File.Exists(symlinkPath))
-            File.Delete(symlinkPath);
+        {
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(symlinkPath);
+            bool existingFileIsReShade = fileVersionInfo.FileDescription?.Contains("ReShade") ?? false;
+            
+            if (existingFileIsReShade)
+            {
+                File.Delete(symlinkPath);
+            }
+            else
+            {
+                // Find a unique filename for the existing non-ReShade .dll
+                string oldPath = symlinkPath + ".old";
+                int oldCount = 0;
+                while (File.Exists(oldPath + (oldCount > 0 ? oldCount : null)))
+                    oldCount++;
+
+                if (oldCount > 0)
+                    oldPath += oldCount;
+                
+                // Rename existing .dll to append .old (dxgi.dll becomes dxgi.dll.old, old dxgi.dll.old1 if that exists too)
+                File.Move(symlinkPath, oldPath);
+            }
+        }
         
         SymbolicLink.CreateSymbolicLink(symlinkPath, Path.Combine(dllPath, IsX64(executablePath) ? "ReShade64.dll" : "ReShade32.dll"), 0);
     }
