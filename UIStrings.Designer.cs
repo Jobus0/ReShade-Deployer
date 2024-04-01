@@ -119,6 +119,24 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Always Exit On Deploy.
+        /// </summary>
+        public static string AlwaysExitOnDeploy {
+            get {
+                return ResourceManager.GetString("AlwaysExitOnDeploy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Always exit the program after deploying ReShade without asking..
+        /// </summary>
+        public static string AlwaysExitOnDeploy_Tooltip {
+            get {
+                return ResourceManager.GetString("AlwaysExitOnDeploy_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ReShade website (https://reshade.me) is down or the connection was blocked..
         /// </summary>
         public static string ConnectionError {

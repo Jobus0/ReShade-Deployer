@@ -15,11 +15,12 @@ public static class Deployer
     /// </summary>
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
-    public static void SelectExecutableAndDeployReShade(string api, bool addonSupport)
+    /// <param name="exitOnDeploy">Whether the application should exit after deployment.</param>
+    public static void SelectExecutableAndDeployReShade(string api, bool addonSupport, bool exitOnDeploy)
     {
         if (TrySelectExecutable(out string executablePath))
         {
-            DeployReShadeForExecutable(api, addonSupport, executablePath);
+            DeployReShadeForExecutable(api, addonSupport, executablePath, exitOnDeploy);
         }
     }
 
@@ -29,7 +30,8 @@ public static class Deployer
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
     /// <param name="executablePath">Path of the game executable.</param>
-    public static void DeployReShadeForExecutable(string api, bool addonSupport, string executablePath)
+    /// <param name="exitOnDeploy">Whether the application should exit after deployment.</param>
+    public static void DeployReShadeForExecutable(string api, bool addonSupport, string executablePath, bool exitOnDeploy)
     {
         string dllPath = addonSupport ? Paths.AddonDlls : Paths.Dlls;
         string directoryPath = Path.GetDirectoryName(executablePath)!;
@@ -40,19 +42,26 @@ public static class Deployer
         if (File.Exists(Paths.ReShadePresetIni))
             PresetDeployer.Deploy(directoryPath);
 
-        var messageBox = new Wpf.Ui.Controls.MessageBox
+        if (exitOnDeploy)
         {
-            Title = UIStrings.DeploySuccess_Title,
-            Content = new TextBlock {Text = UIStrings.DeploySuccess, TextWrapping = TextWrapping.Wrap},
-            ResizeMode = ResizeMode.NoResize,
-            SizeToContent = SizeToContent.Height,
-            ButtonLeftName = UIStrings.Continue,
-            ButtonRightName = UIStrings.Exit,
-            Width = 260
-        };
-        messageBox.ButtonLeftClick += (_, _) => messageBox.Close();
-        messageBox.ButtonRightClick += (_, _) => Application.Current.Shutdown();
-        messageBox.ShowDialog();
+            Application.Current.Shutdown();
+        }
+        else
+        {
+            var messageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = UIStrings.DeploySuccess_Title,
+                Content = new TextBlock {Text = UIStrings.DeploySuccess, TextWrapping = TextWrapping.Wrap},
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.Height,
+                ButtonLeftName = UIStrings.Continue,
+                ButtonRightName = UIStrings.Exit,
+                Width = 260
+            };
+            messageBox.ButtonLeftClick += (_, _) => messageBox.Close();
+            messageBox.ButtonRightClick += (_, _) => Application.Current.Shutdown();
+            messageBox.ShowDialog();
+        }
     }
 
     /// <summary>

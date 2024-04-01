@@ -27,6 +27,8 @@
                     <ContextMenu>
                         <MenuItem Header="{x:Static rd:UIStrings.ContextMenuDeploy}" IsCheckable="True" IsChecked="False" Loaded="RightClickDeployMenuItem_OnLoaded" Click="RightClickDeployMenuItem_OnChecked"
                                   ToolTip="{x:Static rd:UIStrings.ContextMenuDeploy_Tooltip}" />
+                        <MenuItem Header="{x:Static rd:UIStrings.AlwaysExitOnDeploy}" IsCheckable="True" IsChecked="False" Loaded="AlwaysExitOnDeployMenuItem_OnLoaded" Click="AlwaysExitOnDeployMenuItem_OnChecked"
+                                  ToolTip="{x:Static rd:UIStrings.AlwaysExitOnDeploy_Tooltip}" />
                         <Separator/>
                         <MenuItem Header="{x:Static rd:UIStrings.About}" Click="AboutMenuItem_OnClick" />
                     </ContextMenu>

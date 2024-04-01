@@ -86,9 +86,9 @@ namespace ReShadeDeployer
             Hide();
             
             if (string.IsNullOrEmpty(TargetExecutablePath))
-                Deployer.SelectExecutableAndDeployReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
+                Deployer.SelectExecutableAndDeployReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true, config.AlwaysExitOnDeploy);
             else
-                Deployer.DeployReShadeForExecutable(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true, TargetExecutablePath);
+                Deployer.DeployReShadeForExecutable(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true, TargetExecutablePath, config.AlwaysExitOnDeploy);
             
             if (!closing)
                 Show();
@@ -201,6 +201,18 @@ namespace ReShadeDeployer
                 RegistryHelper.RegisterContextMenuAction("Deploy ReShade", Environment.ProcessPath! + " \"%1\"", Environment.ProcessPath! + ",0");
             else
                 RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
+        }
+        
+        private void AlwaysExitOnDeployMenuItem_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            item.IsChecked = config.AlwaysExitOnDeploy;
+        }
+        
+        private void AlwaysExitOnDeployMenuItem_OnChecked(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            config.AlwaysExitOnDeploy = item.IsChecked;
         }
         
         private void AboutMenuItem_OnClick(object sender, RoutedEventArgs e)

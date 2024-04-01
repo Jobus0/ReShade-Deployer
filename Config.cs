@@ -36,6 +36,15 @@ public class Config
         get => DateTime.TryParse(Read(nameof(LatestVersionNumberCheckDate)), out DateTime value) ? value : default;
         set => Write(nameof(LatestVersionNumberCheckDate), value.ToString("yyyy-MM-dd"));
     }
+    
+    /// <summary>
+    /// Whether the application should automatically exit after deployment.
+    /// </summary>
+    public bool AlwaysExitOnDeploy
+    {
+        get => bool.TryParse(Read(nameof(AlwaysExitOnDeploy)), out bool value) && value;
+        set => Write(nameof(AlwaysExitOnDeploy), value.ToString());
+    }
 
     public Config()
     {

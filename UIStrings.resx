@@ -50,6 +50,13 @@ Otherwise, if you are unsure, check the API section of the game's PCGamingWiki p
 		<value>Add a 'Deploy ReShade' option to the exe context (right-click) menu.</value>
 	</data>
 
+	<data name="AlwaysExitOnDeploy" xml:space="preserve">
+		<value>Always Exit On Deploy</value>
+	</data>
+	<data name="AlwaysExitOnDeploy_Tooltip" xml:space="preserve">
+		<value>Always exit the program after deploying ReShade without asking.</value>
+	</data>
+
 	<data name="About" xml:space="preserve">
 		<value>About ReShade Deployer</value>
 	</data>
