@@ -16,31 +16,29 @@ public static class Deployer
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
     /// <param name="exitOnDeploy">Whether the application should exit after deployment.</param>
-    public static void SelectExecutableAndDeployReShade(string api, bool addonSupport, bool exitOnDeploy)
+    public static void SelectExecutableAndDeployReShade(GraphicsApi api, bool addonSupport, bool exitOnDeploy)
     {
         if (TrySelectExecutable(out string executablePath))
         {
-            DeployReShadeForExecutable(api, addonSupport, executablePath, exitOnDeploy);
+            var executableContext = new ExecutableContext(executablePath);
+            DeployReShadeForExecutable(executableContext, api, addonSupport, exitOnDeploy);
         }
     }
 
     /// <summary>
     /// Deploys ReShade for a specified executable.
     /// </summary>
+    /// <param name="executableContext">Context for the executable to deploy.</param>
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
-    /// <param name="executablePath">Path of the game executable.</param>
     /// <param name="exitOnDeploy">Whether the application should exit after deployment.</param>
-    public static void DeployReShadeForExecutable(string api, bool addonSupport, string executablePath, bool exitOnDeploy)
+    public static void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, bool exitOnDeploy)
     {
-        string dllPath = addonSupport ? Paths.AddonDlls : Paths.Dlls;
-        string directoryPath = Path.GetDirectoryName(executablePath)!;
-
-        DllDeployer.Deploy(directoryPath, executablePath, dllPath, api);
-        IniDeployer.Deploy(directoryPath);
+        DllDeployer.Deploy(executableContext, api, addonSupport ? Paths.AddonDlls : Paths.Dlls);
+        IniDeployer.Deploy(executableContext.DirectoryPath);
                 
         if (File.Exists(Paths.ReShadePresetIni))
-            PresetDeployer.Deploy(directoryPath);
+            PresetDeployer.Deploy(executableContext.DirectoryPath);
 
         if (exitOnDeploy)
         {

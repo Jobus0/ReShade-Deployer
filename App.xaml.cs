@@ -7,14 +7,11 @@ namespace ReShadeDeployer;
 /// </summary>
 public partial class App : Application
 {
-    /// <summary>
-    /// Executable path from the launch arguments. Used when deployed from the context menu.
-    /// </summary>
-    public string? TargetExecutablePath { get; set; }
+    public string[] StartupArgs = null!;
         
     protected override void OnStartup(StartupEventArgs e)
     {
-        TargetExecutablePath = e.Args.Length > 0 ? e.Args[0] : null;
+        StartupArgs = e.Args;
 
         base.OnStartup(e);
     }

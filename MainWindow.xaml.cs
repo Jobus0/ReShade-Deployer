@@ -17,16 +17,9 @@ namespace ReShadeDeployer
     {
         private bool closing;
 
-        /// <summary>
-        /// Executable path from the launch arguments. Used when deployed from the context menu.
-        /// </summary>
-        public string? TargetExecutablePath
-        {
-            get => ((App)Application.Current).TargetExecutablePath;
-            set => ((App)Application.Current).TargetExecutablePath = value;
-        }
-
         private readonly Config config;
+        
+        private ExecutableContext? selectedExecutableContext;
         
         public MainWindow()
         {
@@ -39,11 +32,9 @@ namespace ReShadeDeployer
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(TargetExecutablePath))
-            {
-                TargetedContentAutoSelectAPI();
-                TargetedContentSelectGameButton();
-            }
+            var startupArgs = ((App)Application.Current).StartupArgs;
+            if (startupArgs.Length > 0 && !string.IsNullOrEmpty(startupArgs[0]))
+                TargetExecutable(startupArgs[0]);
             
             if (Downloader.TryGetLocalReShadeVersionNumber(out string version))
             {
@@ -54,6 +45,16 @@ namespace ReShadeDeployer
             {
                 FirstTimeSetup();
             }
+            
+#if DEBUG
+            ExecutableInfoButton.Visibility = Visibility.Visible;
+#endif
+        }
+        
+        private void SelectGameButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (Deployer.TrySelectExecutable(out string executablePath))
+                TargetExecutable(executablePath);
         }
 
         private async void CheckForNewVersion(string localVersion)
@@ -84,10 +85,10 @@ namespace ReShadeDeployer
         {
             Hide();
             
-            if (string.IsNullOrEmpty(TargetExecutablePath))
+            if (selectedExecutableContext == null)
                 Deployer.SelectExecutableAndDeployReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true, config.AlwaysExitOnDeploy);
             else
-                Deployer.DeployReShadeForExecutable(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true, TargetExecutablePath, config.AlwaysExitOnDeploy);
+                Deployer.DeployReShadeForExecutable(selectedExecutableContext, GetCheckedApi(), AddonSupportCheckBox.IsChecked == true, config.AlwaysExitOnDeploy);
             
             if (!closing)
                 Show();
@@ -145,42 +146,42 @@ namespace ReShadeDeployer
                 // Remove version label from the update button, keeping only the icon
                 UpdateButton.Content = string.Empty;
                 
-                if (!string.IsNullOrEmpty(TargetExecutablePath))
+                if (selectedExecutableContext != null)
                     DeployButton.IsEnabled = true;
             }
             
             UpdateButton.IsEnabled = true;
         }
 
-        private void SetCheckedApi(string api)
+        private void SetCheckedApi(GraphicsApi api)
         {
-            VulkanRadioButton.IsChecked = api == "vulkan";
-            DxgiRadioButton.IsChecked = api == "dxgi";
-            D3d9RadioButton.IsChecked = api == "d3d9";
-            OpenglRadioButton.IsChecked = api == "opengl32";
+            VulkanRadioButton.IsChecked = api == GraphicsApi.Vulkan;
+            DxgiRadioButton.IsChecked   = api == GraphicsApi.DXGI;
+            D3d9RadioButton.IsChecked   = api == GraphicsApi.D3D9;
+            OpenglRadioButton.IsChecked = api == GraphicsApi.OpenGL;
         }
         
-        private void HighlightApi(string api)
+        private void HighlightApi(GraphicsApi? api)
         {
-            VulkanRadioButton.FontWeight = api == "vulkan" ? FontWeights.Bold : FontWeights.Normal;
-            DxgiRadioButton.FontWeight = api == "dxgi" ? FontWeights.Bold : FontWeights.Normal;
-            D3d9RadioButton.FontWeight = api == "d3d9" ? FontWeights.Bold : FontWeights.Normal;
-            OpenglRadioButton.FontWeight = api == "opengl32" ? FontWeights.Bold : FontWeights.Normal;
+            VulkanRadioButton.FontWeight = api == GraphicsApi.Vulkan ? FontWeights.Bold : FontWeights.Normal;
+            DxgiRadioButton.FontWeight   = api == GraphicsApi.DXGI   ? FontWeights.Bold : FontWeights.Normal;
+            D3d9RadioButton.FontWeight   = api == GraphicsApi.D3D9   ? FontWeights.Bold : FontWeights.Normal;
+            OpenglRadioButton.FontWeight = api == GraphicsApi.OpenGL ? FontWeights.Bold : FontWeights.Normal;
         }
         
-        private string GetCheckedApi()
+        private GraphicsApi GetCheckedApi()
         {
             if (DxgiRadioButton.IsChecked == true)
-                return "dxgi";
+                return GraphicsApi.DXGI;
 
             if (D3d9RadioButton.IsChecked == true)
-                return "d3d9";
+                return GraphicsApi.D3D9;
 
             if (OpenglRadioButton.IsChecked == true)
-                return "opengl32";
+                return GraphicsApi.OpenGL;
 
             if (VulkanRadioButton.IsChecked == true)
-                return "vulkan";
+                return GraphicsApi.Vulkan;
             
             throw new Exception("No API selected!");
         }
@@ -225,59 +226,53 @@ namespace ReShadeDeployer
             button.ContextMenu!.IsOpen = true;
         }
 
-        private void TargetedContentSelectGameButton()
+        private void TargetExecutable(string executablePath)
         {
-            SelectGameButton.Content = TargetExecutablePath;
+            if (!File.Exists(executablePath))
+                return;
+            
+            selectedExecutableContext = new ExecutableContext(executablePath);
+            
+            SelectGameButton.Content = executablePath;
             SelectGameButton.Appearance = ControlAppearance.Secondary;
             
-            DeployButton.Content = string.Format(UIStrings.DeployButton_Targeted, Path.GetFileNameWithoutExtension(TargetExecutablePath));
+            DeployButton.Content = string.Format(UIStrings.DeployButton_Targeted, selectedExecutableContext.FileName);
             DeployButton.IsEnabled = true;
-        }
 
-        private void TargetedContentAutoSelectAPI()
-        {
-            var parser = new ExecutableParser(TargetExecutablePath!);
+            ExecutableInfoButton.IsEnabled = true;
 
-            bool isD3D9 = parser.ModulesContain("d3d9");
-            bool isDXGI = parser.ModulesContain("dxgi", "d3d1", "GFSDK"); // Assume DXGI when GameWorks SDK is in use
-            bool isOpenGL = parser.ModulesContain("opengl32");
-            bool isVulkan = parser.ModulesContain("vulkan-1");
-                
             // A game might include multiple APIs, so prioritize: Vulkan > DXGI > D3D9 > OpenGL
-            if (isVulkan)
+            if (selectedExecutableContext.IsVulkan)
             {
-                SetCheckedApi("vulkan");
-                HighlightApi("vulkan");
+                SetCheckedApi(GraphicsApi.Vulkan);
+                HighlightApi(GraphicsApi.Vulkan);
             }
-            else if (isDXGI)
+            else if (selectedExecutableContext.IsDXGI)
             {
-                SetCheckedApi("dxgi");
-                HighlightApi("dxgi");
+                SetCheckedApi(GraphicsApi.DXGI);
+                HighlightApi(GraphicsApi.DXGI);
             }
-            else if (isD3D9)
+            else if (selectedExecutableContext.IsD3D9)
             {
-                SetCheckedApi("d3d9");
-                HighlightApi("d3d9");
+                SetCheckedApi(GraphicsApi.D3D9);
+                HighlightApi(GraphicsApi.D3D9);
             }
-            else if (isOpenGL)
+            else if (selectedExecutableContext.IsOpenGL)
             {
-                SetCheckedApi("opengl32");
-                HighlightApi("opengl32");
+                SetCheckedApi(GraphicsApi.OpenGL);
+                HighlightApi(GraphicsApi.OpenGL);
             }
             else
             {
-                HighlightApi(string.Empty);
+                // Clear highlight
+                HighlightApi(null);
             }
         }
 
-        private void SelectGameButton_OnClick(object sender, RoutedEventArgs e)
+        private void ExecutableInfoButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (Deployer.TrySelectExecutable(out string executablePath))
-            {
-                TargetExecutablePath = executablePath;
-                TargetedContentAutoSelectAPI();
-                TargetedContentSelectGameButton();
-            }
+            if (selectedExecutableContext != null)
+                WpfMessageBox.Show(selectedExecutableContext.ToString(), "Executable Info");
         }
     }
 }

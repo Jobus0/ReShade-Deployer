@@ -39,9 +39,16 @@
         </DockPanel>
         <Separator />
         <StackPanel Margin="12">
-            <ui:Button Name="SelectGameButton" Icon="Open16" Appearance="Primary" HorizontalAlignment="Stretch" ClipToBounds="True" Margin="0, 0, 0, 10" Click="SelectGameButton_OnClick">
-                <TextBlock DockPanel.Dock="Right" Text="{x:Static rd:UIStrings.SelectGameButton}" FontSize="13"/>
-            </ui:Button>
+            <Grid Margin="0, 0, 0, 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ui:Button Name="SelectGameButton" HorizontalAlignment="Stretch" Icon="Open16" Appearance="Primary" ClipToBounds="True" Margin="0, 0, 1, 0" Click="SelectGameButton_OnClick">
+                    <TextBlock DockPanel.Dock="Right" Text="{x:Static rd:UIStrings.SelectGameButton}" FontSize="13"/>
+                </ui:Button>
+                <ui:Button Name="ExecutableInfoButton" Grid.Column="1" Icon="Info16" IsEnabled="False" Visibility="Collapsed" Margin="3, 0, 0, 0" Padding="4" Click="ExecutableInfoButton_OnClick"/>
+            </Grid>
             <GroupBox Header="{x:Static rd:UIStrings.TargetAPI}" Padding="3, 0" BorderThickness="0" Background="#44000000" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}">
                 <StackPanel>
                     <RadioButton Name="DxgiRadioButton" FontSize="13" Content="{x:Static rd:UIStrings.DirectX10}" ToolTip="{x:Static rd:UIStrings.DirectX10_Tooltip}" IsChecked="True" />
