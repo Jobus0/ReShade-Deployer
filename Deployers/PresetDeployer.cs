@@ -13,7 +13,7 @@ public static class PresetDeployer
     /// <param name="directoryPath">Path of the directory to write ReShadePreset.ini to.</param>
     public static void Deploy(string directoryPath)
     {
-        string path = directoryPath + "\\ReShadePreset.ini";
+        string path = Path.Combine(directoryPath, "ReShadePreset.ini");
 
         if (File.Exists(path))
         {

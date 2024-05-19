@@ -11,7 +11,7 @@ public static class IniDeployer
     /// <param name="directoryPath">Path of the directory to write ReShade.ini to.</param>
     public static void Deploy(string directoryPath)
     {
-        string path = directoryPath + "\\ReShade.ini";
+        string path = Path.Combine(directoryPath, "ReShade.ini");
         
         if (File.Exists(path))
             File.Delete(path);
