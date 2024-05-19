@@ -101,6 +101,14 @@ Requires that you have installed ReShade for Vulkan globally through the officia
 		<value>If you haven't already, install ReShade for Vulkan globally through the official ReShade installer. This program will setup the rest.</value>
 	</data>
 
+	<data name="D3D8_Info" xml:space="preserve">
+		<value>It looks like the target application uses DirectX 8.
+
+In order to use ReShade you'll have to download an additional wrapper from d3d8to9 which converts all API calls to DirectX 9.
+
+https://github.com/crosire/d3d8to9/releases</value>
+	</data>
+
 	<data name="Addon" xml:space="preserve">
 		<value>Add-on Support</value>
 	</data>

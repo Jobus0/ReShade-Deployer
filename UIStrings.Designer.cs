@@ -182,6 +182,19 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It looks like the target application uses DirectX 8.
+        ///
+        ///In order to use ReShade you&apos;ll have to download an additional wrapper from d3d8to9 which converts all API calls to DirectX 9.
+        ///
+        ///https://github.com/crosire/d3d8to9/releases.
+        /// </summary>
+        public static string D3D8_Info {
+            get {
+                return ResourceManager.GetString("D3D8_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deploy To Game.
         /// </summary>
         public static string DeployButton {

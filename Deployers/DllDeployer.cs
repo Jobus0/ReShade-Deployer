@@ -21,8 +21,9 @@ public static class DllDeployer
             WpfMessageBox.Show(UIStrings.Vulkan_Info, UIStrings.Notice);
             return;
         }
-
-        string symlinkPath = Path.Combine(directoryPath, api + ".dll");
+        
+        if (api == GraphicsApi.D3D9 && executableContext.IsD3D8)
+            WpfMessageBox.Show(UIStrings.D3D8_Info, UIStrings.Notice);
 
         string symlinkPath = Path.Combine(executableContext.DirectoryPath, DllNameFromApi(api) + ".dll");
             
