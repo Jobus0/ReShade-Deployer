@@ -231,7 +231,8 @@ namespace ReShadeDeployer
             
             selectedExecutableContext = new ExecutableContext(executablePath);
             
-            SelectGameButton.Content = executablePath;
+            SelectGameButtonText.Text = executablePath;
+            SelectGameButtonText.ToolTip = executablePath;
             SelectGameButton.Appearance = ControlAppearance.Secondary;
             
             DeployButton.Content = string.Format(UIStrings.DeployButton_Targeted, selectedExecutableContext.FileName);
