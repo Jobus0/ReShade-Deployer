@@ -66,8 +66,26 @@ public static partial class Downloader
         }
         
         // Download the standard and the add-on supported ReShade files.
-        await DownloadAndExtract(WebsiteUrl + downloadUrl, Paths.Dlls);
-        await DownloadAndExtract(WebsiteUrl + Regex.Match(websiteContent, "/downloads/\\S*_Addon.exe"), Paths.AddonDlls);
+        await DownloadAndExtractReShade(WebsiteUrl + downloadUrl, Paths.Dlls);
+        await DownloadAndExtractReShade(WebsiteUrl + Regex.Match(websiteContent, "/downloads/\\S*_Addon.exe"), Paths.AddonDlls);
+        
+        // Download Compatibility.ini
+        await Download("https://raw.githubusercontent.com/crosire/reshade-shaders/list/Compatibility.ini", Paths.CompatibilityIni);
+    }
+
+    private static async Task Download(string url, string downloadSavePath)
+    {
+        try
+        {
+            using HttpClient httpClient = new HttpClient();
+            await using var httpStream = await httpClient.GetStreamAsync(url);
+            await using var fileStream = new FileStream(downloadSavePath, FileMode.CreateNew);
+            await httpStream.CopyToAsync(fileStream);
+        }
+        catch
+        {
+            WpfMessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
+        }
     }
 
     /// <summary>
@@ -75,21 +93,10 @@ public static partial class Downloader
     /// </summary>
     /// <param name="url">URL to an official ReShade installer.</param>
     /// <param name="directoryPath">Directory to extract .dll into.</param>
-    private static async Task DownloadAndExtract(string url, string directoryPath)
+    private static async Task DownloadAndExtractReShade(string url, string directoryPath)
     {
-        string zipPath = Path.Combine(directoryPath, "ReShade.exe");
-        try
-        {
-            using HttpClient httpClient = new HttpClient();
-            await using var httpStream = await httpClient.GetStreamAsync(url);
-            await using var fileStream = new FileStream(zipPath, FileMode.CreateNew);
-            await httpStream.CopyToAsync(fileStream);
-        }
-        catch
-        {
-            WpfMessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
-            return;
-        }
+        string downloadPath = Path.Combine(directoryPath, "ReShade.exe");
+        await Download(url, downloadPath);
         
         // Getting the .dll from the installer executable requires two steps of extraction.
         // First, extract the outer '[0]' archive, which contains the .dll files (x86 and x64).
@@ -99,7 +106,7 @@ public static partial class Downloader
         string innerArchivePath = Path.Combine(directoryPath, innerArchiveName);
         try
         {
-            using ArchiveFile archiveFile = new ArchiveFile(zipPath);
+            using ArchiveFile archiveFile = new ArchiveFile(downloadPath);
             archiveFile.Extract(e => e.FileName == innerArchiveName
                 ? innerArchivePath
                 : null);
@@ -119,7 +126,7 @@ public static partial class Downloader
         }
         finally
         {
-            File.Delete(zipPath);
+            File.Delete(downloadPath);
             File.Delete(innerArchivePath);
         }
     }

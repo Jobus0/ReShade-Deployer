@@ -10,10 +10,10 @@ public static class PresetDeployer
     /// <summary>
     /// Deploy ReShadePreset.ini to a directory.
     /// </summary>
-    /// <param name="directoryPath">Path of the directory to write ReShadePreset.ini to.</param>
-    public static void Deploy(string directoryPath)
+    /// <param name="executableContext">Context for the executable to deploy.</param>
+    public static void Deploy(ExecutableContext executableContext)
     {
-        string path = Path.Combine(directoryPath, "ReShadePreset.ini");
+        string path = Path.Combine(executableContext.DirectoryPath, "ReShadePreset.ini");
 
         if (File.Exists(path))
         {

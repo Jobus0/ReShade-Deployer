@@ -35,10 +35,10 @@ public static class Deployer
     public static void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, bool exitOnDeploy)
     {
         DllDeployer.Deploy(executableContext, api, addonSupport ? Paths.AddonDlls : Paths.Dlls);
-        IniDeployer.Deploy(executableContext.DirectoryPath);
+        IniDeployer.Deploy(executableContext);
                 
         if (File.Exists(Paths.ReShadePresetIni))
-            PresetDeployer.Deploy(executableContext.DirectoryPath);
+            PresetDeployer.Deploy(executableContext);
 
         if (exitOnDeploy)
         {
