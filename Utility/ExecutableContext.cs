@@ -124,6 +124,14 @@ public class ExecutableContext
                 DepthCopyBeforeClears = "0";
                 UseAspectRatioHeuristics = "1";
             }
+
+            string nvRemixPath = Path.Combine(DirectoryPath, ".trex", "NvRemixBridge.exe");
+            if (File.Exists(nvRemixPath))
+            {
+                IsVulkan = true;
+                IsX64 = true;
+                DirectoryPath = Path.GetDirectoryName(nvRemixPath)!;
+            }
         }
         catch (Exception)
         {
