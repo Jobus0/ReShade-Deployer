@@ -17,14 +17,12 @@ namespace ReShadeDeployer
     {
         private bool closing;
 
-        private readonly Config config;
+        private readonly Config config = new();
         
         private ExecutableContext? selectedExecutableContext;
         
         public MainWindow()
         {
-            config = new Config();
-            
             InitializeComponent();
 
             Loaded += OnLoaded;

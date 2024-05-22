@@ -11,7 +11,7 @@ namespace ReShadeDeployer;
 /// </summary>
 public class Config
 {
-    private readonly FileIniDataParser iniParser;
+    private readonly FileIniDataParser iniParser = new();
     private IniData? ini;
 
     /// <summary>
@@ -44,11 +44,6 @@ public class Config
     {
         get => bool.TryParse(Read(nameof(AlwaysExitOnDeploy)), out bool value) && value;
         set => Write(nameof(AlwaysExitOnDeploy), value.ToString());
-    }
-
-    public Config()
-    {
-        iniParser = new FileIniDataParser();
     }
 
     /// <summary>
