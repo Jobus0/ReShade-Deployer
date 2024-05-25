@@ -9,7 +9,7 @@ namespace ReShadeDeployer;
 
 public static class DeployerDownloader
 {
-    private const string GithubUrl = "https://api.github.com/repos/Jobus0/ReShade-Deployer/releases";
+    private const string GithubUrl = "https://api.github.com/repos/Jobus0/ReShade-Deployer/releases/latest";
     
     /// <summary>
     /// Download the latest version of ReShade Deployer from GitHub.
@@ -44,11 +44,13 @@ public static class DeployerDownloader
         File.Delete(downloadPath);
         
         // Run the new version of ReShade Deployer
-        var startInfo = new ProcessStartInfo(currentExe)
+        var startupArgs = ((App)Application.Current).StartupArgs;
+        var startInfo = new ProcessStartInfo
         {
+            FileName = currentExe,
+            Arguments = startupArgs.Length > 0 ? $"\"{startupArgs[0]}\"" : string.Empty,
             UseShellExecute = true,
             Verb = "runas",
-            Arguments = ((App)Application.Current).StartupArgs.Length > 0 ? ((App)Application.Current).StartupArgs[0] : string.Empty + " -update"
         };
         Process.Start(startInfo);
         
