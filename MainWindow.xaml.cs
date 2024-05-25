@@ -20,10 +20,14 @@ namespace ReShadeDeployer
         private readonly Config config = new();
         
         private ExecutableContext? selectedExecutableContext;
+
+        private readonly string? assemblyVersion;
         
         public MainWindow()
         {
             InitializeComponent();
+
+            assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
 
             Loaded += OnLoaded;
         }
@@ -34,10 +38,15 @@ namespace ReShadeDeployer
             if (startupArgs.Length > 0 && !string.IsNullOrEmpty(startupArgs[0]))
                 TargetExecutable(startupArgs[0]);
             
-            if (Downloader.TryGetLocalReShadeVersionNumber(out string version))
+            DeployerDownloader.CleanUpOldVersion();
+            
+            if (assemblyVersion != null)
+                CheckForNewDeployerVersion();
+            
+            if (ReShadeDownloader.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
-                CheckForNewVersion(version);
+                CheckForNewReShadeVersion(version);
             }
             else
             {
@@ -54,18 +63,73 @@ namespace ReShadeDeployer
             if (Deployer.TrySelectExecutable(out string executablePath))
                 TargetExecutable(executablePath);
         }
-
-        private async void CheckForNewVersion(string localVersion)
+        
+        private async void CheckForNewDeployerVersion()
         {
-            string latestVersion = config.LatestVersionNumber;
-            if (DateTime.Now - config.LatestVersionNumberCheckDate > TimeSpan.FromDays(7))
+            if (assemblyVersion == null)
+                return;
+            
+            string latestVersion = config.LatestDeployerVersionNumber;
+            bool newerVersionFound = false;
+            if (DateTime.Now - config.LatestDeployerVersionNumberCheckDate > TimeSpan.FromDays(7))
             {
                 try
                 {
-                    latestVersion = await Downloader.GetLatestOnlineReShadeVersionNumber();
+                    latestVersion = await DeployerDownloader.GetLatestOnlineVersionNumber();
+
+                    if (config.LatestDeployerVersionNumber != latestVersion)
+                    {
+                        config.LatestDeployerVersionNumber = latestVersion;
+                        newerVersionFound = true;
+                    }
+                    config.LatestDeployerVersionNumberCheckDate = DateTime.Now;
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+            }
+
+            if (assemblyVersion != latestVersion && newerVersionFound)
+                PromptForUpdate();
+        }
+        
+        public void PromptForUpdate()
+        {
+            var textBlock = new TextBlock {Text = string.Format(UIStrings.UpdateAvailable, config.LatestDeployerVersionNumber, assemblyVersion!), TextWrapping = TextWrapping.Wrap};
+            WpfMessageBox.ConvertStringLinksToHyperlinks(textBlock);
+            var messageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = UIStrings.UpdateAvailable_Title,
+                Content = textBlock,
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.Height,
+                ButtonLeftName = UIStrings.Update,
+                ButtonRightName = UIStrings.Skip,
+                Width = 390
+            };
+            messageBox.ButtonLeftClick += (_, _) =>
+            {
+                messageBox.Close();
+                Panel.IsEnabled = false;
+                UpdateButton.IsEnabled = false;
+                DeployerDownloader.UpdateDeployer();
+            };
+            messageBox.ButtonRightClick += (_, _) => messageBox.Close();
+            messageBox.ShowDialog();
+        }
+
+        private async void CheckForNewReShadeVersion(string localVersion)
+        {
+            string latestVersion = config.LatestReShadeVersionNumber;
+            if (DateTime.Now - config.LatestReShadeVersionNumberCheckDate > TimeSpan.FromDays(7))
+            {
+                try
+                {
+                    latestVersion = await ReShadeDownloader.GetLatestOnlineReShadeVersionNumber();
                     
-                    config.LatestVersionNumber = latestVersion;
-                    config.LatestVersionNumberCheckDate = DateTime.Now;
+                    config.LatestReShadeVersionNumber = latestVersion;
+                    config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
                 }
                 catch (Exception)
                 {
@@ -132,14 +196,14 @@ namespace ReShadeDeployer
             DeployButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
 
-            await Downloader.DownloadReShade();
+            await ReShadeDownloader.DownloadReShade();
             
-            if (Downloader.TryGetLocalReShadeVersionNumber(out string version))
+            if (ReShadeDownloader.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
 
-                config.LatestVersionNumber = version;
-                config.LatestVersionNumberCheckDate = DateTime.Now;
+                config.LatestReShadeVersionNumber = version;
+                config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
                 
                 // Remove version label from the update button, keeping only the icon
                 UpdateButton.Content = string.Empty;
@@ -215,12 +279,27 @@ namespace ReShadeDeployer
         
         private void AboutMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            WpfMessageBox.Show(string.Format(UIStrings.About_Info, Assembly.GetExecutingAssembly().GetName().Version), UIStrings.About);
+            WpfMessageBox.Show(string.Format(UIStrings.About_Info, assemblyVersion), UIStrings.About);
+        }
+        
+        private void UpdateDeployerMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            PromptForUpdate();
         }
 
         private void SettingsButton_OnClick(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
+
+            if (assemblyVersion != null)
+            {
+                foreach (var item in button.ContextMenu!.Items)
+                {
+                    if (item is MenuItem {Name: "UpdateDeployerMenuItem"} updateDeployerMenuItem)
+                        updateDeployerMenuItem.Visibility = assemblyVersion == config.LatestDeployerVersionNumber ? Visibility.Collapsed : Visibility.Visible;
+                }
+            }
+                    
             button.ContextMenu!.IsOpen = true;
         }
 

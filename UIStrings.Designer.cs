@@ -278,7 +278,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to access &apos;{0}&apos;. Please report to the developer..
+        ///   Looks up a localized string similar to Failed to access &apos;{0}&apos;. Try again later, or please report to the developer..
         /// </summary>
         public static string DownloadError {
             get {
@@ -428,6 +428,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        public static string Skip {
+            get {
+                return ResourceManager.GetString("Skip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target API.
         /// </summary>
         public static string TargetAPI {
@@ -459,11 +468,46 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Globally update your ReShade DLL files to the latest version..
+        ///   Looks up a localized string similar to A new update of ReShade Deployer is available!
+        ///
+        ///New version: {0}
+        ///Current version: {1}
+        ///
+        ///Would you like to install it?
+        ///
+        ///Changelog is available here:
+        ///https://github.com/Jobus0/ReShade-Deployer/releases.
         /// </summary>
-        public static string Update_Tooltip {
+        public static string UpdateAvailable {
             get {
-                return ResourceManager.GetString("Update_Tooltip", resourceCulture);
+                return ResourceManager.GetString("UpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Available.
+        /// </summary>
+        public static string UpdateAvailable_Title {
+            get {
+                return ResourceManager.GetString("UpdateAvailable_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update ReShade Deployer.
+        /// </summary>
+        public static string UpdateDeployer {
+            get {
+                return ResourceManager.GetString("UpdateDeployer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update the program to the latest version..
+        /// </summary>
+        public static string UpdateDeployer_Tooltip {
+            get {
+                return ResourceManager.GetString("UpdateDeployer_Tooltip", resourceCulture);
             }
         }
         
@@ -473,6 +517,15 @@ namespace ReShadeDeployer {
         public static string UpdateError {
             get {
                 return ResourceManager.GetString("UpdateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Globally update your ReShade DLL files to the latest version..
+        /// </summary>
+        public static string UpdateReShade_Tooltip {
+            get {
+                return ResourceManager.GetString("UpdateReShade_Tooltip", resourceCulture);
             }
         }
         

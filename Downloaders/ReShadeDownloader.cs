@@ -1,42 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SevenZipExtractor;
 
 namespace ReShadeDeployer;
 
-/// <summary>
-/// Provides methods for downloading and extracting official ReShade files.
-/// </summary>
-public static partial class Downloader
+public static class ReShadeDownloader
 {
     private const string WebsiteUrl = "https://reshade.me";
-
-    /// <summary>
-    /// Retrieves the content of a website using an HTTP GET request.
-    /// </summary>
-    /// <returns>The website content as a string.</returns>
-    private static async Task<string> GetWebsiteContent()
-    {
-        using var httpClient = new HttpClient();
-        return await httpClient.GetStringAsync(WebsiteUrl);
-    }
-    
-    /// <summary>
-    /// Extracts the version number from a download URL.
-    /// </summary>
-    /// <param name="downloadUrl">The download URL string.</param>
-    /// <returns>The version number extracted from the download URL.</returns>
-    private static string UrlToVersion(string downloadUrl)
-    {
-        return UrlToVersionRegex().Match(downloadUrl).ToString();
-    }
-    
-    [GeneratedRegex("\\d+(\\.\\d+)*")]
-    private static partial Regex UrlToVersionRegex();
     
     /// <summary>
     /// Download the latest version of ReShade (including add-on support version) from the official website and extract it into the lib folder.
@@ -46,7 +19,7 @@ public static partial class Downloader
         string websiteContent;
         try
         {
-            websiteContent = await GetWebsiteContent();
+            websiteContent = await DownloadHelper.GetWebsiteContent(WebsiteUrl);
         }
         catch
         {
@@ -59,7 +32,7 @@ public static partial class Downloader
 
         string downloadUrl = Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString();
         
-        if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == UrlToVersion(downloadUrl))
+        if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == DownloadHelper.ExtractVersionFromText(downloadUrl))
         {
             WpfMessageBox.Show(UIStrings.UpdateError, UIStrings.Update);
             return;
@@ -70,22 +43,11 @@ public static partial class Downloader
         await DownloadAndExtractReShade(WebsiteUrl + Regex.Match(websiteContent, "/downloads/\\S*_Addon.exe"), Paths.AddonDlls);
         
         // Download Compatibility.ini
-        await Download("https://raw.githubusercontent.com/crosire/reshade-shaders/list/Compatibility.ini", Paths.CompatibilityIni);
-    }
-
-    private static async Task Download(string url, string downloadSavePath)
-    {
         try
         {
-            using HttpClient httpClient = new HttpClient();
-            await using var httpStream = await httpClient.GetStreamAsync(url);
-            await using var fileStream = new FileStream(downloadSavePath, FileMode.CreateNew);
-            await httpStream.CopyToAsync(fileStream);
+            await DownloadHelper.Download("https://raw.githubusercontent.com/crosire/reshade-shaders/list/Compatibility.ini", Paths.CompatibilityIni);
         }
-        catch
-        {
-            WpfMessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
-        }
+        catch { /* Ignore. File is nice, but not necessary. */ }
     }
 
     /// <summary>
@@ -96,7 +58,16 @@ public static partial class Downloader
     private static async Task DownloadAndExtractReShade(string url, string directoryPath)
     {
         string downloadPath = Path.Combine(directoryPath, "ReShade.exe");
-        await Download(url, downloadPath);
+
+        try
+        {
+            await DownloadHelper.Download(url, downloadPath);
+        }
+        catch
+        {
+            WpfMessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
+            return;
+        }
         
         // Getting the .dll from the installer executable requires two steps of extraction.
         // First, extract the outer '[0]' archive, which contains the .dll files (x86 and x64).
@@ -168,7 +139,7 @@ public static partial class Downloader
     /// <returns>Latest version number, formatted like "1.0.0".</returns>
     public static async Task<string> GetLatestOnlineReShadeVersionNumber()
     {
-        var websiteContent = await GetWebsiteContent();
-        return UrlToVersion(Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString());
+        var websiteContent = await DownloadHelper.GetWebsiteContent(WebsiteUrl);
+        return DownloadHelper.ExtractVersionFromText(Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString());
     }
 }

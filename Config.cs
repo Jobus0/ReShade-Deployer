@@ -22,19 +22,37 @@ public class Config
     /// <summary>
     /// Represents the latest online ReShade version number.
     /// </summary>
-    public string LatestVersionNumber
+    public string LatestReShadeVersionNumber
     {
-        get => Read(nameof(LatestVersionNumber));
-        set => Write(nameof(LatestVersionNumber), value);
+        get => Read(nameof(LatestReShadeVersionNumber));
+        set => Write(nameof(LatestReShadeVersionNumber), value);
     }
     
     /// <summary>
     /// Represents the date of the last check for a new ReShade version.
     /// </summary>
-    public DateTime LatestVersionNumberCheckDate
+    public DateTime LatestReShadeVersionNumberCheckDate
     {
-        get => DateTime.TryParse(Read(nameof(LatestVersionNumberCheckDate)), out DateTime value) ? value : default;
-        set => Write(nameof(LatestVersionNumberCheckDate), value.ToString("yyyy-MM-dd"));
+        get => DateTime.TryParse(Read(nameof(LatestReShadeVersionNumberCheckDate)), out DateTime value) ? value : default;
+        set => Write(nameof(LatestReShadeVersionNumberCheckDate), value.ToString("yyyy-MM-dd"));
+    }
+    
+    /// <summary>
+    /// Represents the latest online ReShade Deployer version number.
+    /// </summary>
+    public string LatestDeployerVersionNumber
+    {
+        get => Read(nameof(LatestDeployerVersionNumber));
+        set => Write(nameof(LatestDeployerVersionNumber), value);
+    }
+    
+    /// <summary>
+    /// Represents the date of the last check for a new ReShade Deployer version.
+    /// </summary>
+    public DateTime LatestDeployerVersionNumberCheckDate
+    {
+        get => DateTime.TryParse(Read(nameof(LatestDeployerVersionNumberCheckDate)), out DateTime value) ? value : default;
+        set => Write(nameof(LatestDeployerVersionNumberCheckDate), value.ToString("yyyy-MM-dd"));
     }
     
     /// <summary>

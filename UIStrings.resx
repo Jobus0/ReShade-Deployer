@@ -36,8 +36,15 @@ Otherwise, if you are unsure, check the API section of the game's PCGamingWiki p
 	<data name="Update" xml:space="preserve">
 		<value>Update</value>
 	</data>
-	<data name="Update_Tooltip" xml:space="preserve">
+	<data name="UpdateReShade_Tooltip" xml:space="preserve">
 		<value>Globally update your ReShade DLL files to the latest version.</value>
+	</data>
+	
+	<data name="UpdateDeployer" xml:space="preserve">
+		<value>Update ReShade Deployer</value>
+	</data>
+	<data name="UpdateDeployer_Tooltip" xml:space="preserve">
+		<value>Update the program to the latest version.</value>
 	</data>
 	<data name="Settings_Tooltip" xml:space="preserve">
 		<value>Settings</value>
@@ -201,7 +208,7 @@ Would you like to overwrite it?</value>
 		<value>Download Failed</value>
 	</data>
 	<data name="DownloadError" xml:space="preserve">
-		<value>Failed to access '{0}'. Please report to the developer.</value>
+		<value>Failed to access '{0}'. Try again later, or please report to the developer.</value>
 	</data>
 	
 	<data name="AccessError_Title" xml:space="preserve">
@@ -209,5 +216,23 @@ Would you like to overwrite it?</value>
 	</data>
 	<data name="AccessError" xml:space="preserve">
 		<value>Extraction failed because write-access was denied. Exit all other programs that use ReShade and try again.</value>
+	</data>
+
+	<data name="UpdateAvailable_Title" xml:space="preserve">
+		<value>Update Available</value>
+	</data>
+	<data name="UpdateAvailable" xml:space="preserve">
+		<value>A new update of ReShade Deployer is available!
+
+New version: {0}
+Current version: {1}
+
+Would you like to install it?
+
+Changelog is available here:
+https://github.com/Jobus0/ReShade-Deployer/releases</value>
+	</data>
+	<data name="Skip" xml:space="preserve">
+		<value>Skip</value>
 	</data>
 </root>

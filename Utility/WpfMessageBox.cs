@@ -39,7 +39,7 @@ public static partial class WpfMessageBox
     /// <summary>
     /// Convert any string http links in a TextBlock to clickable hyperlinks.
     /// </summary>
-    private static void ConvertStringLinksToHyperlinks(TextBlock textBlock)
+    public static void ConvertStringLinksToHyperlinks(TextBlock textBlock)
     {
         string text = textBlock.Text;
         textBlock.Inlines.Clear();
