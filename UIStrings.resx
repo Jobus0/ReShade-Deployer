@@ -18,10 +18,143 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-	<data name="VersionPrefix" xml:space="preserve">
-		<value>ReShade version:</value>
+	<data name="About" xml:space="preserve">
+		<value>About ReShade Deployer</value>
 	</data>
+	<data name="About_Info" xml:space="preserve">
+		<value>Version: {0}
 
+Copyright © 2024 Jobus
+https://github.com/Jobus0/reshade-deployer</value>
+	</data>
+	<data name="AccessError" xml:space="preserve">
+		<value>Extraction failed because write-access was denied. Exit all other programs that use ReShade and try again.</value>
+	</data>
+	<data name="AccessError_Title" xml:space="preserve">
+		<value>Extraction Failed</value>
+	</data>
+	<data name="Addon" xml:space="preserve">
+		<value>Add-on Support</value>
+	</data>
+	<data name="Addon_Tooltip" xml:space="preserve">
+		<value>Enable this if you plan to install a ReShade add-on to the game.
+
+Warning: Intended for singleplayer games only and may cause bans in multiplayer games.</value>
+	</data>
+	<data name="AlwaysExitOnDeploy" xml:space="preserve">
+		<value>Always Exit On Deploy</value>
+	</data>
+	<data name="AlwaysExitOnDeploy_Tooltip" xml:space="preserve">
+		<value>Always exit the program after deploying ReShade without asking.</value>
+	</data>
+	<data name="ConnectionError" xml:space="preserve">
+		<value>ReShade website (https://reshade.me) is down or the connection was blocked.</value>
+	</data>
+	<data name="ConnectionError_Title" xml:space="preserve">
+		<value>Connection Failed</value>
+	</data>
+	<data name="ContextMenuDeploy" xml:space="preserve">
+		<value>Context Menu Deploy</value>
+	</data>
+	<data name="ContextMenuDeploy_Tooltip" xml:space="preserve">
+		<value>Add a 'Deploy ReShade' option to the exe context (right-click) menu.</value>
+	</data>
+	<data name="Continue" xml:space="preserve">
+		<value>Continue</value>
+	</data>
+	<data name="D3D8_Info" xml:space="preserve">
+		<value>It looks like the target application uses DirectX 8.
+
+In order to use ReShade you'll have to download an additional wrapper from d3d8to9 which converts all API calls to DirectX 9.
+
+https://github.com/crosire/d3d8to9/releases</value>
+	</data>
+	<data name="DeployButton" xml:space="preserve">
+		<value>Deploy To Game</value>
+	</data>
+	<data name="DeployButton_Targeted" xml:space="preserve">
+		<value>Deploy To {0}</value>
+	</data>
+	<data name="DeployButton_Tooltip" xml:space="preserve">
+		<value>Make sure you have picked the correct Target API above first.
+
+If you are unsure, check the API section of the game's PCGamingWiki page.</value>
+	</data>
+	<data name="DeploySuccess" xml:space="preserve">
+		<value>ReShade was successfully deployed!</value>
+	</data>
+	<data name="DeploySuccess_Title" xml:space="preserve">
+		<value>Success</value>
+	</data>
+	<data name="DirectX10" xml:space="preserve">
+		<value>DirectX 10 or later</value>
+	</data>
+	<data name="DirectX10_Tooltip" xml:space="preserve">
+		<value>dxgi.dll</value>
+	</data>
+	<data name="DirectX9" xml:space="preserve">
+		<value>DirectX 9</value>
+	</data>
+	<data name="DirectX9_Tooltip" xml:space="preserve">
+		<value>d3d9.dll</value>
+	</data>
+	<data name="DownloadError" xml:space="preserve">
+		<value>Failed to access '{0}'. Try again later, or please report to the developer.</value>
+	</data>
+	<data name="DownloadError_Title" xml:space="preserve">
+		<value>Download Failed</value>
+	</data>
+	<data name="Exit" xml:space="preserve">
+		<value>Exit</value>
+	</data>
+	<data name="FirstTimeSetup" xml:space="preserve">
+		<value>ReShade Deployer will now download ReShade and set up the required folder structure into the current folder.
+
+This includes the Shaders and Textures folders, where you will place your shader and texture files.
+
+If you wish to keep these files elsewhere, press 'Exit' and move the program first.</value>
+	</data>
+	<data name="FirstTimeSetup_Title" xml:space="preserve">
+		<value>First-Time Setup</value>
+	</data>
+	<data name="Notice" xml:space="preserve">
+		<value>Notice</value>
+	</data>
+	<data name="OK" xml:space="preserve">
+		<value>OK</value>
+	</data>
+	<data name="OpenFileDialog_Title" xml:space="preserve">
+		<value>Select the game's runtime executable.</value>
+	</data>
+	<data name="OpenGL" xml:space="preserve">
+		<value>OpenGL</value>
+	</data>
+	<data name="OpenGL_Tooltip" xml:space="preserve">
+		<value>opengl32.dll</value>
+	</data>
+	<data name="PresetOverwrite" xml:space="preserve">
+		<value>ReShadePreset.ini already exists.
+
+Would you like to overwrite it?</value>
+	</data>
+	<data name="PresetOverwrite_No" xml:space="preserve">
+		<value>No, keep old file</value>
+	</data>
+	<data name="PresetOverwrite_Title" xml:space="preserve">
+		<value>Overwrite Preset</value>
+	</data>
+	<data name="PresetOverwrite_Yes" xml:space="preserve">
+		<value>Yes, overwrite file</value>
+	</data>
+	<data name="SelectGameButton" xml:space="preserve">
+		<value>Select Game</value>
+	</data>
+	<data name="Settings_Tooltip" xml:space="preserve">
+		<value>Settings</value>
+	</data>
+	<data name="Skip" xml:space="preserve">
+		<value>Skip</value>
+	</data>
 	<data name="TargetAPI" xml:space="preserve">
 		<value>Target API</value>
 	</data>
@@ -32,194 +165,8 @@ When selecting a game, the executable will be scanned to try to automatically se
 
 Otherwise, if you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
-
 	<data name="Update" xml:space="preserve">
 		<value>Update</value>
-	</data>
-	<data name="UpdateReShade_Tooltip" xml:space="preserve">
-		<value>Globally update your ReShade DLL files to the latest version.</value>
-	</data>
-	
-	<data name="UpdateDeployer" xml:space="preserve">
-		<value>Update ReShade Deployer</value>
-	</data>
-	<data name="UpdateDeployer_Tooltip" xml:space="preserve">
-		<value>Update the program to the latest version.</value>
-	</data>
-	<data name="Settings_Tooltip" xml:space="preserve">
-		<value>Settings</value>
-	</data>
-
-	<data name="ContextMenuDeploy" xml:space="preserve">
-		<value>Context Menu Deploy</value>
-	</data>
-	<data name="ContextMenuDeploy_Tooltip" xml:space="preserve">
-		<value>Add a 'Deploy ReShade' option to the exe context (right-click) menu.</value>
-	</data>
-
-	<data name="AlwaysExitOnDeploy" xml:space="preserve">
-		<value>Always Exit On Deploy</value>
-	</data>
-	<data name="AlwaysExitOnDeploy_Tooltip" xml:space="preserve">
-		<value>Always exit the program after deploying ReShade without asking.</value>
-	</data>
-
-	<data name="About" xml:space="preserve">
-		<value>About ReShade Deployer</value>
-	</data>
-
-	<data name="About_Info" xml:space="preserve">
-		<value>Version: {0}
-
-Copyright © 2024 Jobus
-https://github.com/Jobus0/reshade-deployer</value>
-	</data>
-
-	<data name="DirectX10" xml:space="preserve">
-		<value>DirectX 10 or later</value>
-	</data>
-	<data name="DirectX10_Tooltip" xml:space="preserve">
-		<value>dxgi.dll</value>
-	</data>
-
-	<data name="DirectX9" xml:space="preserve">
-		<value>DirectX 9</value>
-	</data>
-	<data name="DirectX9_Tooltip" xml:space="preserve">
-		<value>d3d9.dll</value>
-	</data>
-
-	<data name="OpenGL" xml:space="preserve">
-		<value>OpenGL</value>
-	</data>
-	<data name="OpenGL_Tooltip" xml:space="preserve">
-		<value>opengl32.dll</value>
-	</data>
-
-	<data name="Vulkan" xml:space="preserve">
-		<value>Vulkan</value>
-	</data>
-	<data name="Vulkan_Tooltip" xml:space="preserve">
-		<value>Creates no DLL.
-
-Requires that you have installed ReShade for Vulkan globally through the official installer.</value>
-	</data>
-	<data name="Vulkan_Info" xml:space="preserve">
-		<value>If you haven't already, install ReShade for Vulkan globally through the official ReShade installer. This program will setup the rest.</value>
-	</data>
-
-	<data name="D3D8_Info" xml:space="preserve">
-		<value>It looks like the target application uses DirectX 8.
-
-In order to use ReShade you'll have to download an additional wrapper from d3d8to9 which converts all API calls to DirectX 9.
-
-https://github.com/crosire/d3d8to9/releases</value>
-	</data>
-
-	<data name="Addon" xml:space="preserve">
-		<value>Add-on Support</value>
-	</data>
-	<data name="Addon_Tooltip" xml:space="preserve">
-		<value>Enable this if you plan to install a ReShade add-on to the game.
-
-Warning: Intended for singleplayer games only and may cause bans in multiplayer games.</value>
-	</data>
-
-	<data name="SelectGameButton" xml:space="preserve">
-		<value>Select Game</value>
-	</data>
-
-	<data name="DeployButton" xml:space="preserve">
-		<value>Deploy To Game</value>
-	</data>
-	<data name="DeployButton_Tooltip" xml:space="preserve">
-		<value>Make sure you have picked the correct Target API above first.
-
-If you are unsure, check the API section of the game's PCGamingWiki page.</value>
-	</data>
-
-	<data name="DeployButton_Targeted" xml:space="preserve">
-		<value>Deploy To {0}</value>
-	</data>
-
-	<data name="Notice" xml:space="preserve">
-		<value>Notice</value>
-	</data>
-
-	<data name="Continue" xml:space="preserve">
-		<value>Continue</value>
-	</data>
-	<data name="Exit" xml:space="preserve">
-		<value>Exit</value>
-	</data>
-	<data name="OK" xml:space="preserve">
-		<value>OK</value>
-	</data>
-
-	<data name="FirstTimeSetup_Title" xml:space="preserve">
-		<value>First-Time Setup</value>
-	</data>
-	<data name="FirstTimeSetup" xml:space="preserve">
-		<value>ReShade Deployer will now download ReShade and set up the required folder structure into the current folder.
-
-This includes the Shaders and Textures folders, where you will place your shader and texture files.
-
-If you wish to keep these files elsewhere, press 'Exit' and move the program first.</value>
-	</data>
-
-	<data name="PresetOverwrite_Title" xml:space="preserve">
-		<value>Overwrite Preset</value>
-	</data>
-	<data name="PresetOverwrite" xml:space="preserve">
-		<value>ReShadePreset.ini already exists.
-
-Would you like to overwrite it?</value>
-	</data>
-	<data name="PresetOverwrite_Yes" xml:space="preserve">
-		<value>Yes, overwrite file</value>
-	</data>
-	<data name="PresetOverwrite_No" xml:space="preserve">
-		<value>No, keep old file</value>
-	</data>
-
-	<data name="DeploySuccess_Title" xml:space="preserve">
-		<value>Success</value>
-	</data>
-	<data name="DeploySuccess" xml:space="preserve">
-		<value>ReShade was successfully deployed!</value>
-	</data>
-
-	<data name="OpenFileDialog_Title" xml:space="preserve">
-		<value>Select the game's runtime executable.</value>
-	</data>
-
-	<data name="ConnectionError_Title" xml:space="preserve">
-		<value>Connection Failed</value>
-	</data>
-	<data name="ConnectionError" xml:space="preserve">
-		<value>ReShade website (https://reshade.me) is down or the connection was blocked.</value>
-	</data>
-
-	<data name="UpdateError" xml:space="preserve">
-		<value>You are already on the latest version.</value>
-	</data>
-	
-	<data name="DownloadError_Title" xml:space="preserve">
-		<value>Download Failed</value>
-	</data>
-	<data name="DownloadError" xml:space="preserve">
-		<value>Failed to access '{0}'. Try again later, or please report to the developer.</value>
-	</data>
-	
-	<data name="AccessError_Title" xml:space="preserve">
-		<value>Extraction Failed</value>
-	</data>
-	<data name="AccessError" xml:space="preserve">
-		<value>Extraction failed because write-access was denied. Exit all other programs that use ReShade and try again.</value>
-	</data>
-
-	<data name="UpdateAvailable_Title" xml:space="preserve">
-		<value>Update Available</value>
 	</data>
 	<data name="UpdateAvailable" xml:space="preserve">
 		<value>A new update of ReShade Deployer is available!
@@ -232,7 +179,30 @@ Would you like to install it?
 Changelog is available here:
 https://github.com/Jobus0/ReShade-Deployer/releases</value>
 	</data>
-	<data name="Skip" xml:space="preserve">
-		<value>Skip</value>
+	<data name="UpdateAvailable_Title" xml:space="preserve">
+		<value>Update Available</value>
+	</data>
+	<data name="UpdateDeployer" xml:space="preserve">
+		<value>Update ReShade Deployer</value>
+	</data>
+	<data name="UpdateError" xml:space="preserve">
+		<value>You are already on the latest version.</value>
+	</data>
+	<data name="UpdateReShade_Tooltip" xml:space="preserve">
+		<value>Globally update your ReShade DLL files to the latest version.</value>
+	</data>
+	<data name="VersionPrefix" xml:space="preserve">
+		<value>ReShade version:</value>
+	</data>
+	<data name="Vulkan" xml:space="preserve">
+		<value>Vulkan</value>
+	</data>
+	<data name="Vulkan_Info" xml:space="preserve">
+		<value>If you haven't already, install ReShade for Vulkan globally through the official ReShade installer. This program will setup the rest.</value>
+	</data>
+	<data name="Vulkan_Tooltip" xml:space="preserve">
+		<value>Creates no DLL.
+
+Requires that you have installed ReShade for Vulkan globally through the official installer.</value>
 	</data>
 </root>

@@ -503,15 +503,6 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update the program to the latest version..
-        /// </summary>
-        public static string UpdateDeployer_Tooltip {
-            get {
-                return ResourceManager.GetString("UpdateDeployer_Tooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You are already on the latest version..
         /// </summary>
         public static string UpdateError {
