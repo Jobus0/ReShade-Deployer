@@ -38,11 +38,6 @@ namespace ReShadeDeployer
             if (startupArgs.Length > 0 && !string.IsNullOrEmpty(startupArgs[0]))
                 TargetExecutable(startupArgs[0]);
             
-            DeployerDownloader.CleanUpOldVersion();
-            
-            if (assemblyVersion != null)
-                CheckForNewDeployerVersion();
-            
             if (ReShadeDownloader.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
@@ -52,6 +47,11 @@ namespace ReShadeDeployer
             {
                 FirstTimeSetup();
             }
+            
+            DeployerDownloader.CleanUpOldVersion();
+            
+            if (assemblyVersion != null)
+                CheckForNewDeployerVersion();
             
 #if DEBUG
             ExecutableInfoButton.Visibility = Visibility.Visible;
