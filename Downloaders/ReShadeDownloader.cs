@@ -71,7 +71,7 @@ public static class ReShadeDownloader
         
         // Getting the .dll from the installer executable requires two steps of extraction.
         // First, extract the outer '[0]' archive, which contains the .dll files (x86 and x64).
-        // Second, extract the .dll files from said archive into the specified directory.
+        // Second, extract the files from said archive into the specified directory.
 
         const string innerArchiveName = "[0]";
         string innerArchivePath = Path.Combine(directoryPath, innerArchiveName);
@@ -83,9 +83,7 @@ public static class ReShadeDownloader
                 : null);
 
             using ArchiveFile innerArchiveFile = new ArchiveFile(innerArchivePath);
-            innerArchiveFile.Extract(innerEntry => innerEntry.FileName is "ReShade32.dll" or "ReShade64.dll"
-                ? Path.Combine(directoryPath, innerEntry.FileName)
-                : null);
+            innerArchiveFile.Extract(innerEntry => Path.Combine(directoryPath, innerEntry.FileName));
         }
         catch (IOException)
         {

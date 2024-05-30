@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using Microsoft.Win32;
 
 namespace ReShadeDeployer;
 
@@ -13,12 +14,14 @@ public static class DllDeployer
     /// </summary>
     /// <param name="executableContext">Context for the executable to deploy.</param>
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
-    /// <param name="dllPath">Path of the local downloaded ReShade DLL.</param>
-    public static void Deploy(ExecutableContext executableContext, GraphicsApi api, string dllPath)
+    /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
+    public static void Deploy(ExecutableContext executableContext, GraphicsApi api, bool addonSupport)
     {
+        string dllPath = addonSupport ? Paths.AddonDlls : Paths.Dlls;
+        
         if (api == GraphicsApi.Vulkan)
         {
-            WpfMessageBox.Show(UIStrings.Vulkan_Info, UIStrings.Notice);
+            DeployVulkanGlobally(dllPath);
             return;
         }
         
@@ -53,6 +56,76 @@ public static class DllDeployer
         }
         
         SymbolicLink.CreateSymbolicLink(symlinkPath, Path.Combine(dllPath, executableContext.IsX64 ? "ReShade64.dll" : "ReShade32.dll"), 0);
+    }
+
+    /// <summary>
+    /// Deploy ReShade DLLs to a common local directory, and then register them for Vulkan system-wide.
+    /// </summary>
+    /// <param name="dllPath">Path to the ReShade DLLs.</param>
+    private static void DeployVulkanGlobally(string dllPath)
+    {
+		try
+        {
+            ClearPreviousVulkanRegisters();
+            
+            foreach (var layerModuleName in new[] { "ReShade64", "ReShade32" })
+            {
+                string symlinkDllPath = Path.Combine(Paths.CommonPathLocal, layerModuleName + ".dll");
+                string sourceDllPath = Path.Combine(dllPath, layerModuleName + ".dll");
+                
+                string symlinkJsonPath = Path.Combine(Paths.CommonPathLocal, layerModuleName + ".json");
+                string sourceJsonPath = Path.Combine(dllPath, layerModuleName + ".json");
+                
+                if (File.Exists(symlinkDllPath))
+                    File.Delete(symlinkDllPath);
+                
+                if (File.Exists(symlinkJsonPath))
+                    File.Delete(symlinkJsonPath);
+                
+                Directory.CreateDirectory(Paths.CommonPathLocal);
+                SymbolicLink.CreateSymbolicLink(symlinkDllPath, sourceDllPath, 0);
+                SymbolicLink.CreateSymbolicLink(symlinkJsonPath, sourceJsonPath, 0);
+                
+                using (RegistryKey key = Registry.LocalMachine.CreateSubKey(Environment.Is64BitOperatingSystem && layerModuleName == "ReShade32" ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers" : @"Software\Khronos\Vulkan\ImplicitLayers"))
+                    key.SetValue(symlinkJsonPath, 0, RegistryValueKind.DWord);
+            }
+        }
+		catch (Exception e)
+		{
+			WpfMessageBox.Show("Vulkan Installation Failed", "Failed to install Vulkan layer manifest:\n" + e.Message);
+		}
+    }
+
+    /// <summary>
+    /// Clear previous Vulkan layer registries.
+    /// </summary>
+    private static void ClearPreviousVulkanRegisters()
+    {
+        string localApplicationData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ReShade");
+        
+        using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Khronos\Vulkan\ExplicitLayers", true))
+        {
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
+        }
+        using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Khronos\Vulkan\ImplicitLayers", true))
+        {
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade.json"), false);
+            key?.DeleteValue(Path.Combine(localApplicationData, "VkLayer_override.json"), false);
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32_vk_override_layer.json"), false);
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade64_vk_override_layer.json"), false);
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
+        }
+        using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"Software\Khronos\Vulkan\ImplicitLayers", true))
+        {
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
+        }
+        using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers", true))
+        {
+            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
+        }
     }
 
     private static string DllNameFromApi(GraphicsApi api) => api switch

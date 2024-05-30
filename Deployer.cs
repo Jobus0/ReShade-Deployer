@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using Wpf.Ui.Common;
 
 namespace ReShadeDeployer;
 
@@ -34,7 +35,33 @@ public static class Deployer
     /// <param name="exitOnDeploy">Whether the application should exit after deployment.</param>
     public static void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, bool exitOnDeploy)
     {
-        DllDeployer.Deploy(executableContext, api, addonSupport ? Paths.AddonDlls : Paths.Dlls);
+        if (api == GraphicsApi.Vulkan && addonSupport)
+        {
+            bool cancel = false;
+            var messageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = UIStrings.Warning,
+                Content = new TextBlock {Text = UIStrings.Vulkan_Addon_Warning, TextWrapping = TextWrapping.Wrap},
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.Height,
+                ButtonLeftName = UIStrings.Continue,
+                ButtonLeftAppearance = ControlAppearance.Caution,
+                ButtonRightName = UIStrings.Cancel,
+                Width = 280
+            };
+            messageBox.ButtonLeftClick += (_, _) => messageBox.Close();
+            messageBox.ButtonRightClick += (_, _) =>
+            {
+                cancel = true;
+                messageBox.Close();
+            };
+            messageBox.ShowDialog();
+
+            if (cancel)
+                return;
+        }
+        
+        DllDeployer.Deploy(executableContext, api, addonSupport);
         IniDeployer.Deploy(executableContext);
                 
         if (File.Exists(Paths.ReShadePresetIni))

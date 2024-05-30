@@ -137,6 +137,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ReShade website (https://reshade.me) is down or the connection was blocked..
         /// </summary>
         public static string ConnectionError {
@@ -539,22 +548,33 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you haven&apos;t already, install ReShade for Vulkan globally through the official ReShade installer. This program will setup the rest..
+        ///   Looks up a localized string similar to You are about to install ReShade with Add-on Support for Vulkan globally.
+        ///
+        ///Be aware of ban risks if you play an online game using Vulkan that you have deployed ReShade to before.
+        ///
+        ///To be safe, press Cancel and uncheck Add-on Support before deploying again..
         /// </summary>
-        public static string Vulkan_Info {
+        public static string Vulkan_Addon_Warning {
             get {
-                return ResourceManager.GetString("Vulkan_Info", resourceCulture);
+                return ResourceManager.GetString("Vulkan_Addon_Warning", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates no DLL.
-        ///
-        ///Requires that you have installed ReShade for Vulkan globally through the official installer..
+        ///   Looks up a localized string similar to Creates no DLL in the game directory, but installs ReShade to Vulkan system-wide instead..
         /// </summary>
         public static string Vulkan_Tooltip {
             get {
                 return ResourceManager.GetString("Vulkan_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
     }

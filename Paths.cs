@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace ReShadeDeployer;
@@ -20,4 +21,9 @@ public static class Paths
     public static readonly string Cache             = Path.Combine(Lib, "Cache");
     public static readonly string ConfigIni         = Path.Combine(Lib, "Config.ini");
     public static readonly string CompatibilityIni  = Path.Combine(Lib, "Compatibility.ini");
+    
+    /// <summary>
+    /// Equivalent to 'C:/ProgramData/ReShade'. Used for Vulkan installation, same folder as the official ReShade installer uses.
+    /// </summary>
+    public static readonly string CommonPathLocal = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ReShade");
 }
