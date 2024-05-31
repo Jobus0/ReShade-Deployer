@@ -26,7 +26,7 @@ A minimal installer program that lets you:
    1. This is where you must keep your **Shaders** and **Textures** folders.
    2. If you already have a folder for **Shaders** and **Textures**, you can place **ReShade Deployer.exe** in the same folder.
 3. Run the program and allow the first-time setup.
-4. (Optional) Enable **Context Menu Deploy** from the **⚙** options menu.
+4. (Optional) Enable **Context Menu Deploy** from the **⚙**options menu.
 5. (Optional) Put any shader and texture files into the **Shaders** and **Textures** folders.
 6. (Optional) Put a **ReShade.ini** and/or **ReShadePreset.ini** next to **ReShade Deployer.exe** to make the deployer automatically include those .ini:s when deploying to games.
    1. When your custom **ReShade.ini** is deployed, some specific settings (like the search paths) will be overriden or created if missing. 
@@ -55,14 +55,16 @@ There are two ways to use ReShade Deployer: Running it normally, or running it f
 5. If an existing ReShade preset is detected, it will ask whether to overwrite it.
 
 ### Context Menu
-To enable this, run the program, and from the **⚙** options menu, check the **Context Menu Deploy** option.
+To enable this, run the program, and from the **⚙**options menu, check the **Context Menu Deploy** option.
 1. Right-click any game .exe or shortcut in Windows's file explorer or desktop, and select 'Deploy ReShade'.
 2. The target graphics API (DirectX, Vulkan, etc) should be automatically selected. If not, select it manually. If you are unsure, check the API section of the game's [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home) page.
 3. Press the 'Deploy to Game' button.
 4. If an existing ReShade preset is detected, it will ask whether to overwrite it.
 
+<img src="Readme/Deployment.webp" alt="context-menu deployment" style="border-radius: 16px; box-shadow: #00000055 2px 8px 16px">
+
 ## Uninstallation
-1. Uncheck **Context Menu Deploy** from the **⚙** options menu if it was previously checked.
+1. Uncheck **Context Menu Deploy** from the **⚙**options menu if it was previously checked.
 2. Delete **ReShade Deployer.exe**.
 
 ## Contributing
