@@ -37,7 +37,6 @@ public static class Deployer
     {
         if (api == GraphicsApi.Vulkan && addonSupport)
         {
-            bool cancel = false;
             var messageBox = new Wpf.Ui.Controls.MessageBox
             {
                 Title = UIStrings.Warning,
@@ -49,15 +48,14 @@ public static class Deployer
                 ButtonRightName = UIStrings.Cancel,
                 Width = 280
             };
-            messageBox.ButtonLeftClick += (_, _) => messageBox.Close();
-            messageBox.ButtonRightClick += (_, _) =>
+            messageBox.ButtonLeftClick += (_, _) =>
             {
-                cancel = true;
+                messageBox.DialogResult = true;
                 messageBox.Close();
             };
-            messageBox.ShowDialog();
-
-            if (cancel)
+            messageBox.ButtonRightClick += (_, _) => messageBox.Close();
+            
+            if (messageBox.ShowDialog() != true)
                 return;
         }
         
