@@ -61,10 +61,13 @@ To enable this, run the program, and from the **⚙**options menu, check the **C
 3. Press the 'Deploy to Game' button.
 4. If an existing ReShade preset is detected, it will ask whether to overwrite it.
 
-<img src="Readme/Deployment.webp" alt="context-menu deployment" style="border-radius: 16px; box-shadow: #00000055 2px 8px 16px">
+![Main Window](Readme/Deployment.webp)
+
+Note in the video above how "**DirectX 10 or later**" is in bold. That means the API was automatically detected.
 
 ## Uninstallation
-1. Uncheck **Context Menu Deploy** from the **⚙**options menu if it was previously checked.
+1. Use **Uninstall** from the **⚙**options menu in ReShade Deployer.
+    - This will remove all ReShade Deployer registry entries and the Vulkan ReShade layer.
 2. Delete **ReShade Deployer.exe**.
 
 ## Contributing
