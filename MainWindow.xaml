@@ -30,8 +30,9 @@
                         <MenuItem Header="{x:Static rd:UIStrings.AlwaysExitOnDeploy}" IsCheckable="True" IsChecked="False" Loaded="AlwaysExitOnDeployMenuItem_OnLoaded" Click="AlwaysExitOnDeployMenuItem_OnChecked"
                                   ToolTip="{x:Static rd:UIStrings.AlwaysExitOnDeploy_Tooltip}" />
                         <Separator/>
-                        <MenuItem Header="{x:Static rd:UIStrings.About}" Click="AboutMenuItem_OnClick" />
                         <MenuItem Name="UpdateDeployerMenuItem" Header="{x:Static rd:UIStrings.UpdateDeployer}" Click="UpdateDeployerMenuItem_OnClick" />
+                        <MenuItem Header="{x:Static rd:UIStrings.About}" Click="AboutMenuItem_OnClick" />
+                        <MenuItem Name="UninstallMenuItem" Header="{x:Static rd:UIStrings.UninstallDeployer}" Click="UninstallMenuItem_OnClick" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </ui:Button>

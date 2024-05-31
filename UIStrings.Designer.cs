@@ -60,7 +60,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to About ReShade Deployer.
+        ///   Looks up a localized string similar to About.
         /// </summary>
         public static string About {
             get {
@@ -468,6 +468,26 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uninstall.
+        /// </summary>
+        public static string UninstallDeployer {
+            get {
+                return ResourceManager.GetString("UninstallDeployer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove all registry entries of ReShade Deployer and delete the system-wide Vulkan ReShade layer.
+        ///
+        ///This is recommended if you want to stop using ReShade Deployer and go back to the official installer..
+        /// </summary>
+        public static string UninstallDeployer_Content {
+            get {
+                return ResourceManager.GetString("UninstallDeployer_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
         public static string Update {
@@ -503,7 +523,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update ReShade Deployer.
+        ///   Looks up a localized string similar to Update.
         /// </summary>
         public static string UpdateDeployer {
             get {

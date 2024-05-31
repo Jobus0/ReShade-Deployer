@@ -287,6 +287,29 @@ namespace ReShadeDeployer
             PromptForUpdate();
         }
 
+        private void UninstallMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var messageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = UIStrings.UninstallDeployer,
+                Content = new TextBlock {Text = UIStrings.UninstallDeployer_Content, TextWrapping = TextWrapping.Wrap},
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.Height,
+                ButtonLeftName = UIStrings.UninstallDeployer,
+                ButtonLeftAppearance = ControlAppearance.Caution,
+                ButtonRightName = UIStrings.Cancel,
+                Width = 340
+            };
+            messageBox.ButtonLeftClick += (_, _) =>
+            {
+                messageBox.Close();
+                RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
+                DllDeployer.RemoveVulkanGlobally();
+            };
+            messageBox.ButtonRightClick += (_, _) => messageBox.Close();
+            messageBox.ShowDialog();
+        }
+
         private void SettingsButton_OnClick(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;

@@ -19,7 +19,7 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="About" xml:space="preserve">
-		<value>About ReShade Deployer</value>
+		<value>About</value>
 	</data>
 	<data name="About_Info" xml:space="preserve">
 		<value>Version: {0}
@@ -168,6 +168,14 @@ When selecting a game, the executable will be scanned to try to automatically se
 
 Otherwise, if you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
+	<data name="UninstallDeployer" xml:space="preserve">
+		<value>Uninstall</value>
+	</data>
+	<data name="UninstallDeployer_Content" xml:space="preserve">
+		<value>Remove all registry entries of ReShade Deployer and delete the system-wide Vulkan ReShade layer.
+
+This is recommended if you want to stop using ReShade Deployer and go back to the official installer.</value>
+	</data>
 	<data name="Update" xml:space="preserve">
 		<value>Update</value>
 	</data>
@@ -186,7 +194,7 @@ https://github.com/Jobus0/ReShade-Deployer/releases</value>
 		<value>Update Available</value>
 	</data>
 	<data name="UpdateDeployer" xml:space="preserve">
-		<value>Update ReShade Deployer</value>
+		<value>Update</value>
 	</data>
 	<data name="UpdateError" xml:space="preserve">
 		<value>You are already on the latest version.</value>
