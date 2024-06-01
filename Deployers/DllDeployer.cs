@@ -135,8 +135,10 @@ public static class DllDeployer
             if (File.Exists(symlinkJsonPath))
                 File.Delete(symlinkJsonPath);
                 
-            using (RegistryKey key = Registry.LocalMachine.CreateSubKey(Environment.Is64BitOperatingSystem && layerModuleName == "ReShade32" ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers" : @"Software\Khronos\Vulkan\ImplicitLayers"))
-                key.DeleteValue(symlinkJsonPath);
+            using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(Environment.Is64BitOperatingSystem && layerModuleName == "ReShade32" ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers" : @"Software\Khronos\Vulkan\ImplicitLayers", true))
+            {
+                key?.DeleteValue(symlinkJsonPath, false);
+            }
         }
     }
 
