@@ -24,13 +24,13 @@ A minimal installer program that lets you:
 ## Installation
 1. Download the [latest release](https://github.com/Jobus0/ReShade-Deployer/releases/latest).
 2. Extract **ReShade Deployer.exe** anywhere you want it.
-   1. This is where you must keep your **Shaders** and **Textures** folders.
-   2. If you already have a folder for **Shaders** and **Textures**, you can place **ReShade Deployer.exe** in the same folder.
+   - This is where you must keep your **Shaders** and **Textures** folders.
+   - If you already have a folder for **Shaders** and **Textures**, you can place **ReShade Deployer.exe** in the same folder.
 3. Run the program and allow the first-time setup.
 4. (Optional) Enable **Context Menu Deploy** from the **⚙**options menu.
 5. (Optional) Put any shader and texture files into the **Shaders** and **Textures** folders.
 6. (Optional) Put a **ReShade.ini** and/or **ReShadePreset.ini** next to **ReShade Deployer.exe** to make the deployer automatically include those .ini:s when deploying to games.
-   1. When your custom **ReShade.ini** is deployed, some specific settings (like the search paths) will be overriden or created if missing. 
+   - When your custom **ReShade.ini** is deployed, some specific settings (like the search paths) will be overriden or created if missing. 
 
 ### Folder Structure
 ```
