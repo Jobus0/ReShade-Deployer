@@ -14,6 +14,7 @@ Those who want to:
 A minimal installer program that lets you:
 - Pick graphics API (DirectX 10 or later, DirectX 9, OpenGL, Vulkan).
 - Automatically pick the rendering API and 32/64-bit versions by analysing the executable.
+- Automatically redirect the installation path for Unreal Engine Bootstraps and RTX Remix titles.
 - Toggle a checkbox to install the 'Add-on Support' version.
 - Add a 'Deploy ReShade' option to Windows's context (right-click) menu for .exe files and shortcuts.
 - Update all deployed ReShade .dll:s with a single click.
