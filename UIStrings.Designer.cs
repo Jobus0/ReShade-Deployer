@@ -81,24 +81,6 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extraction failed because write-access was denied. Exit all other programs that use ReShade and try again..
-        /// </summary>
-        public static string AccessError {
-            get {
-                return ResourceManager.GetString("AccessError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Extraction Failed.
-        /// </summary>
-        public static string AccessError_Title {
-            get {
-                return ResourceManager.GetString("AccessError_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add-on Support.
         /// </summary>
         public static string Addon {
@@ -310,6 +292,15 @@ namespace ReShadeDeployer {
         public static string Exit {
             get {
                 return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extraction Failed.
+        /// </summary>
+        public static string ExtractionError_Title {
+            get {
+                return ResourceManager.GetString("ExtractionError_Title", resourceCulture);
             }
         }
         

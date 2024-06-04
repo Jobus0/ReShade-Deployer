@@ -93,5 +93,21 @@ public static class DeployerDownloader
                 catch { /* Ignored */ }
             }
         }
+
+        foreach (var path in new[] {Paths.Dlls, Paths.AddonDlls})
+        {
+            if (!Directory.Exists(path))
+                continue;
+
+            // Delete all old dll versions
+            foreach (var file in Directory.EnumerateFiles(path, "*.dll.oldver", SearchOption.TopDirectoryOnly))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch { /* Ignored */ }
+            }
+        }
     }
 }

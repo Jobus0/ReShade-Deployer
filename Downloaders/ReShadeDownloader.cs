@@ -100,21 +100,51 @@ public static class ReShadeDownloader
                 throw new InvalidDataException();
             }
 
-            Directory.CreateDirectory(directoryPath);
+            foreach (var entry in zip.Entries)
+            {
+                string path = Path.Combine(directoryPath, entry.FullName);
+                
+                if (File.Exists(path) && IsFileLocked(path))
+                    File.Move(path, path + ".oldver", overwrite: true);
+                
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                entry.ExtractToFile(path, true);
+            }
             zip.ExtractToDirectory(directoryPath, true);
         }
-        // catch (IOException)
-        // {
-        //     WpfMessageBox.Show(string.Format(UIStrings.AccessError, url), UIStrings.AccessError_Title);
-        // }
         catch (Exception e)
         {
-            WpfMessageBox.Show(e.GetType() + ": " + e.Message, UIStrings.AccessError_Title);
+            WpfMessageBox.Show(e.GetType() + ": " + e.Message, UIStrings.ExtractionError_Title);
         }
         finally
         {
             File.Delete(downloadPath);
         }
+    }
+    
+    /// <summary>
+    /// Check if a file is locked due to being in use.
+    /// </summary>
+    /// <param name="path">Path to the file to check.</param>
+    /// <returns>Whether the file is locked or not.</returns>
+    private static bool IsFileLocked(string path)
+    {
+        try
+        {
+            using (FileStream stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                stream.Close();
+        }
+        catch (IOException)
+        {
+            //the file is unavailable because it is:
+            //still being written to
+            //or being processed by another thread
+            //or does not exist (has already been processed)
+            return true;
+        }
+
+        //file is not locked
+        return false;
     }
     
     /// <summary>

@@ -27,10 +27,7 @@
 Copyright © 2024 Jobus
 https://github.com/Jobus0/reshade-deployer</value>
 	</data>
-	<data name="AccessError" xml:space="preserve">
-		<value>Extraction failed because write-access was denied. Exit all other programs that use ReShade and try again.</value>
-	</data>
-	<data name="AccessError_Title" xml:space="preserve">
+	<data name="ExtractionError_Title" xml:space="preserve">
 		<value>Extraction Failed</value>
 	</data>
 	<data name="Addon" xml:space="preserve">
