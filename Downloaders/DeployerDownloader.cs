@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using SevenZipExtractor;
 
 namespace ReShadeDeployer;
 
@@ -37,8 +37,8 @@ public static class DeployerDownloader
         File.Move(currentExe, oldExe, overwrite: true);
         
         // Extract the new version of ReShade Deployer
-        using (ArchiveFile archiveFile = new ArchiveFile(downloadPath))
-            archiveFile.Extract(e => Path.Combine(Paths.Root, e.FileName));
+        using (ZipArchive zip = new ZipArchive(File.OpenRead(downloadPath), ZipArchiveMode.Read, false))
+            zip.ExtractToDirectory(Paths.Root);
         
         // Delete the downloaded archive
         File.Delete(downloadPath);

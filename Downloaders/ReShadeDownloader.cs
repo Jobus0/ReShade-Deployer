@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SevenZipExtractor;
 
 namespace ReShadeDeployer;
 
@@ -68,27 +69,44 @@ public static class ReShadeDownloader
             WpfMessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
             return;
         }
-        
-        // Getting the .dll from the installer executable requires two steps of extraction.
-        // First, extract the outer '[0]' archive, which contains the .dll files (x86 and x64).
-        // Second, extract the files from said archive into the specified directory.
 
-        const string innerArchiveName = "[0]";
-        string innerArchivePath = Path.Combine(directoryPath, innerArchiveName);
         try
         {
-            using ArchiveFile archiveFile = new ArchiveFile(downloadPath);
-            archiveFile.Extract(e => e.FileName == innerArchiveName
-                ? innerArchivePath
-                : null);
+            MemoryStream output;
+            await using (FileStream input = File.OpenRead(downloadPath))
+            {
+                output = new MemoryStream((int)input.Length);
 
-            using ArchiveFile innerArchiveFile = new ArchiveFile(innerArchivePath);
-            innerArchiveFile.Extract(innerEntry => Path.Combine(directoryPath, innerEntry.FileName));
+                byte[] block = new byte[512];
+                byte[] signature = { 0x50, 0x4B, 0x03, 0x04 }; // PK..
+
+                // Look for archive at the end of this executable and copy it to a memory stream
+                while (input.Read(block, 0, block.Length) >= signature.Length)
+                {
+                    if (block.Take(signature.Length).SequenceEqual(signature) && block.Skip(signature.Length).Take(26).Max() != 0)
+                    {
+                        output.Write(block, 0, block.Length);
+                        input.CopyTo(output);
+                        break;
+                    }
+                }
+            }
+            
+            ZipArchive zip = new ZipArchive(output, ZipArchiveMode.Read, false);
+            
+            // Validate archive contains the ReShade DLLs
+            if (zip.GetEntry("ReShade32.dll") == null || zip.GetEntry("ReShade64.dll") == null)
+            {
+                throw new InvalidDataException();
+            }
+
+            Directory.CreateDirectory(directoryPath);
+            zip.ExtractToDirectory(directoryPath, true);
         }
-        catch (IOException)
-        {
-            WpfMessageBox.Show(string.Format(UIStrings.AccessError, url), UIStrings.AccessError_Title);
-        }
+        // catch (IOException)
+        // {
+        //     WpfMessageBox.Show(string.Format(UIStrings.AccessError, url), UIStrings.AccessError_Title);
+        // }
         catch (Exception e)
         {
             WpfMessageBox.Show(e.GetType() + ": " + e.Message, UIStrings.AccessError_Title);
@@ -96,7 +114,6 @@ public static class ReShadeDownloader
         finally
         {
             File.Delete(downloadPath);
-            File.Delete(innerArchivePath);
         }
     }
     
