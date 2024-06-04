@@ -118,5 +118,9 @@ public class Config
     /// <summary>
     /// Write ini data to Config.ini file.
     /// </summary>
-    private void Save() => iniParser.WriteFile(Paths.ConfigIni, ini);
+    private void Save()
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(Paths.ConfigIni)!);
+        iniParser.WriteFile(Paths.ConfigIni, ini);
+    }
 }
