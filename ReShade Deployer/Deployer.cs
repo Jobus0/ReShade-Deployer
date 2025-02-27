@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using Microsoft.Win32;
 using Wpf.Ui.Common;
 
@@ -37,31 +36,20 @@ public static class Deployer
     {
         if (api == GraphicsApi.Vulkan && addonSupport)
         {
-            var messageBox = new Wpf.Ui.Controls.MessageBox
-            {
-                Title = UIStrings.Warning,
-                Content = new TextBlock {Text = UIStrings.Vulkan_Addon_Warning, TextWrapping = TextWrapping.Wrap},
-                ResizeMode = ResizeMode.NoResize,
-                SizeToContent = SizeToContent.Height,
-                ButtonLeftName = UIStrings.Continue,
-                ButtonLeftAppearance = ControlAppearance.Caution,
-                ButtonRightName = UIStrings.Cancel,
-                Width = 280
-            };
-            messageBox.ButtonLeftClick += (_, _) =>
-            {
-                messageBox.DialogResult = true;
-                messageBox.Close();
-            };
-            messageBox.ButtonRightClick += (_, _) => messageBox.Close();
+            var result = WpfMessageBox.Show(
+                UIStrings.Vulkan_Addon_Warning,
+                UIStrings.Warning,
+                UIStrings.Continue,
+                UIStrings.Cancel,
+                ControlAppearance.Caution);
             
-            if (messageBox.ShowDialog() != true)
+            if (result != WpfMessageBox.Result.Primary)
                 return;
         }
         
         DllDeployer.Deploy(executableContext, api, addonSupport);
         IniDeployer.Deploy(executableContext);
-                
+        
         if (File.Exists(Paths.ReShadePresetIni))
             PresetDeployer.Deploy(executableContext);
 
@@ -71,19 +59,14 @@ public static class Deployer
         }
         else
         {
-            var messageBox = new Wpf.Ui.Controls.MessageBox
-            {
-                Title = UIStrings.DeploySuccess_Title,
-                Content = new TextBlock {Text = UIStrings.DeploySuccess, TextWrapping = TextWrapping.Wrap},
-                ResizeMode = ResizeMode.NoResize,
-                SizeToContent = SizeToContent.Height,
-                ButtonLeftName = UIStrings.Continue,
-                ButtonRightName = UIStrings.Exit,
-                Width = 260
-            };
-            messageBox.ButtonLeftClick += (_, _) => messageBox.Close();
-            messageBox.ButtonRightClick += (_, _) => Application.Current.Shutdown();
-            messageBox.ShowDialog();
+            var result = WpfMessageBox.Show(
+                UIStrings.DeploySuccess,
+                UIStrings.DeploySuccess_Title,
+                UIStrings.Continue,
+                UIStrings.Exit);
+            
+            if (result == WpfMessageBox.Result.Secondary)
+                Application.Current.Shutdown();
         }
     }
 

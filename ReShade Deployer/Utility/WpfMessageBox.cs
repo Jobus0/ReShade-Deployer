@@ -1,12 +1,16 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using Hyperlink = Wpf.Ui.Controls.Hyperlink;
+using Wpf.Ui.Common;
+using Wpf.Ui.Controls;
+using TextBlock = System.Windows.Controls.TextBlock;
 
 namespace ReShadeDeployer;
 
 public static partial class WpfMessageBox
 {
+    public enum Result { Close, Primary, Secondary }
+    
     public static void Show(string contentText, string title)
     {
         TextBlock content = new TextBlock {Text = contentText, TextWrapping = TextWrapping.Wrap};
@@ -18,9 +22,8 @@ public static partial class WpfMessageBox
             Content = content,
             ResizeMode = ResizeMode.NoResize,
             SizeToContent = SizeToContent.Height,
-            MinWidth = 320,
-            MaxWidth = 480,
-            MinHeight = 160
+            Width = 360,
+            MinHeight = 120
         };
         
         var footer = new StackPanel();
@@ -32,14 +35,50 @@ public static partial class WpfMessageBox
         button.Click += (_, _) => messageBox.Close();
         footer.Children.Add(button);
         messageBox.Footer = footer;
-        
+
         messageBox.ShowDialog();
+    }
+    
+    public static Result Show(string contentText, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
+    {
+        TextBlock content = new TextBlock {Text = contentText, TextWrapping = TextWrapping.Wrap};
+        ConvertStringLinksToHyperlinks(content);
+        
+        var messageBox = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = title,
+            Content = content,
+            ResizeMode = ResizeMode.NoResize,
+            SizeToContent = SizeToContent.Height,
+            ButtonLeftName = primaryButtonText,
+            ButtonRightName = secondaryButtonText,
+            ButtonLeftAppearance = primaryButtonAppearance,
+            Width = 360,
+            MinHeight = 120
+        };
+        messageBox.ButtonLeftClick += (_, _) =>
+        {
+            messageBox.DialogResult = true;
+            messageBox.Close();
+        };
+        messageBox.ButtonRightClick += (_, _) =>
+        {
+            messageBox.DialogResult = false;
+            messageBox.Close();
+        };
+
+        return messageBox.ShowDialog() switch
+        {
+            null => Result.Close,
+            true => Result.Primary,
+            false => Result.Secondary
+        };
     }
 
     /// <summary>
     /// Convert any string http links in a TextBlock to clickable hyperlinks.
     /// </summary>
-    public static void ConvertStringLinksToHyperlinks(TextBlock textBlock)
+    private static void ConvertStringLinksToHyperlinks(TextBlock textBlock)
     {
         string text = textBlock.Text;
         textBlock.Inlines.Clear();

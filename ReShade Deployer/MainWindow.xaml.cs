@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using Wpf.Ui.Common;
 using Button = System.Windows.Controls.Button;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -96,27 +95,18 @@ namespace ReShadeDeployer
         
         public void PromptForUpdate()
         {
-            var textBlock = new TextBlock {Text = string.Format(UIStrings.UpdateAvailable, config.LatestDeployerVersionNumber, assemblyVersion!), TextWrapping = TextWrapping.Wrap};
-            WpfMessageBox.ConvertStringLinksToHyperlinks(textBlock);
-            var messageBox = new Wpf.Ui.Controls.MessageBox
+            var result = WpfMessageBox.Show(
+                string.Format(UIStrings.UpdateAvailable, config.LatestDeployerVersionNumber, assemblyVersion!),
+                UIStrings.UpdateAvailable_Title,
+                UIStrings.Update,
+                UIStrings.Skip);
+
+            if (result == WpfMessageBox.Result.Primary)
             {
-                Title = UIStrings.UpdateAvailable_Title,
-                Content = textBlock,
-                ResizeMode = ResizeMode.NoResize,
-                SizeToContent = SizeToContent.Height,
-                ButtonLeftName = UIStrings.Update,
-                ButtonRightName = UIStrings.Skip,
-                Width = 390
-            };
-            messageBox.ButtonLeftClick += (_, _) =>
-            {
-                messageBox.Close();
                 Panel.IsEnabled = false;
                 UpdateButton.IsEnabled = false;
                 DeployerDownloader.UpdateDeployer();
-            };
-            messageBox.ButtonRightClick += (_, _) => messageBox.Close();
-            messageBox.ShowDialog();
+            }
         }
 
         private async void CheckForNewReShadeVersion(string localVersion)
@@ -174,20 +164,17 @@ namespace ReShadeDeployer
         {
             // Disable buttons until ReShade is downloaded
             DeployButton.IsEnabled = false;
-
-            var messageBox = new Wpf.Ui.Controls.MessageBox
-            {
-                Title = UIStrings.FirstTimeSetup_Title,
-                Content = new TextBlock {Text = UIStrings.FirstTimeSetup, TextWrapping = TextWrapping.Wrap},
-                ResizeMode = ResizeMode.NoResize,
-                SizeToContent = SizeToContent.Height,
-                ButtonLeftName = UIStrings.Continue,
-                ButtonRightName = UIStrings.Exit,
-                Width = 360
-            };
-            messageBox.ButtonLeftClick += (_, _) => { messageBox.Close(); DownloadReShade(); };
-            messageBox.ButtonRightClick += (_, _) => Application.Current.Shutdown();
-            messageBox.ShowDialog();
+            
+            var result = WpfMessageBox.Show(
+                UIStrings.FirstTimeSetup,
+                UIStrings.FirstTimeSetup_Title,
+                UIStrings.Continue,
+                UIStrings.Exit);
+            
+            if (result == WpfMessageBox.Result.Primary)
+                DownloadReShade();
+            else
+                Application.Current.Shutdown();
         }
 
         private async void DownloadReShade()
@@ -289,25 +276,18 @@ namespace ReShadeDeployer
 
         private void UninstallMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            var messageBox = new Wpf.Ui.Controls.MessageBox
+            var result = WpfMessageBox.Show(
+                UIStrings.UninstallDeployer_Content,
+                UIStrings.UninstallDeployer,
+                UIStrings.UninstallDeployer,
+                UIStrings.Cancel,
+                ControlAppearance.Caution);
+
+            if (result == WpfMessageBox.Result.Primary)
             {
-                Title = UIStrings.UninstallDeployer,
-                Content = new TextBlock {Text = UIStrings.UninstallDeployer_Content, TextWrapping = TextWrapping.Wrap},
-                ResizeMode = ResizeMode.NoResize,
-                SizeToContent = SizeToContent.Height,
-                ButtonLeftName = UIStrings.UninstallDeployer,
-                ButtonLeftAppearance = ControlAppearance.Caution,
-                ButtonRightName = UIStrings.Cancel,
-                Width = 340
-            };
-            messageBox.ButtonLeftClick += (_, _) =>
-            {
-                messageBox.Close();
                 RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
                 DllDeployer.RemoveVulkanGlobally();
-            };
-            messageBox.ButtonRightClick += (_, _) => messageBox.Close();
-            messageBox.ShowDialog();
+            }
         }
 
         private void SettingsButton_OnClick(object sender, RoutedEventArgs e)

@@ -1,6 +1,4 @@
 ﻿using System.IO;
-using System.Windows;
-using System.Windows.Controls;
 using Wpf.Ui.Common;
 
 namespace ReShadeDeployer;
@@ -17,21 +15,14 @@ public static class PresetDeployer
 
         if (File.Exists(path))
         {
-            var messageBox = new Wpf.Ui.Controls.MessageBox
-            {
-                Title = UIStrings.PresetOverwrite_Title,
-                Content = new TextBlock {Text = UIStrings.PresetOverwrite, TextWrapping = TextWrapping.Wrap},
-                ResizeMode = ResizeMode.NoResize,
-                SizeToContent = SizeToContent.Height,
-                ButtonLeftName = UIStrings.PresetOverwrite_Yes,
-                ButtonLeftAppearance = ControlAppearance.Danger,
-                ButtonRightName = UIStrings.PresetOverwrite_No,
-                Width = 300
-            };
-            messageBox.ButtonLeftClick += (_, _) => {messageBox.DialogResult = true; messageBox.Close();};
-            messageBox.ButtonRightClick += (_, _) => {messageBox.DialogResult = false; messageBox.Close();};
-
-            if (messageBox.ShowDialog() != true)
+            var result = WpfMessageBox.Show(
+                UIStrings.PresetOverwrite,
+                UIStrings.PresetOverwrite_Title,
+                UIStrings.PresetOverwrite_Yes,
+                UIStrings.PresetOverwrite_No,
+                ControlAppearance.Danger);
+            
+            if (result != WpfMessageBox.Result.Primary)
                 return;
         }
                 
