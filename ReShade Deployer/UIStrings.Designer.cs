@@ -468,7 +468,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove all registry entries of ReShade Deployer and delete the system-wide Vulkan ReShade layer.
+        ///   Looks up a localized string similar to This will remove all registry entries of ReShade Deployer and delete the system-wide Vulkan ReShade layer.
         ///
         ///This is recommended if you want to stop using ReShade Deployer and go back to the official installer..
         /// </summary>

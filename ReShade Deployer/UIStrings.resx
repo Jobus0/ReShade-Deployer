@@ -169,7 +169,7 @@ Otherwise, if you are unsure, check the API section of the game's PCGamingWiki p
 		<value>Uninstall</value>
 	</data>
 	<data name="UninstallDeployer_Content" xml:space="preserve">
-		<value>Remove all registry entries of ReShade Deployer and delete the system-wide Vulkan ReShade layer.
+		<value>This will remove all registry entries of ReShade Deployer and delete the system-wide Vulkan ReShade layer.
 
 This is recommended if you want to stop using ReShade Deployer and go back to the official installer.</value>
 	</data>
