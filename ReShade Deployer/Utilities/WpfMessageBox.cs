@@ -1,8 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
+using Clipboard = System.Windows.Clipboard;
 using TextBlock = System.Windows.Controls.TextBlock;
 
 namespace ReShadeDeployer;
@@ -73,6 +75,55 @@ public static partial class WpfMessageBox
             true => Result.Primary,
             false => Result.Secondary
         };
+    }
+    
+    public static void Show(Exception exception)
+    {
+        StackPanel contentStack = new StackPanel();
+        contentStack.Children.Add(new TextBlock {Text = "Exception Message", FontWeight = FontWeights.Bold});
+        contentStack.Children.Add(new TextBlock {Text = exception.Message, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 12)});
+        
+        contentStack.Children.Add(new TextBlock {Text = "Exception Type", FontWeight = FontWeights.Bold});
+        contentStack.Children.Add(new TextBlock {Text = exception.GetType().ToString(), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 12)});
+        
+        if (exception.StackTrace != null)
+        {
+            contentStack.Children.Add(new TextBlock {Text = "Callstack", FontWeight = FontWeights.Bold});
+            contentStack.Children.Add(new ScrollViewer {Content = new TextBlock {Text = exception.StackTrace, FontSize = 12}, MaxHeight = 300, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto});
+        }
+        
+        var messageBox = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = "Unhandled Exception",
+            Content = contentStack,
+            ResizeMode = ResizeMode.NoResize,
+            SizeToContent = SizeToContent.Height,
+            Width = 500,
+            MinHeight = 200
+        };
+        
+        var footer = new DockPanel();
+        var copyButton = new Wpf.Ui.Controls.Button {
+            Content = UIStrings.Copy,
+            Width = 120,
+            HorizontalAlignment = HorizontalAlignment.Left,
+        };
+        copyButton.Click += (_, _) => Clipboard.SetText(exception.ToString());
+        DockPanel.SetDock(copyButton, Dock.Left);
+        footer.Children.Add(copyButton);
+        
+        var exitButton = new Wpf.Ui.Controls.Button {
+            Content = UIStrings.Exit,
+            Width = 120,
+            Appearance = ControlAppearance.Danger,
+            HorizontalAlignment = HorizontalAlignment.Right
+        };
+        exitButton.Click += (_, _) => messageBox.Close();
+        DockPanel.SetDock(exitButton, Dock.Right);
+        footer.Children.Add(exitButton);
+        messageBox.Footer = footer;
+
+        messageBox.ShowDialog();
     }
 
     /// <summary>

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace ReShadeDeployer;
 
@@ -12,7 +14,18 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         StartupArgs = e.Args;
+        
+        Dispatcher.UnhandledException += DispatcherOnUnhandledException;
 
         base.OnStartup(e);
+    }
+    
+    private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        if (Current?.MainWindow != null)
+        {
+            Current.MainWindow.Hide();
+            WpfMessageBox.Show(e.Exception);
+        }
     }
 }
