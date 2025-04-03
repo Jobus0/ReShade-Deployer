@@ -98,13 +98,13 @@ public class Config
             return;
         
         ini!.Global[key] = value;
-        DeferredSave();
+        _ = DeferredSave();
     }
 
     /// <summary>
     /// Trigger a delayed save to Config.ini. Ignored if save is already in progress.
     /// </summary>
-    private async void DeferredSave()
+    private async Task DeferredSave()
     {
         if (awaitingSave)
             return;
