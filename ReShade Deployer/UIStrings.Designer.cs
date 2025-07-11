@@ -195,7 +195,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy To Game.
+        ///   Looks up a localized string similar to Deploy to Game.
         /// </summary>
         public static string DeployButton {
             get {
@@ -204,7 +204,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy To {0}.
+        ///   Looks up a localized string similar to Deploy to {0}.
         /// </summary>
         public static string DeployButton_Targeted {
             get {

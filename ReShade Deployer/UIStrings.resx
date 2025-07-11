@@ -70,10 +70,10 @@ In order to use ReShade you'll have to download an additional wrapper from d3d8t
 https://github.com/crosire/d3d8to9/releases</value>
 	</data>
 	<data name="DeployButton" xml:space="preserve">
-		<value>Deploy To Game</value>
+		<value>Deploy to Game</value>
 	</data>
 	<data name="DeployButton_Targeted" xml:space="preserve">
-		<value>Deploy To {0}</value>
+		<value>Deploy to {0}</value>
 	</data>
 	<data name="DeployButton_Tooltip" xml:space="preserve">
 		<value>Make sure you have picked the correct Target API above first.
