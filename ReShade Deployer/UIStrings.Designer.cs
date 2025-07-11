@@ -173,6 +173,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string Copy {
+            get {
+                return ResourceManager.GetString("Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to It looks like the target application uses DirectX 8.
         ///
         ///In order to use ReShade you&apos;ll have to download an additional wrapper from d3d8to9 which converts all API calls to DirectX 9.

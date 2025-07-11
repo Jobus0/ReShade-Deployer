@@ -107,6 +107,9 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 	<data name="Exit" xml:space="preserve">
 		<value>Exit</value>
 	</data>
+	<data name="Copy" xml:space="preserve">
+		<value>Copy</value>
+	</data>
 	<data name="FirstTimeSetup" xml:space="preserve">
 		<value>ReShade Deployer will now download ReShade and set up the required folder structure into the current folder.
 
