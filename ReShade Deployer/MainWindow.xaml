@@ -32,7 +32,7 @@
                         <Separator/>
                         <MenuItem Name="UpdateDeployerMenuItem" Header="{x:Static rd:UIStrings.UpdateDeployer}" Click="UpdateDeployerMenuItem_OnClick" />
                         <MenuItem Header="{x:Static rd:UIStrings.About}" Click="AboutMenuItem_OnClick" />
-                        <MenuItem Name="UninstallMenuItem" Header="{x:Static rd:UIStrings.UninstallDeployer}" Click="UninstallMenuItem_OnClick" />
+                        <MenuItem Name="UninstallMenuItem" Header="{x:Static rd:UIStrings.UninstallDeployer}" HeaderStringFormat="{}{0}..." Click="UninstallMenuItem_OnClick" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </ui:Button>
