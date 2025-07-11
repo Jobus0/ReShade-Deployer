@@ -22,8 +22,8 @@ public static class IniDeployer
             ? iniParser.ReadFile(Paths.ReShadeIni)
             : new IniData();
 
-        ini["GENERAL"]["EffectSearchPaths"] = Paths.Shaders;
-        ini["GENERAL"]["TextureSearchPaths"] = Paths.Textures;
+        ini["GENERAL"]["EffectSearchPaths"] = Paths.Shaders + "\\**";
+        ini["GENERAL"]["TextureSearchPaths"] = Paths.Textures + "\\**";
         ini["GENERAL"]["IntermediateCachePath"] = Paths.Cache;
         ini["GENERAL"]["PresetPath"] = @".\ReShadePreset.ini";
         ini["GENERAL"]["PreprocessorDefinitions"] = $"RESHADE_DEPTH_LINEARIZATION_FAR_PLANE=1000.0," +
