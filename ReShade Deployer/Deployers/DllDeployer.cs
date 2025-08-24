@@ -7,7 +7,7 @@ namespace ReShadeDeployer;
 
 public enum GraphicsApi { D3D9, DXGI, OpenGL, Vulkan }
 
-public static class DllDeployer
+public class DllDeployer(IMessageBox messageBox)
 {
     /// <summary>
     /// Deploy ReShade DLL to a game directory.
@@ -15,7 +15,7 @@ public static class DllDeployer
     /// <param name="executableContext">Context for the executable to deploy.</param>
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
-    public static void Deploy(ExecutableContext executableContext, GraphicsApi api, bool addonSupport)
+    public void Deploy(ExecutableContext executableContext, GraphicsApi api, bool addonSupport)
     {
         string dllPath = addonSupport ? Paths.AddonDlls : Paths.Dlls;
         
@@ -26,7 +26,7 @@ public static class DllDeployer
         }
         
         if (api == GraphicsApi.D3D9 && executableContext.IsD3D8)
-            WpfMessageBox.Show(UIStrings.D3D8_Info, UIStrings.Notice);
+            messageBox.Show(UIStrings.D3D8_Info, UIStrings.Notice);
 
         string symlinkPath = Path.Combine(executableContext.DirectoryPath, DllNameFromApi(api) + ".dll");
             
@@ -62,7 +62,7 @@ public static class DllDeployer
     /// Deploy ReShade DLLs to a common local directory, and then register them for Vulkan system-wide.
     /// </summary>
     /// <param name="dllPath">Path to the ReShade DLLs.</param>
-    private static void DeployVulkanGlobally(string dllPath)
+    private void DeployVulkanGlobally(string dllPath)
     {
 		try
         {
@@ -88,14 +88,14 @@ public static class DllDeployer
         }
 		catch (Exception e)
 		{
-			WpfMessageBox.Show("Vulkan Installation Failed", "Failed to install Vulkan layer manifest:\n" + e.Message);
+            messageBox.Show("Vulkan Installation Failed", "Failed to install Vulkan layer manifest:\n" + e.Message);
 		}
     }
     
     /// <summary>
     /// Remove ReShade DLLs from a common local directory and unregister them from Vulkan system-wide.
     /// </summary>
-    public static void RemoveVulkanGlobally()
+    public void RemoveVulkanGlobally()
     {
         // Delete old Vulkan layer registries.
         string localApplicationData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ReShade");

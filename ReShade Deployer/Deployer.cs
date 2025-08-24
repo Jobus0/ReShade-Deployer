@@ -8,20 +8,19 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public static class Deployer
+public class Deployer(DllDeployer dllDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, IConfig config, IMessageBox messageBox)
 {
     /// <summary>
     /// Opens a file dialog for selecting an executable, then deploys ReShade for that executable.
     /// </summary>
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
-    /// <param name="exitOnDeploy">Whether the application should exit after deployment.</param>
-    public static void SelectExecutableAndDeployReShade(GraphicsApi api, bool addonSupport, bool exitOnDeploy)
+    public void SelectExecutableAndDeployReShade(GraphicsApi api, bool addonSupport)
     {
         if (TrySelectExecutable(out string executablePath))
         {
             var executableContext = new ExecutableContext(executablePath);
-            DeployReShadeForExecutable(executableContext, api, addonSupport, exitOnDeploy);
+            DeployReShadeForExecutable(executableContext, api, addonSupport);
         }
     }
 
@@ -31,41 +30,40 @@ public static class Deployer
     /// <param name="executableContext">Context for the executable to deploy.</param>
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
-    /// <param name="exitOnDeploy">Whether the application should exit after deployment.</param>
-    public static void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, bool exitOnDeploy)
+    public void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport)
     {
         if (api == GraphicsApi.Vulkan && addonSupport)
         {
-            var result = WpfMessageBox.Show(
+            var result = messageBox.Show(
                 UIStrings.Vulkan_Addon_Warning,
                 UIStrings.Warning,
                 UIStrings.Continue,
                 UIStrings.Cancel,
                 ControlAppearance.Caution);
             
-            if (result != WpfMessageBox.Result.Primary)
+            if (result != IMessageBox.Result.Primary)
                 return;
         }
         
-        DllDeployer.Deploy(executableContext, api, addonSupport);
-        IniDeployer.Deploy(executableContext);
+        dllDeployer.Deploy(executableContext, api, addonSupport);
+        iniDeployer.Deploy(executableContext);
         
         if (File.Exists(Paths.ReShadePresetIni))
-            PresetDeployer.Deploy(executableContext);
+            presetDeployer.Deploy(executableContext);
 
-        if (exitOnDeploy)
+        if (config.AlwaysExitOnDeploy)
         {
             Application.Current.Shutdown();
         }
         else
         {
-            var result = WpfMessageBox.Show(
+            var result = messageBox.Show(
                 UIStrings.DeploySuccess,
                 UIStrings.DeploySuccess_Title,
                 UIStrings.Continue,
                 UIStrings.Exit);
             
-            if (result == WpfMessageBox.Result.Secondary)
+            if (result == IMessageBox.Result.Secondary)
                 Application.Current.Shutdown();
         }
     }
@@ -75,7 +73,7 @@ public static class Deployer
     /// </summary>
     /// <param name="executablePath">Path of the selected game executable.</param>
     /// <returns>True if a file was selected, false if cancelled.</returns>
-    public static bool TrySelectExecutable(out string executablePath)
+    public bool TrySelectExecutable(out string executablePath)
     {
         OpenFileDialog openFileDialog = new OpenFileDialog();
         openFileDialog.Title = UIStrings.OpenFileDialog_Title;

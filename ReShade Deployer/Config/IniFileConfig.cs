@@ -9,7 +9,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Handles the reading and writing of Config.ini. Writing to file is deferred so that it is only done once even if multiple changes are made at once.
 /// </summary>
-public class Config
+public class IniFileConfig : IConfig
 {
     private readonly FileIniDataParser iniParser = new();
     private IniData? ini;

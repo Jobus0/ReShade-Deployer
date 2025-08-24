@@ -8,23 +8,23 @@ using System.Threading.Tasks;
 
 namespace ReShadeDeployer;
 
-public static class ReShadeDownloader
+public class ReShadeDownloader(DownloadService downloadService, IMessageBox messageBox)
 {
     private const string WebsiteUrl = "https://reshade.me";
     
     /// <summary>
     /// Download the latest version of ReShade (including add-on support version) from the official website and extract it into the lib folder.
     /// </summary>
-    public static async Task DownloadReShade()
+    public async Task DownloadReShade()
     {
         string websiteContent;
         try
         {
-            websiteContent = await DownloadHelper.GetWebsiteContent(WebsiteUrl);
+            websiteContent = await downloadService.GetWebsiteContent(WebsiteUrl);
         }
         catch
         {
-            WpfMessageBox.Show(UIStrings.ConnectionError, UIStrings.ConnectionError_Title);
+            messageBox.Show(UIStrings.ConnectionError, UIStrings.ConnectionError_Title);
             return;
         }
         
@@ -33,9 +33,9 @@ public static class ReShadeDownloader
 
         string downloadUrl = Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString();
         
-        if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == DownloadHelper.ExtractVersionFromText(downloadUrl))
+        if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == VersionParser.Parse(downloadUrl))
         {
-            WpfMessageBox.Show(UIStrings.UpdateError, UIStrings.Update);
+            messageBox.Show(UIStrings.UpdateError, UIStrings.Update);
             return;
         }
         
@@ -46,7 +46,7 @@ public static class ReShadeDownloader
         // Download Compatibility.ini
         try
         {
-            await DownloadHelper.Download("https://raw.githubusercontent.com/crosire/reshade-shaders/list/Compatibility.ini", Paths.CompatibilityIni);
+            await downloadService.Download("https://raw.githubusercontent.com/crosire/reshade-shaders/list/Compatibility.ini", Paths.CompatibilityIni);
         }
         catch { /* Ignore. File is nice, but not necessary. */ }
     }
@@ -56,17 +56,17 @@ public static class ReShadeDownloader
     /// </summary>
     /// <param name="url">URL to an official ReShade installer.</param>
     /// <param name="directoryPath">Directory to extract .dll into.</param>
-    private static async Task DownloadAndExtractReShade(string url, string directoryPath)
+    private async Task DownloadAndExtractReShade(string url, string directoryPath)
     {
         string downloadPath = Path.Combine(directoryPath, "ReShade.exe");
 
         try
         {
-            await DownloadHelper.Download(url, downloadPath);
+            await downloadService.Download(url, downloadPath);
         }
         catch
         {
-            WpfMessageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
+            messageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
             return;
         }
 
@@ -104,7 +104,7 @@ public static class ReShadeDownloader
             {
                 string path = Path.Combine(directoryPath, entry.FullName);
                 
-                if (File.Exists(path) && IsFileLocked(path))
+                if (File.Exists(path) && FileHelper.IsFileLocked(path))
                     File.Move(path, path + ".oldver", overwrite: true);
                 
                 Directory.CreateDirectory(Path.GetDirectoryName(path)!);
@@ -114,7 +114,7 @@ public static class ReShadeDownloader
         }
         catch (Exception e)
         {
-            WpfMessageBox.Show(e.GetType() + ": " + e.Message, UIStrings.ExtractionError_Title);
+            messageBox.Show(e.GetType() + ": " + e.Message, UIStrings.ExtractionError_Title);
         }
         finally
         {
@@ -123,34 +123,9 @@ public static class ReShadeDownloader
     }
     
     /// <summary>
-    /// Check if a file is locked due to being in use.
-    /// </summary>
-    /// <param name="path">Path to the file to check.</param>
-    /// <returns>Whether the file is locked or not.</returns>
-    private static bool IsFileLocked(string path)
-    {
-        try
-        {
-            using (FileStream stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
-                stream.Close();
-        }
-        catch (IOException)
-        {
-            //the file is unavailable because it is:
-            //still being written to
-            //or being processed by another thread
-            //or does not exist (has already been processed)
-            return true;
-        }
-
-        //file is not locked
-        return false;
-    }
-    
-    /// <summary>
     /// Create all the directories used by ReShade Deployer.
     /// </summary>
-    public static void CreateDirectories()
+    public void CreateDirectories()
     {
         Directory.CreateDirectory(Paths.Shaders);
         Directory.CreateDirectory(Paths.Textures);
@@ -164,7 +139,7 @@ public static class ReShadeDownloader
     /// </summary>
     /// <param name="version">The version string of the ReShade DLL.</param>
     /// <returns>True if the file exists, false otherwise.</returns>
-    public static bool TryGetLocalReShadeVersionNumber(out string version)
+    public bool TryGetLocalReShadeVersionNumber(out string version)
     {
         string path = Path.Combine(Paths.Dlls, "ReShade64.dll");
         if (File.Exists(path))
@@ -182,9 +157,9 @@ public static class ReShadeDownloader
     /// Get the latest version number of ReShade from the official website. Throws an exception if the website is not reachable.
     /// </summary>
     /// <returns>Latest version number, formatted like "1.0.0".</returns>
-    public static async Task<string> GetLatestOnlineReShadeVersionNumber()
+    public async Task<string> GetLatestOnlineReShadeVersionNumber()
     {
-        var websiteContent = await DownloadHelper.GetWebsiteContent(WebsiteUrl);
-        return DownloadHelper.ExtractVersionFromText(Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString());
+        var websiteContent = await downloadService.GetWebsiteContent(WebsiteUrl);
+        return VersionParser.Parse(Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString());
     }
 }

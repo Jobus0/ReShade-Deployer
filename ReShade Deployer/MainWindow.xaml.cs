@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Threading;
 using Wpf.Ui.Common;
 using Button = System.Windows.Controls.Button;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -14,16 +15,28 @@ namespace ReShadeDeployer
     /// </summary>
     public partial class MainWindow
     {
+        private readonly Deployer _deployer;
+        private readonly DllDeployer _dllDeployer; // for vulkan uninstallation only
+        private readonly DeployerDownloader _deployerDownloader;
+        private readonly ReShadeDownloader _reShadeDownloader;
+        private readonly IConfig _config;
+        private readonly IMessageBox _messageBox;
+
         private bool closing;
 
-        private readonly Config config = new();
-        
         private ExecutableContext? selectedExecutableContext;
 
         private readonly string? assemblyVersion;
         
-        public MainWindow()
+        public MainWindow(Deployer deployer, DllDeployer dllDeployer, DeployerDownloader deployerDownloader, ReShadeDownloader reShadeDownloader, IConfig config, IMessageBox messageBox)
         {
+            _deployer = deployer;
+            _dllDeployer = dllDeployer;
+            _deployerDownloader = deployerDownloader;
+            _reShadeDownloader = reShadeDownloader;
+            _config = config;
+            _messageBox = messageBox;
+
             InitializeComponent();
 
             assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
@@ -37,7 +50,7 @@ namespace ReShadeDeployer
             if (startupArgs.Length > 0 && !string.IsNullOrEmpty(startupArgs[0]))
                 TargetExecutable(startupArgs[0]);
             
-            if (ReShadeDownloader.TryGetLocalReShadeVersionNumber(out string version))
+            if (_reShadeDownloader.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
                 CheckForNewReShadeVersion(version);
@@ -47,19 +60,27 @@ namespace ReShadeDeployer
                 FirstTimeSetup();
             }
             
-            DeployerDownloader.CleanUpOldVersion();
+            _deployerDownloader.CleanUpOldVersion();
             
             if (assemblyVersion != null)
                 CheckForNewDeployerVersion();
-            
+
+            Dispatcher.UnhandledException += DispatcherOnUnhandledException;
+
 #if DEBUG
             ExecutableInfoButton.Visibility = Visibility.Visible;
 #endif
         }
         
+        private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            Hide();
+            _messageBox.Show(e.Exception);
+        }
+        
         private void SelectGameButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (Deployer.TrySelectExecutable(out string executablePath))
+            if (_deployer.TrySelectExecutable(out string executablePath))
                 TargetExecutable(executablePath);
         }
         
@@ -68,20 +89,20 @@ namespace ReShadeDeployer
             if (assemblyVersion == null)
                 return;
             
-            string latestVersion = config.LatestDeployerVersionNumber;
+            string latestVersion = _config.LatestDeployerVersionNumber;
             bool newerVersionFound = false;
-            if (DateTime.Now - config.LatestDeployerVersionNumberCheckDate > TimeSpan.FromDays(7))
+            if (DateTime.Now - _config.LatestDeployerVersionNumberCheckDate > TimeSpan.FromDays(7))
             {
                 try
                 {
-                    latestVersion = await DeployerDownloader.GetLatestOnlineVersionNumber();
+                    latestVersion = await _deployerDownloader.GetLatestOnlineVersionNumber();
 
-                    if (config.LatestDeployerVersionNumber != latestVersion)
+                    if (_config.LatestDeployerVersionNumber != latestVersion)
                     {
-                        config.LatestDeployerVersionNumber = latestVersion;
+                        _config.LatestDeployerVersionNumber = latestVersion;
                         newerVersionFound = true;
                     }
-                    config.LatestDeployerVersionNumberCheckDate = DateTime.Now;
+                    _config.LatestDeployerVersionNumberCheckDate = DateTime.Now;
                 }
                 catch (Exception)
                 {
@@ -95,31 +116,31 @@ namespace ReShadeDeployer
         
         public void PromptForUpdate()
         {
-            var result = WpfMessageBox.Show(
-                string.Format(UIStrings.UpdateAvailable, config.LatestDeployerVersionNumber, assemblyVersion!),
+            var result = _messageBox.Show(
+                string.Format(UIStrings.UpdateAvailable, _config.LatestDeployerVersionNumber, assemblyVersion!),
                 UIStrings.UpdateAvailable_Title,
                 UIStrings.Update,
                 UIStrings.Skip);
 
-            if (result == WpfMessageBox.Result.Primary)
+            if (result == IMessageBox.Result.Primary)
             {
                 Panel.IsEnabled = false;
                 UpdateButton.IsEnabled = false;
-                DeployerDownloader.UpdateDeployer();
+                _deployerDownloader.UpdateDeployer();
             }
         }
 
         private async void CheckForNewReShadeVersion(string localVersion)
         {
-            string latestVersion = config.LatestReShadeVersionNumber;
-            if (DateTime.Now - config.LatestReShadeVersionNumberCheckDate > TimeSpan.FromDays(7))
+            string latestVersion = _config.LatestReShadeVersionNumber;
+            if (DateTime.Now - _config.LatestReShadeVersionNumberCheckDate > TimeSpan.FromDays(7))
             {
                 try
                 {
-                    latestVersion = await ReShadeDownloader.GetLatestOnlineReShadeVersionNumber();
+                    latestVersion = await _reShadeDownloader.GetLatestOnlineReShadeVersionNumber();
                     
-                    config.LatestReShadeVersionNumber = latestVersion;
-                    config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
+                    _config.LatestReShadeVersionNumber = latestVersion;
+                    _config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
                 }
                 catch (Exception)
                 {
@@ -138,9 +159,9 @@ namespace ReShadeDeployer
             Hide();
             
             if (selectedExecutableContext == null)
-                Deployer.SelectExecutableAndDeployReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true, config.AlwaysExitOnDeploy);
+                _deployer.SelectExecutableAndDeployReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
             else
-                Deployer.DeployReShadeForExecutable(selectedExecutableContext, GetCheckedApi(), AddonSupportCheckBox.IsChecked == true, config.AlwaysExitOnDeploy);
+                _deployer.DeployReShadeForExecutable(selectedExecutableContext, GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
             
             if (!closing)
                 Show();
@@ -165,13 +186,13 @@ namespace ReShadeDeployer
             // Disable buttons until ReShade is downloaded
             DeployButton.IsEnabled = false;
             
-            var result = WpfMessageBox.Show(
+            var result = _messageBox.Show(
                 UIStrings.FirstTimeSetup,
                 UIStrings.FirstTimeSetup_Title,
                 UIStrings.Continue,
                 UIStrings.Exit);
             
-            if (result == WpfMessageBox.Result.Primary)
+            if (result == IMessageBox.Result.Primary)
                 DownloadReShade();
             else
                 Application.Current.Shutdown();
@@ -183,14 +204,14 @@ namespace ReShadeDeployer
             DeployButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
 
-            await ReShadeDownloader.DownloadReShade();
+            await _reShadeDownloader.DownloadReShade();
             
-            if (ReShadeDownloader.TryGetLocalReShadeVersionNumber(out string version))
+            if (_reShadeDownloader.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
 
-                config.LatestReShadeVersionNumber = version;
-                config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
+                _config.LatestReShadeVersionNumber = version;
+                _config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
                 
                 // Remove version label from the update button, keeping only the icon
                 UpdateButton.Content = string.Empty;
@@ -255,18 +276,18 @@ namespace ReShadeDeployer
         private void AlwaysExitOnDeployMenuItem_OnLoaded(object sender, RoutedEventArgs e)
         {
             MenuItem item = (MenuItem)sender;
-            item.IsChecked = config.AlwaysExitOnDeploy;
+            item.IsChecked = _config.AlwaysExitOnDeploy;
         }
         
         private void AlwaysExitOnDeployMenuItem_OnChecked(object sender, RoutedEventArgs e)
         {
             MenuItem item = (MenuItem)sender;
-            config.AlwaysExitOnDeploy = item.IsChecked;
+            _config.AlwaysExitOnDeploy = item.IsChecked;
         }
         
         private void AboutMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            WpfMessageBox.Show(string.Format(UIStrings.About_Info, assemblyVersion), UIStrings.About);
+            _messageBox.Show(string.Format(UIStrings.About_Info, assemblyVersion), UIStrings.About);
         }
         
         private void UpdateDeployerMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -276,17 +297,17 @@ namespace ReShadeDeployer
 
         private void UninstallMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            var result = WpfMessageBox.Show(
+            var result = _messageBox.Show(
                 UIStrings.UninstallDeployer_Content,
                 UIStrings.UninstallDeployer,
                 UIStrings.UninstallDeployer,
                 UIStrings.Cancel,
                 ControlAppearance.Caution);
 
-            if (result == WpfMessageBox.Result.Primary)
+            if (result == IMessageBox.Result.Primary)
             {
                 RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
-                DllDeployer.RemoveVulkanGlobally();
+                _dllDeployer.RemoveVulkanGlobally();
             }
         }
 
@@ -299,7 +320,7 @@ namespace ReShadeDeployer
                 foreach (var item in button.ContextMenu!.Items)
                 {
                     if (item is MenuItem {Name: "UpdateDeployerMenuItem"} updateDeployerMenuItem)
-                        updateDeployerMenuItem.Visibility = assemblyVersion == config.LatestDeployerVersionNumber ? Visibility.Collapsed : Visibility.Visible;
+                        updateDeployerMenuItem.Visibility = assemblyVersion == _config.LatestDeployerVersionNumber ? Visibility.Collapsed : Visibility.Visible;
                 }
             }
                     
@@ -353,7 +374,7 @@ namespace ReShadeDeployer
         private void ExecutableInfoButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (selectedExecutableContext != null)
-                WpfMessageBox.Show(selectedExecutableContext.ToString(), "Executable Info");
+                _messageBox.Show(selectedExecutableContext.ToString(), "Executable Info");
         }
     }
 }

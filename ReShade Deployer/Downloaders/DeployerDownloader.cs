@@ -7,27 +7,27 @@ using System.Windows;
 
 namespace ReShadeDeployer;
 
-public static class DeployerDownloader
+public class DeployerDownloader(DownloadService downloadService, IMessageBox messageBox)
 {
     private const string GithubUrl = "https://api.github.com/repos/Jobus0/ReShade-Deployer/releases/latest";
     
     /// <summary>
     /// Download the latest version of ReShade Deployer from GitHub.
     /// </summary>
-    public static async void UpdateDeployer()
+    public async void UpdateDeployer()
     {
         // Fetch latest version of ReShade Deployer from GitHub
-        string content = await DownloadHelper.GetWebsiteContent(GithubUrl);
+        string content = await downloadService.GetWebsiteContent(GithubUrl);
         string downloadUrl = Regex.Match(content, @"""browser_download_url"":\s?""(\S*?)""").Groups[1].ToString();
         string downloadPath = Path.Combine(Paths.Lib, "ReShade-Deployer.zip");
 
         try
         {
-            await DownloadHelper.Download(downloadUrl, downloadPath);
+            await downloadService.Download(downloadUrl, downloadPath);
         }
         catch
         {
-            WpfMessageBox.Show(string.Format(UIStrings.DownloadError, downloadUrl), UIStrings.DownloadError_Title);
+            messageBox.Show(string.Format(UIStrings.DownloadError, downloadUrl), UIStrings.DownloadError_Title);
             return;
         }
         
@@ -62,18 +62,18 @@ public static class DeployerDownloader
     /// Get the latest version number of ReShade Deployer from GitHub. Throws an exception if the website is not reachable.
     /// </summary>
     /// <returns>Latest version number, formatted like "1.0.0".</returns>
-    public static async Task<string> GetLatestOnlineVersionNumber()
+    public async Task<string> GetLatestOnlineVersionNumber()
     {
-        string content = await DownloadHelper.GetWebsiteContent(GithubUrl);
+        string content = await downloadService.GetWebsiteContent(GithubUrl);
         string tag = Regex.Match(content, @"""tag_name"":\S*").ToString();
-        string version = DownloadHelper.ExtractVersionFromText(tag);
+        string version = VersionParser.Parse(tag);
         return version;
     }
 
     /// <summary>
     /// Delete the old version of ReShade Deployer if it exists.
     /// </summary>
-    public static async void CleanUpOldVersion()
+    public async void CleanUpOldVersion()
     {
         string oldExe = Process.GetCurrentProcess().MainModule!.FileName + ".oldver";
         if (File.Exists(oldExe))

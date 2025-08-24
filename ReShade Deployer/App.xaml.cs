@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ReShadeDeployer;
 
@@ -9,23 +10,38 @@ namespace ReShadeDeployer;
 /// </summary>
 public partial class App : Application
 {
+    public ServiceProvider? ServiceProvider { get; private set; }
     public string[] StartupArgs = null!;
         
     protected override void OnStartup(StartupEventArgs e)
     {
         StartupArgs = e.Args;
         
-        Dispatcher.UnhandledException += DispatcherOnUnhandledException;
-
+        var services = new ServiceCollection();
+        services.AddSingleton<MainWindow>();
+        services.AddSingleton<Deployer>();
+        services.AddSingleton<DllDeployer>();
+        services.AddSingleton<IniDeployer>();
+        services.AddSingleton<PresetDeployer>();
+        services.AddSingleton<DeployerDownloader>();
+        services.AddSingleton<ReShadeDownloader>();
+        services.AddSingleton<DownloadService>();
+        services.AddSingleton<IConfig, IniFileConfig>();
+        services.AddSingleton<IMessageBox, WpfMessageBox>();
+        
+        ServiceProvider = services.BuildServiceProvider();
+        
+        Dispatcher.UnhandledException += (_, _) => ServiceProvider?.Dispose();
+        
+        ServiceProvider.GetRequiredService<MainWindow>().Show();
+        
         base.OnStartup(e);
     }
     
-    private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    protected override void OnExit(ExitEventArgs e)
     {
-        if (Current?.MainWindow != null)
-        {
-            Current.MainWindow.Hide();
-            WpfMessageBox.Show(e.Exception);
-        }
+        ServiceProvider?.Dispose();
+        
+        base.OnExit(e);
     }
 }

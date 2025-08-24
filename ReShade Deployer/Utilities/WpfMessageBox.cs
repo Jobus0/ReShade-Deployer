@@ -6,14 +6,13 @@ using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
 using Clipboard = System.Windows.Clipboard;
 using TextBlock = System.Windows.Controls.TextBlock;
+using Result = ReShadeDeployer.IMessageBox.Result;
 
 namespace ReShadeDeployer;
 
-public static partial class WpfMessageBox
+public partial class WpfMessageBox : IMessageBox
 {
-    public enum Result { Close, Primary, Secondary }
-    
-    public static void Show(string contentText, string title)
+    public void Show(string contentText, string title)
     {
         TextBlock content = new TextBlock {Text = contentText, TextWrapping = TextWrapping.Wrap};
         ConvertStringLinksToHyperlinks(content);
@@ -41,7 +40,7 @@ public static partial class WpfMessageBox
         messageBox.ShowDialog();
     }
     
-    public static Result Show(string contentText, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
+    public Result Show(string contentText, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
     {
         TextBlock content = new TextBlock {Text = contentText, TextWrapping = TextWrapping.Wrap};
         ConvertStringLinksToHyperlinks(content);
@@ -71,13 +70,13 @@ public static partial class WpfMessageBox
 
         return messageBox.ShowDialog() switch
         {
-            null => Result.Close,
-            true => Result.Primary,
-            false => Result.Secondary
+            null => IMessageBox.Result.Close,
+            true => IMessageBox.Result.Primary,
+            false => IMessageBox.Result.Secondary
         };
     }
     
-    public static void Show(Exception exception)
+    public void Show(Exception exception)
     {
         StackPanel contentStack = new StackPanel();
         contentStack.Children.Add(new TextBlock {Text = "Exception Message", FontWeight = FontWeights.Bold});
@@ -129,7 +128,7 @@ public static partial class WpfMessageBox
     /// <summary>
     /// Convert any string http links in a TextBlock to clickable hyperlinks.
     /// </summary>
-    private static void ConvertStringLinksToHyperlinks(TextBlock textBlock)
+    private void ConvertStringLinksToHyperlinks(TextBlock textBlock)
     {
         string text = textBlock.Text;
         textBlock.Inlines.Clear();

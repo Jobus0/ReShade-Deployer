@@ -4,13 +4,13 @@ using IniParser.Model;
 
 namespace ReShadeDeployer;
 
-public static class IniDeployer
+public class IniDeployer
 {
     /// <summary>
     /// Create a new ReShade.ini at the given path using the values of a local ReShade.ini file, or fallback to a new minimal one.
     /// </summary>
     /// <param name="executableContext">Context for the executable to deploy.</param>
-    public static void Deploy(ExecutableContext executableContext)
+    public void Deploy(ExecutableContext executableContext)
     {
         string path = Path.Combine(executableContext.DirectoryPath, "ReShade.ini");
         
@@ -29,7 +29,7 @@ public static class IniDeployer
         iniParser.WriteFile(path, ini);
     }
     
-    private static void ApplyContextualDefaults(IniData ini, ExecutableContext executableContext)
+    private void ApplyContextualDefaults(IniData ini, ExecutableContext executableContext)
     {
         ini["GENERAL"]["EffectSearchPaths"] = Paths.Shaders + "\\**";
         ini["GENERAL"]["TextureSearchPaths"] = Paths.Textures + "\\**";
