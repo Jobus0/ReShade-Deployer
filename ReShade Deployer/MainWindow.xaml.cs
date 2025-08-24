@@ -17,8 +17,8 @@ namespace ReShadeDeployer
     {
         private readonly Deployer _deployer;
         private readonly DllDeployer _dllDeployer; // for vulkan uninstallation only
-        private readonly DeployerDownloader _deployerDownloader;
-        private readonly ReShadeDownloader _reShadeDownloader;
+        private readonly AppUpdater _appUpdater;
+        private readonly ReShadeUpdater _reShadeUpdater;
         private readonly IConfig _config;
         private readonly IMessageBox _messageBox;
 
@@ -28,12 +28,12 @@ namespace ReShadeDeployer
 
         private readonly string? assemblyVersion;
         
-        public MainWindow(Deployer deployer, DllDeployer dllDeployer, DeployerDownloader deployerDownloader, ReShadeDownloader reShadeDownloader, IConfig config, IMessageBox messageBox)
+        public MainWindow(Deployer deployer, DllDeployer dllDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
         {
             _deployer = deployer;
             _dllDeployer = dllDeployer;
-            _deployerDownloader = deployerDownloader;
-            _reShadeDownloader = reShadeDownloader;
+            _appUpdater = appUpdater;
+            _reShadeUpdater = reShadeUpdater;
             _config = config;
             _messageBox = messageBox;
 
@@ -50,7 +50,7 @@ namespace ReShadeDeployer
             if (startupArgs.Length > 0 && !string.IsNullOrEmpty(startupArgs[0]))
                 TargetExecutable(startupArgs[0]);
             
-            if (_reShadeDownloader.TryGetLocalReShadeVersionNumber(out string version))
+            if (_reShadeUpdater.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
                 CheckForNewReShadeVersion(version);
@@ -60,7 +60,7 @@ namespace ReShadeDeployer
                 FirstTimeSetup();
             }
             
-            _deployerDownloader.CleanUpOldVersion();
+            _appUpdater.CleanUpOldVersion();
             
             if (assemblyVersion != null)
                 CheckForNewDeployerVersion();
@@ -95,7 +95,7 @@ namespace ReShadeDeployer
             {
                 try
                 {
-                    latestVersion = await _deployerDownloader.GetLatestOnlineVersionNumber();
+                    latestVersion = await _appUpdater.GetLatestOnlineVersionNumber();
 
                     if (_config.LatestDeployerVersionNumber != latestVersion)
                     {
@@ -126,7 +126,7 @@ namespace ReShadeDeployer
             {
                 Panel.IsEnabled = false;
                 UpdateButton.IsEnabled = false;
-                _deployerDownloader.UpdateDeployer();
+                _appUpdater.Update();
             }
         }
 
@@ -137,7 +137,7 @@ namespace ReShadeDeployer
             {
                 try
                 {
-                    latestVersion = await _reShadeDownloader.GetLatestOnlineReShadeVersionNumber();
+                    latestVersion = await _reShadeUpdater.GetLatestOnlineReShadeVersionNumber();
                     
                     _config.LatestReShadeVersionNumber = latestVersion;
                     _config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
@@ -204,9 +204,9 @@ namespace ReShadeDeployer
             DeployButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
 
-            await _reShadeDownloader.DownloadReShade();
+            await _reShadeUpdater.Update();
             
-            if (_reShadeDownloader.TryGetLocalReShadeVersionNumber(out string version))
+            if (_reShadeUpdater.TryGetLocalReShadeVersionNumber(out string version))
             {
                 VersionLabel.Content = version;
 

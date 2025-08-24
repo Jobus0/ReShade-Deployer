@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace ReShadeDeployer;
 
-public class ReShadeDownloader(DownloadService downloadService, IMessageBox messageBox)
+public class ReShadeUpdater(DownloadService downloadService, IMessageBox messageBox)
 {
     private const string WebsiteUrl = "https://reshade.me";
     
     /// <summary>
     /// Download the latest version of ReShade (including add-on support version) from the official website and extract it into the lib folder.
     /// </summary>
-    public async Task DownloadReShade()
+    public async Task Update()
     {
         string websiteContent;
         try

@@ -7,14 +7,14 @@ using System.Windows;
 
 namespace ReShadeDeployer;
 
-public class DeployerDownloader(DownloadService downloadService, IMessageBox messageBox)
+public class AppUpdater(DownloadService downloadService, IMessageBox messageBox)
 {
     private const string GithubUrl = "https://api.github.com/repos/Jobus0/ReShade-Deployer/releases/latest";
     
     /// <summary>
-    /// Download the latest version of ReShade Deployer from GitHub.
+    /// Download the latest version of ReShade Deployer from GitHub and restart the application with the new version.
     /// </summary>
-    public async void UpdateDeployer()
+    public async void Update()
     {
         // Fetch latest version of ReShade Deployer from GitHub
         string content = await downloadService.GetWebsiteContent(GithubUrl);

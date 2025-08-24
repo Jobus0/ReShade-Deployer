@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace ReShadeDeployer;
 
 /// <summary>
-/// Provides methods for downloading and extracting official ReShade files.
+/// Provides methods for downloading and extracting files.
 /// </summary>
 public class DownloadService
 {

@@ -23,8 +23,8 @@ public partial class App : Application
         services.AddSingleton<DllDeployer>();
         services.AddSingleton<IniDeployer>();
         services.AddSingleton<PresetDeployer>();
-        services.AddSingleton<DeployerDownloader>();
-        services.AddSingleton<ReShadeDownloader>();
+        services.AddSingleton<AppUpdater>();
+        services.AddSingleton<ReShadeUpdater>();
         services.AddSingleton<DownloadService>();
         services.AddSingleton<IConfig, IniFileConfig>();
         services.AddSingleton<IMessageBox, WpfMessageBox>();
