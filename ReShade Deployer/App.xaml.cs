@@ -19,7 +19,7 @@ public partial class App : Application
         
         var services = new ServiceCollection();
         services.AddSingleton<MainWindow>();
-        services.AddSingleton<Deployer>();
+        services.AddSingleton<DeploymentOrchestrator>();
         services.AddSingleton<DllDeployer>();
         services.AddSingleton<IniDeployer>();
         services.AddSingleton<PresetDeployer>();

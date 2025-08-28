@@ -1,9 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using Wpf.Ui.Common;
 using Button = System.Windows.Controls.Button;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -15,22 +15,20 @@ namespace ReShadeDeployer
     /// </summary>
     public partial class MainWindow
     {
-        private readonly Deployer _deployer;
+        private readonly DeploymentOrchestrator _deploymentOrchestrator;
         private readonly DllDeployer _dllDeployer; // for vulkan uninstallation only
         private readonly AppUpdater _appUpdater;
         private readonly ReShadeUpdater _reShadeUpdater;
         private readonly IConfig _config;
         private readonly IMessageBox _messageBox;
 
-        private bool closing;
-
         private ExecutableContext? selectedExecutableContext;
 
         private readonly string? assemblyVersion;
         
-        public MainWindow(Deployer deployer, DllDeployer dllDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
+        public MainWindow(DeploymentOrchestrator deploymentOrchestrator, DllDeployer dllDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
         {
-            _deployer = deployer;
+            _deploymentOrchestrator = deploymentOrchestrator;
             _dllDeployer = dllDeployer;
             _appUpdater = appUpdater;
             _reShadeUpdater = reShadeUpdater;
@@ -80,8 +78,25 @@ namespace ReShadeDeployer
         
         private void SelectGameButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (_deployer.TrySelectExecutable(out string executablePath))
+            if (TrySelectExecutable(out string executablePath))
                 TargetExecutable(executablePath);
+        }
+        
+        /// <summary>
+        /// Opens a file dialog for selecting an executable.
+        /// </summary>
+        /// <param name="executablePath">Path of the selected game executable.</param>
+        /// <returns>True if a file was selected, false if cancelled.</returns>
+        public bool TrySelectExecutable(out string executablePath)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = UIStrings.OpenFileDialog_Title;
+            openFileDialog.Filter = "Select EXE|*.exe";
+
+            bool result = openFileDialog.ShowDialog() ?? false;
+
+            executablePath = openFileDialog.FileName;
+            return result;
         }
         
         private async void CheckForNewDeployerVersion()
@@ -156,20 +171,33 @@ namespace ReShadeDeployer
 
         private void DeployButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Hide();
-            
             if (selectedExecutableContext == null)
-                _deployer.SelectExecutableAndDeployReShade(GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
-            else
-                _deployer.DeployReShadeForExecutable(selectedExecutableContext, GetCheckedApi(), AddonSupportCheckBox.IsChecked == true);
+                return;
             
-            if (!closing)
-                Show();
-        }
+            Hide();
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            closing = true;
+            var api = GetCheckedApi();
+            var addonSupport = AddonSupportCheckBox.IsChecked == true;
+            
+            _deploymentOrchestrator.DeployReShadeForExecutable(selectedExecutableContext, api, addonSupport);
+            
+            if (_config.AlwaysExitOnDeploy)
+            {
+                Application.Current.Shutdown();
+            }
+            else
+            {
+                var result = _messageBox.Show(
+                    UIStrings.DeploySuccess,
+                    UIStrings.DeploySuccess_Title,
+                    UIStrings.Continue,
+                    UIStrings.Exit);
+            
+                if (result == IMessageBox.Result.Secondary)
+                    Application.Current.Shutdown();
+                else
+                    Show();
+            }
         }
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
