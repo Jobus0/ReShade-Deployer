@@ -28,6 +28,10 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDepl
             if (result != IMessageBox.Result.Primary)
                 return;
         }
+        else if (api == GraphicsApi.D3D9 && executableContext.IsD3D8)
+        {
+            messageBox.Show(UIStrings.D3D8_Info, UIStrings.Notice);
+        }
         
         dllDeployer.Deploy(executableContext, api, addonSupport);
         iniDeployer.Deploy(executableContext);

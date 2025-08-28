@@ -24,9 +24,6 @@ public class DllDeployer(IMessageBox messageBox)
             DeployVulkanGlobally(dllPath);
             return;
         }
-        
-        if (api == GraphicsApi.D3D9 && executableContext.IsD3D8)
-            messageBox.Show(UIStrings.D3D8_Info, UIStrings.Notice);
 
         string symlinkPath = Path.Combine(executableContext.DirectoryPath, DllNameFromApi(api) + ".dll");
             
