@@ -21,6 +21,7 @@ public partial class App : Application
         services.AddSingleton<MainWindow>();
         services.AddSingleton<DeploymentOrchestrator>();
         services.AddSingleton<DllDeployer>();
+        services.AddSingleton<VulkanSystemWideDeployer>();
         services.AddSingleton<IniDeployer>();
         services.AddSingleton<PresetDeployer>();
         services.AddSingleton<AppUpdater>();

@@ -16,7 +16,7 @@ namespace ReShadeDeployer
     public partial class MainWindow
     {
         private readonly DeploymentOrchestrator _deploymentOrchestrator;
-        private readonly DllDeployer _dllDeployer; // for vulkan uninstallation only
+        private readonly VulkanSystemWideDeployer _vulkanSystemWideDeployer; // for vulkan uninstallation only
         private readonly AppUpdater _appUpdater;
         private readonly ReShadeUpdater _reShadeUpdater;
         private readonly IConfig _config;
@@ -26,10 +26,10 @@ namespace ReShadeDeployer
 
         private readonly string? assemblyVersion;
         
-        public MainWindow(DeploymentOrchestrator deploymentOrchestrator, DllDeployer dllDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
+        public MainWindow(DeploymentOrchestrator deploymentOrchestrator, VulkanSystemWideDeployer vulkanSystemWideDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
         {
             _deploymentOrchestrator = deploymentOrchestrator;
-            _dllDeployer = dllDeployer;
+            _vulkanSystemWideDeployer = vulkanSystemWideDeployer;
             _appUpdater = appUpdater;
             _reShadeUpdater = reShadeUpdater;
             _config = config;
@@ -335,7 +335,7 @@ namespace ReShadeDeployer
             if (result == IMessageBox.Result.Primary)
             {
                 RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
-                _dllDeployer.RemoveVulkanGlobally();
+                _vulkanSystemWideDeployer.RemoveVulkanGlobally();
             }
         }
 
