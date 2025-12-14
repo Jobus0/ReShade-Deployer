@@ -182,6 +182,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Critical Error.
+        /// </summary>
+        public static string CriticalError_Title {
+            get {
+                return ResourceManager.GetString("CriticalError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to It looks like the target application uses DirectX 8.
         ///
         ///In order to use ReShade you&apos;ll have to download an additional wrapper from d3d8to9 which converts all API calls to DirectX 9.
@@ -220,6 +229,15 @@ namespace ReShadeDeployer {
         public static string DeployButton_Tooltip {
             get {
                 return ResourceManager.GetString("DeployButton_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment Failed.
+        /// </summary>
+        public static string DeployError_Title {
+            get {
+                return ResourceManager.GetString("DeployError_Title", resourceCulture);
             }
         }
         

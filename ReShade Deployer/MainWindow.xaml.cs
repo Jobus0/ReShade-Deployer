@@ -73,7 +73,13 @@ namespace ReShadeDeployer
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             Hide();
-            _messageBox.Show(e.Exception);
+            _messageBox.Show(e.Exception, UIStrings.CriticalError_Title, UIStrings.Exit, ControlAppearance.Danger);
+
+            if (!System.Diagnostics.Debugger.IsAttached)
+            {
+                e.Handled = true;
+                Application.Current.Shutdown();
+            }
         }
         
         private void SelectGameButton_OnClick(object sender, RoutedEventArgs e)
@@ -178,8 +184,17 @@ namespace ReShadeDeployer
 
             var api = GetCheckedApi();
             var addonSupport = AddonSupportCheckBox.IsChecked == true;
-            
-            _deploymentOrchestrator.DeployReShadeForExecutable(selectedExecutableContext, api, addonSupport);
+
+            try
+            {
+                _deploymentOrchestrator.DeployReShadeForExecutable(selectedExecutableContext, api, addonSupport);
+            }
+            catch (DeploymentException ex)
+            {
+                _messageBox.Show(ex, UIStrings.DeployError_Title, UIStrings.OK);
+                Show();
+                return;
+            }
             
             if (_config.AlwaysExitOnDeploy)
             {

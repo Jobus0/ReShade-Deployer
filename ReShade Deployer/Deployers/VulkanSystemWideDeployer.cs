@@ -38,9 +38,9 @@ public class VulkanSystemWideDeployer
                     key.SetValue(symlinkJsonPath, 0, RegistryValueKind.DWord);
             }
         }
-		catch (Exception e)
+		catch (Exception ex)
         {
-            throw new DeploymentException("Vulkan deployment failed.", e);
+            throw new DeploymentException("Vulkan deployment failed.", ex);
 		}
     }
     

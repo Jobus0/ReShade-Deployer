@@ -31,9 +31,6 @@ public partial class App : Application
         services.AddSingleton<IMessageBox, WpfMessageBox>();
         
         ServiceProvider = services.BuildServiceProvider();
-        
-        Dispatcher.UnhandledException += (_, _) => ServiceProvider?.Dispose();
-        
         ServiceProvider.GetRequiredService<MainWindow>().Show();
         
         base.OnStartup(e);

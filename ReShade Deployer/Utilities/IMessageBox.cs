@@ -9,5 +9,5 @@ public interface IMessageBox
     
     void Show(string contentText, string title);
     Result Show(string contentText, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary);
-    void Show(Exception exception);
+    void Show(Exception exception, string title, string primaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary);
 }

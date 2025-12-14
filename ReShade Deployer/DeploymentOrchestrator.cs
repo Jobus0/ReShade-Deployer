@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Wpf.Ui.Common;
 
 namespace ReShadeDeployer;
@@ -32,24 +33,31 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDepl
         {
             messageBox.Show(UIStrings.D3D8_Info, UIStrings.Notice);
         }
-        
-        dllDeployer.Deploy(executableContext, api, addonSupport);
-        iniDeployer.Deploy(executableContext);
 
-        // Only deploy preset if a template preset exists in the ReShade Deployer folder
-        if (File.Exists(Paths.ReShadePresetIni))
+        try
         {
-            // If the preset already exists in the target executable directory, ask to overwrite
-            bool deployedPresetExists = File.Exists(presetDeployer.GetPath(executableContext));
-            bool doDeploy = !deployedPresetExists || messageBox.Show(
-                UIStrings.PresetOverwrite,
-                UIStrings.PresetOverwrite_Title,
-                UIStrings.PresetOverwrite_Yes,
-                UIStrings.PresetOverwrite_No,
-                ControlAppearance.Danger) == IMessageBox.Result.Primary;
-        
-            if (doDeploy)
-                presetDeployer.Deploy(executableContext);
+            dllDeployer.Deploy(executableContext, api, addonSupport);
+            iniDeployer.Deploy(executableContext);
+
+            // Only deploy preset if a template preset exists in the ReShade Deployer folder
+            if (File.Exists(Paths.ReShadePresetIni))
+            {
+                // If the preset already exists in the target executable directory, ask to overwrite
+                bool deployedPresetExists = File.Exists(presetDeployer.GetPath(executableContext));
+                bool doDeploy = !deployedPresetExists || messageBox.Show(
+                    UIStrings.PresetOverwrite,
+                    UIStrings.PresetOverwrite_Title,
+                    UIStrings.PresetOverwrite_Yes,
+                    UIStrings.PresetOverwrite_No,
+                    ControlAppearance.Danger) == IMessageBox.Result.Primary;
+
+                if (doDeploy)
+                    presetDeployer.Deploy(executableContext);
+            }
+        }
+        catch (Exception ex) when (ex is not DeploymentException)
+        {
+            throw new DeploymentException(ex);
         }
     }
 }

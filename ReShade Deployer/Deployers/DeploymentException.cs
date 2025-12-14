@@ -2,4 +2,8 @@
 
 namespace ReShadeDeployer;
 
-public class DeploymentException(string message, Exception innerException) : Exception(message, innerException);
+public class DeploymentException : Exception
+{
+    public DeploymentException(string message, Exception innerException) : base(message, innerException) { }
+    public DeploymentException(Exception innerException) : base(string.Empty, innerException) { }
+}

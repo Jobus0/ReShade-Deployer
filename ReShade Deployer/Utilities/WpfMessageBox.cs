@@ -70,35 +70,49 @@ public partial class WpfMessageBox : IMessageBox
 
         return messageBox.ShowDialog() switch
         {
-            null => IMessageBox.Result.Close,
-            true => IMessageBox.Result.Primary,
-            false => IMessageBox.Result.Secondary
+            null => Result.Close,
+            true => Result.Primary,
+            false => Result.Secondary
         };
     }
     
-    public void Show(Exception exception)
+    public void Show(Exception exception, string title, string primaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
     {
         StackPanel contentStack = new StackPanel();
-        contentStack.Children.Add(new TextBlock {Text = "Exception Message", FontWeight = FontWeights.Bold});
-        contentStack.Children.Add(new TextBlock {Text = exception.Message, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 12)});
         
-        contentStack.Children.Add(new TextBlock {Text = "Exception Type", FontWeight = FontWeights.Bold});
-        contentStack.Children.Add(new TextBlock {Text = exception.GetType().ToString(), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 12)});
+        string? message = exception.Message;
+        if (string.IsNullOrEmpty(message))
+            message = exception.InnerException?.Message;
+
+        if (!string.IsNullOrEmpty(message))
+        {
+            contentStack.Children.Add(new TextBlock {Text = "Error Message", FontWeight = FontWeights.Bold});
+            contentStack.Children.Add(new TextBlock {Text = message, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 12)});
+        }
         
         if (exception.StackTrace != null)
         {
             contentStack.Children.Add(new TextBlock {Text = "Callstack", FontWeight = FontWeights.Bold});
-            contentStack.Children.Add(new ScrollViewer {Content = new TextBlock {Text = exception.StackTrace, FontSize = 12}, MaxHeight = 300, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto});
+            contentStack.Children.Add(new ScrollViewer
+            {
+                Content = new TextBlock
+                {
+                    Text = exception.ToString(),
+                    FontSize = 11
+                },
+                MaxHeight = 500,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+            });
         }
         
         var messageBox = new Wpf.Ui.Controls.MessageBox
         {
-            Title = "Unhandled Exception",
+            Title = title,
             Content = contentStack,
             ResizeMode = ResizeMode.NoResize,
             SizeToContent = SizeToContent.Height,
-            Width = 500,
-            MinHeight = 200
+            Width = 600,
+            MinHeight = 250
         };
         
         var footer = new DockPanel();
@@ -112,9 +126,9 @@ public partial class WpfMessageBox : IMessageBox
         footer.Children.Add(copyButton);
         
         var exitButton = new Wpf.Ui.Controls.Button {
-            Content = UIStrings.Exit,
+            Content = primaryButtonText,
             Width = 120,
-            Appearance = ControlAppearance.Danger,
+            Appearance = primaryButtonAppearance,
             HorizontalAlignment = HorizontalAlignment.Right
         };
         exitButton.Click += (_, _) => messageBox.Close();

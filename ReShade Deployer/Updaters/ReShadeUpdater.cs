@@ -112,9 +112,9 @@ public class ReShadeUpdater(DownloadService downloadService, IMessageBox message
             }
             zip.ExtractToDirectory(directoryPath, true);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            messageBox.Show(e.GetType() + ": " + e.Message, UIStrings.ExtractionError_Title);
+            messageBox.Show(ex.GetType() + ": " + ex.Message, UIStrings.ExtractionError_Title);
         }
         finally
         {
