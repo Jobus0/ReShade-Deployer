@@ -30,7 +30,7 @@ public class DownloadService
     {
         using HttpClient httpClient = new HttpClient();
         await using var httpStream = await httpClient.GetStreamAsync(url);
-        await using var fileStream = new FileStream(downloadSavePath, FileMode.CreateNew);
+        await using var fileStream = new FileStream(downloadSavePath, FileMode.Create);
         await httpStream.CopyToAsync(fileStream);
     }
 }
