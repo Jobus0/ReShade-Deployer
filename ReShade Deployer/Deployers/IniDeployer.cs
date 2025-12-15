@@ -42,6 +42,8 @@ public class IniDeployer
             $"RESHADE_DEPTH_INPUT_IS_LOGARITHMIC={executableContext.DepthLogarithmic}";
         ini["OVERLAY"]["TutorialProgress"] = "4";
         ini["DEPTH"]["DepthCopyBeforeClears"] = executableContext.DepthCopyBeforeClears;
+        ini["DEPTH"]["DepthCopyAtClearIndex"] = executableContext.DepthCopyAtClearIndex;
+        ini["DEPTH"]["DrawStatsHeuristic"] = executableContext.DrawStatsHeuristic;
         ini["DEPTH"]["UseAspectRatioHeuristics"] = executableContext.UseAspectRatioHeuristics;
     }
 }

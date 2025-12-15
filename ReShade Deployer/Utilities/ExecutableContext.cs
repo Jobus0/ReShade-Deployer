@@ -31,6 +31,8 @@ public class ExecutableContext
     public readonly string DepthUpsideDown;
     public readonly string DepthLogarithmic;
     public readonly string DepthCopyBeforeClears;
+    public readonly string DepthCopyAtClearIndex;
+    public readonly string DrawStatsHeuristic;
     public readonly string UseAspectRatioHeuristics;
 
     private readonly IEnumerable<string>? modules;
@@ -114,6 +116,8 @@ public class ExecutableContext
                 DepthUpsideDown = ini[FileName]["DepthUpsideDown"] ?? "0";
                 DepthLogarithmic = ini[FileName]["DepthLogarithmic"] ?? "0";
                 DepthCopyBeforeClears = ini[FileName]["DepthCopyBeforeClears"] ?? "0";
+                DepthCopyAtClearIndex = ini[FileName]["DepthCopyAtClearIndex"] ?? "0";
+                DrawStatsHeuristic = ini[FileName]["DrawStatsHeuristic"] ?? "0";
                 UseAspectRatioHeuristics = ini[FileName]["UseAspectRatioHeuristics"] ?? "1";
             }
             else
@@ -122,6 +126,8 @@ public class ExecutableContext
                 DepthUpsideDown = "0";
                 DepthLogarithmic = "0";
                 DepthCopyBeforeClears = "0";
+                DepthCopyAtClearIndex = "0";
+                DrawStatsHeuristic = "0";
                 UseAspectRatioHeuristics = "1";
             }
 
@@ -142,6 +148,8 @@ public class ExecutableContext
             DepthUpsideDown = "0";
             DepthLogarithmic = "0";
             DepthCopyBeforeClears = "0";
+            DepthCopyAtClearIndex = "0";
+            DrawStatsHeuristic = "0";
             UseAspectRatioHeuristics = "1";
         }
     }
@@ -178,6 +186,8 @@ public class ExecutableContext
         sb.AppendLine("    DepthUpsideDown: " + DepthUpsideDown);
         sb.AppendLine("    DepthLogarithmic: " + DepthLogarithmic);
         sb.AppendLine("    DepthCopyBeforeClears: " + DepthCopyBeforeClears);
+        sb.AppendLine("    DepthCopyAtClearIndex: " + DepthCopyAtClearIndex);
+        sb.AppendLine("    DrawStatsHeuristic: " + DrawStatsHeuristic);
         sb.AppendLine("    UseAspectRatioHeuristics: " + UseAspectRatioHeuristics);
         sb.AppendLine();
 
