@@ -23,7 +23,8 @@ public partial class WpfMessageBox : IMessageBox
             Content = content,
             ResizeMode = ResizeMode.NoResize,
             SizeToContent = SizeToContent.Height,
-            Width = 360,
+            MinWidth = 360,
+            MaxWidth = 500,
             MinHeight = 120
         };
         
@@ -54,7 +55,8 @@ public partial class WpfMessageBox : IMessageBox
             ButtonLeftName = primaryButtonText,
             ButtonRightName = secondaryButtonText,
             ButtonLeftAppearance = primaryButtonAppearance,
-            Width = 360,
+            MinWidth = 360,
+            MaxWidth = 500,
             MinHeight = 120
         };
         messageBox.ButtonLeftClick += (_, _) =>
