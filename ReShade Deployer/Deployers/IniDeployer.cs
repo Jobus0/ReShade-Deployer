@@ -34,7 +34,6 @@ public class IniDeployer
         ini["GENERAL"]["EffectSearchPaths"] = Paths.Shaders + "\\**";
         ini["GENERAL"]["TextureSearchPaths"] = Paths.Textures + "\\**";
         ini["GENERAL"]["IntermediateCachePath"] = Paths.Cache;
-        ini["GENERAL"]["PresetPath"] = @".\ReShadePreset.ini";
         ini["GENERAL"]["PreprocessorDefinitions"] =
             $"RESHADE_DEPTH_LINEARIZATION_FAR_PLANE=1000.0," +
             $"RESHADE_DEPTH_INPUT_IS_UPSIDE_DOWN={executableContext.DepthUpsideDown}," +
