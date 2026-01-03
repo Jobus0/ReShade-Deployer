@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Microsoft.Win32;
 using Wpf.Ui.Common;
 using Button = System.Windows.Controls.Button;
@@ -26,7 +30,7 @@ namespace ReShadeDeployer
 
         private readonly string? assemblyVersion;
         
-        public MainWindow(DeploymentOrchestrator deploymentOrchestrator, VulkanSystemWideDeployer vulkanSystemWideDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
+        public MainWindow(DeploymentOrchestrator deploymentOrchestrator, AddonsDeployer addonsDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
         {
             _deploymentOrchestrator = deploymentOrchestrator;
             _vulkanSystemWideDeployer = vulkanSystemWideDeployer;
@@ -38,6 +42,18 @@ namespace ReShadeDeployer
             InitializeComponent();
 
             assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+
+            var addons = addonsDeployer.GetAvailableAddons();
+            var addonItems = new List<AddonItem>();
+            foreach (var addon in addons)
+                addonItems.Add(new AddonItem { Name = addon });
+            
+            AddonsComboBox.ItemsSource = addonItems;
+
+            if (addonItems.Count == 0)
+                AddonsComboGrid.Visibility = Visibility.Collapsed;
+            else
+                UpdateAddonsSummaryText();
 
             Loaded += OnLoaded;
         }
@@ -187,7 +203,8 @@ namespace ReShadeDeployer
 
             try
             {
-                _deploymentOrchestrator.DeployReShadeForExecutable(selectedExecutableContext, api, addonSupport);
+                var selectedAddons = addonSupport ? GetSelectedAddonsList() : Enumerable.Empty<string>();
+                _deploymentOrchestrator.DeployReShadeForExecutable(selectedExecutableContext, api, addonSupport, selectedAddons);
             }
             catch (DeploymentException ex)
             {
@@ -213,6 +230,16 @@ namespace ReShadeDeployer
                 else
                     Show();
             }
+        }
+
+        private List<string> GetSelectedAddonsList()
+        {
+            var selectedAddons = new List<string>();
+            if (AddonsComboBox.ItemsSource is IEnumerable<AddonItem> items)
+                foreach (var item in items)
+                    if (item.IsSelected)
+                        selectedAddons.Add(item.Name);
+            return selectedAddons;
         }
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
@@ -418,6 +445,59 @@ namespace ReShadeDeployer
         {
             if (selectedExecutableContext != null)
                 _messageBox.Show(selectedExecutableContext.ToString(), "Executable Info");
+        }
+        
+        private void AddonSupportCheckBox_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is System.Windows.Controls.CheckBox checkBox && AddonsComboBox.ItemsSource is ICollection<AddonItem> {Count: > 0})
+                AddonsComboGrid.Visibility = checkBox.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void AddonItem_OnUserClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement { DataContext: AddonItem item })
+            {
+                item.IsSelected = !item.IsSelected;
+                UpdateAddonsSummaryText();
+                e.Handled = true;
+            }
+        }
+
+        private void UpdateAddonsSummaryText()
+        {
+            var selected = GetSelectedAddonsList();
+            if (selected.Count == 0)
+            {
+                AddonsSummaryText.Text = UIStrings.AddonSummaryPlaceholder;
+            }
+            else
+            {
+                AddonsSummaryText.Text = string.Join(", ", selected);
+            }
+        }
+    }
+    
+    public class AddonItem : INotifyPropertyChanged
+    {
+        public string Name { get; init; } = string.Empty;
+        
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected == value) return;
+                _isSelected = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

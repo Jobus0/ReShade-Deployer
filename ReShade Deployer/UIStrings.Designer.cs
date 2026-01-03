@@ -101,6 +101,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Add-ons....
+        /// </summary>
+        public static string AddonSummaryPlaceholder {
+            get {
+                return ResourceManager.GetString("AddonSummaryPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Always Exit On Deploy.
         /// </summary>
         public static string AlwaysExitOnDeploy {

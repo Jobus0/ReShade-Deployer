@@ -24,6 +24,7 @@ public partial class App : Application
         services.AddSingleton<VulkanSystemWideDeployer>();
         services.AddSingleton<IniDeployer>();
         services.AddSingleton<PresetDeployer>();
+        services.AddSingleton<AddonsDeployer>();
         services.AddSingleton<AppUpdater>();
         services.AddSingleton<ReShadeUpdater>();
         services.AddSingleton<DownloadService>();

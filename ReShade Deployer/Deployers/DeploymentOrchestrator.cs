@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Wpf.Ui.Common;
 
@@ -7,7 +8,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, IMessageBox messageBox)
+public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer, IMessageBox messageBox)
 {
     /// <summary>
     /// Deploys ReShade for a specified executable.
@@ -15,7 +16,8 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDepl
     /// <param name="executableContext">Context for the executable to deploy.</param>
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
-    public void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport)
+    /// <param name="addons">List of addons to deploy.</param>
+    public void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, IEnumerable<string> addons)
     {
         if (api == GraphicsApi.Vulkan && addonSupport)
         {
@@ -38,6 +40,9 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDepl
         {
             dllDeployer.Deploy(executableContext, api, addonSupport);
             iniDeployer.Deploy(executableContext);
+            
+            if (addonSupport)
+                addonsDeployer.Deploy(executableContext, addons);
 
             // Only deploy preset if a template preset exists in the ReShade Deployer folder
             if (File.Exists(Paths.ReShadePresetIni))

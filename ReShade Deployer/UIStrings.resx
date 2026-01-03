@@ -227,4 +227,7 @@ To be safe, press Cancel and uncheck Add-on Support before deploying again.</val
 	<data name="DeployError_Title" xml:space="preserve">
 		<value>Deployment Failed</value>
 	</data>
+	<data name="AddonSummaryPlaceholder" xml:space="preserve">
+		<value>Select Add-ons...</value>
+	</data>
 </root>

@@ -6,13 +6,13 @@ public static class RegistryHelper
 {
     private static string ActionNameToPath(string actionName)
     {
-        return "exefile\\shell\\" + "Z" + actionName.Replace(" ", "");
+        return "exefile\\shell\\" + "Z" + actionName.Replace(" ", ""); // Prefix with 'Z' to put it below 'Run as administrator'
     }
     
     public static void RegisterContextMenuAction(string actionName, string command, string? iconPath = null)
     {
         // Create the registry key for the action.
-        using RegistryKey key = Registry.ClassesRoot.CreateSubKey(ActionNameToPath(actionName)); // Prefix with 'Z' to put it below 'Run as administrator'
+        using RegistryKey key = Registry.ClassesRoot.CreateSubKey(ActionNameToPath(actionName));
         
         // Set the display name for the action
         key.SetValue("", actionName);

@@ -59,7 +59,27 @@
                     <RadioButton Name="VulkanRadioButton" FontSize="13" Content="{x:Static rd:UIStrings.Vulkan}" ToolTip="{x:Static rd:UIStrings.Vulkan_Tooltip}" />
                 </StackPanel>
             </GroupBox>
-            <CheckBox Name="AddonSupportCheckBox" Margin="7" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}" />
+            <CheckBox Name="AddonSupportCheckBox" Margin="7" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}" Click="AddonSupportCheckBox_OnClick" />
+            <Grid Name="AddonsComboGrid" Margin="7,0,7,7" Visibility="Collapsed">
+                <ComboBox Name="AddonsComboBox" FontSize="13" HorizontalAlignment="Stretch">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="MinHeight" Value="0" />
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Background="Transparent" MouseLeftButtonUp="AddonItem_OnUserClick">
+                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" 
+                                          IsHitTestVisible="False"
+                                          Margin="5,2" />
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Name="AddonsSummaryText" Text="Select Addons..." Margin="12,0,25,0" VerticalAlignment="Center" IsHitTestVisible="False" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+            </Grid>
             <ui:Button Name="DeployButton" Height="50" HorizontalAlignment="Stretch" IsEnabled="False" Appearance="Primary" Content="{x:Static rd:UIStrings.DeployButton}" ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}" Click="DeployButton_OnClick">
             </ui:Button>
         </StackPanel>
