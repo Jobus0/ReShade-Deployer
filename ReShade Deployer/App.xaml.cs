@@ -25,6 +25,7 @@ public partial class App : Application
         services.AddSingleton<IniDeployer>();
         services.AddSingleton<PresetDeployer>();
         services.AddSingleton<AddonsDeployer>();
+        services.AddSingleton<ReShadeUndeployer>();
         services.AddSingleton<AppUpdater>();
         services.AddSingleton<ReShadeUpdater>();
         services.AddSingleton<DownloadService>();

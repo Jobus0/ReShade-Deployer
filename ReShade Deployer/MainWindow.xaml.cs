@@ -20,6 +20,7 @@ namespace ReShadeDeployer
     public partial class MainWindow
     {
         private readonly DeploymentOrchestrator _deploymentOrchestrator;
+        private readonly ReShadeUndeployer _reShadeUndeployer;
         private readonly VulkanSystemWideDeployer _vulkanSystemWideDeployer; // for vulkan uninstallation only
         private readonly AppUpdater _appUpdater;
         private readonly ReShadeUpdater _reShadeUpdater;
@@ -30,9 +31,10 @@ namespace ReShadeDeployer
 
         private readonly string? assemblyVersion;
         
-        public MainWindow(DeploymentOrchestrator deploymentOrchestrator, AddonsDeployer addonsDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
+        public MainWindow(DeploymentOrchestrator deploymentOrchestrator, AddonsDeployer addonsDeployer, ReShadeUndeployer reShadeUndeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
         {
             _deploymentOrchestrator = deploymentOrchestrator;
+            _reShadeUndeployer = reShadeUndeployer;
             _vulkanSystemWideDeployer = vulkanSystemWideDeployer;
             _appUpdater = appUpdater;
             _reShadeUpdater = reShadeUpdater;
@@ -219,6 +221,8 @@ namespace ReShadeDeployer
             }
             else
             {
+                UpdateUndeployButtonVisibility();
+
                 var result = _messageBox.Show(
                     UIStrings.DeploySuccess,
                     UIStrings.DeploySuccess_Title,
@@ -230,6 +234,52 @@ namespace ReShadeDeployer
                 else
                     Show();
             }
+        }
+
+        private void UndeployButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (selectedExecutableContext == null)
+                return;
+            
+            var files = _reShadeUndeployer.FindReShadeFiles(selectedExecutableContext.DirectoryPath);
+            
+            if (files.Count == 0)
+            {
+                UpdateUndeployButtonVisibility();
+                return;
+            }
+            
+            // Build file list for dialog (show only file names)
+            string fileList = string.Join("\n", files.Select(Path.GetFileName));
+            string message = UIStrings.Undeploy_Confirm + "\n\n" + fileList;
+            
+            var result = _messageBox.Show(
+                message,
+                UIStrings.Undeploy_Confirm_Title,
+                UIStrings.Undeploy,
+                UIStrings.Cancel,
+                ControlAppearance.Caution);
+            
+            if (result == IMessageBox.Result.Primary)
+            {
+                _reShadeUndeployer.Undeploy(selectedExecutableContext.DirectoryPath);
+                _messageBox.Show(UIStrings.Undeploy_Success, UIStrings.DeploySuccess_Title);
+                
+                // Re-scan to update button visibility
+                UpdateUndeployButtonVisibility();
+            }
+        }
+
+        private void UpdateUndeployButtonVisibility()
+        {
+            if (selectedExecutableContext == null)
+            {
+                UndeployButton.Visibility = Visibility.Collapsed;
+                return;
+            }
+            
+            var files = _reShadeUndeployer.FindReShadeFiles(selectedExecutableContext.DirectoryPath);
+            UndeployButton.Visibility = files.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private List<string> GetSelectedAddonsList()
@@ -439,7 +489,10 @@ namespace ReShadeDeployer
                 // Clear highlight
                 HighlightApi(null);
             }
+
+            UpdateUndeployButtonVisibility();
         }
+
 
         private void ExecutableInfoButton_OnClick(object sender, RoutedEventArgs e)
         {

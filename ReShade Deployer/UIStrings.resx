@@ -230,4 +230,21 @@ To be safe, press Cancel and uncheck Add-on Support before deploying again.</val
 	<data name="AddonSummaryPlaceholder" xml:space="preserve">
 		<value>Select Add-ons...</value>
 	</data>
+	<data name="Undeploy" xml:space="preserve">
+		<value>Undeploy</value>
+	</data>
+	<data name="Undeploy_Confirm" xml:space="preserve">
+		<value>Are you sure you want to remove ReShade from this game?
+
+The following files will be deleted:</value>
+	</data>
+	<data name="Undeploy_Confirm_Title" xml:space="preserve">
+		<value>Confirm Undeploy</value>
+	</data>
+	<data name="Undeploy_Success" xml:space="preserve">
+		<value>ReShade was successfully removed!</value>
+	</data>
+	<data name="UndeployButton_Tooltip" xml:space="preserve">
+		<value>Remove existing ReShade deployment from the selected game.</value>
+	</data>
 </root>

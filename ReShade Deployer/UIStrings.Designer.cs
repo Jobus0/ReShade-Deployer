@@ -495,6 +495,53 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Undeploy.
+        /// </summary>
+        public static string Undeploy {
+            get {
+                return ResourceManager.GetString("Undeploy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove ReShade from this game?
+        ///
+        ///The following files will be deleted:.
+        /// </summary>
+        public static string Undeploy_Confirm {
+            get {
+                return ResourceManager.GetString("Undeploy_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Undeploy.
+        /// </summary>
+        public static string Undeploy_Confirm_Title {
+            get {
+                return ResourceManager.GetString("Undeploy_Confirm_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ReShade was successfully removed!.
+        /// </summary>
+        public static string Undeploy_Success {
+            get {
+                return ResourceManager.GetString("Undeploy_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove existing ReShade deployment from the selected game..
+        /// </summary>
+        public static string UndeployButton_Tooltip {
+            get {
+                return ResourceManager.GetString("UndeployButton_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uninstall.
         /// </summary>
         public static string UninstallDeployer {
