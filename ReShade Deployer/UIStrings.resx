@@ -83,7 +83,7 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 	<data name="DeploySuccess" xml:space="preserve">
 		<value>ReShade was successfully deployed!</value>
 	</data>
-	<data name="DeploySuccess_Title" xml:space="preserve">
+	<data name="Success" xml:space="preserve">
 		<value>Success</value>
 	</data>
 	<data name="DirectX10" xml:space="preserve">
@@ -175,6 +175,11 @@ Otherwise, if you are unsure, check the API section of the game's PCGamingWiki p
 		<value>This will remove all registry entries of ReShade Deployer and delete the system-wide Vulkan ReShade layer.
 
 This is recommended if you want to stop using ReShade Deployer and go back to the official installer.</value>
+	</data>
+	<data name="UninstallDeployer_Success" xml:space="preserve">
+		<value>ReShade Deployer was successfully uninstalled!
+		
+The Vulkan ReShade layer have been removed system-wide. Games using Vulkan will no longer use ReShade.</value>
 	</data>
 	<data name="Update" xml:space="preserve">
 		<value>Update</value>

@@ -260,15 +260,6 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Success.
-        /// </summary>
-        public static string DeploySuccess_Title {
-            get {
-                return ResourceManager.GetString("DeploySuccess_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to DirectX 10 or later.
         /// </summary>
         public static string DirectX10 {
@@ -473,6 +464,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        public static string Success {
+            get {
+                return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target API.
         /// </summary>
         public static string TargetAPI {
@@ -558,6 +558,17 @@ namespace ReShadeDeployer {
         public static string UninstallDeployer_Content {
             get {
                 return ResourceManager.GetString("UninstallDeployer_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ReShade Deployer was successfully uninstalled!
+        ///		
+        ///The Vulkan ReShade layer have been removed system-wide. Games using Vulkan will no longer use ReShade..
+        /// </summary>
+        public static string UninstallDeployer_Success {
+            get {
+                return ResourceManager.GetString("UninstallDeployer_Success", resourceCulture);
             }
         }
         

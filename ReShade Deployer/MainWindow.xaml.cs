@@ -225,7 +225,7 @@ namespace ReShadeDeployer
 
                 var result = _messageBox.Show(
                     UIStrings.DeploySuccess,
-                    UIStrings.DeploySuccess_Title,
+                    UIStrings.Success,
                     UIStrings.Continue,
                     UIStrings.Exit);
             
@@ -263,7 +263,7 @@ namespace ReShadeDeployer
             if (result == IMessageBox.Result.Primary)
             {
                 _reShadeUndeployer.Undeploy(selectedExecutableContext.DirectoryPath);
-                _messageBox.Show(UIStrings.Undeploy_Success, UIStrings.DeploySuccess_Title);
+                _messageBox.Show(UIStrings.Undeploy_Success, UIStrings.Success);
                 
                 // Re-scan to update button visibility
                 UpdateUndeployButtonVisibility();
@@ -430,6 +430,8 @@ namespace ReShadeDeployer
                     RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
                 
                 _vulkanSystemWideDeployer.RemoveVulkanGlobally();
+                
+                _messageBox.Show(UIStrings.UninstallDeployer_Success, UIStrings.Success);
             }
         }
 
