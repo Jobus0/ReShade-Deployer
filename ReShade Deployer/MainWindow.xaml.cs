@@ -426,7 +426,9 @@ namespace ReShadeDeployer
 
             if (result == IMessageBox.Result.Primary)
             {
-                RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
+                if (RegistryHelper.IsContextMenuActionRegistered("Deploy ReShade"))
+                    RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
+                
                 _vulkanSystemWideDeployer.RemoveVulkanGlobally();
             }
         }
