@@ -129,6 +129,7 @@ public class ReShadeUpdater(DownloadService downloadService, IMessageBox message
     {
         Directory.CreateDirectory(Paths.Shaders);
         Directory.CreateDirectory(Paths.Textures);
+        Directory.CreateDirectory(Paths.Addons);
         Directory.CreateDirectory(Paths.Dlls);
         Directory.CreateDirectory(Paths.AddonDlls);
         Directory.CreateDirectory(Paths.Cache);

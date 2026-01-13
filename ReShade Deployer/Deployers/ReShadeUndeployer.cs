@@ -16,12 +16,15 @@ public class ReShadeUndeployer
     {
         var files = new List<string>();
         
-        // 1. Check for ReShade.ini
+        if (!Directory.Exists(gameDirectory))
+            return files;
+        
+        // Find ReShade.ini
         string iniPath = Path.Combine(gameDirectory, "ReShade.ini");
         if (File.Exists(iniPath))
             files.Add(iniPath);
         
-        // 2. Check DLLs - only if FileDescription contains "ReShade"
+        // Find DLLs where FileDescription contains "ReShade"
         foreach (var dllName in DllNames)
         {
             string dllPath = Path.Combine(gameDirectory, dllName);
@@ -40,16 +43,9 @@ public class ReShadeUndeployer
             }
         }
         
-        // 3. Find all .addon32 and .addon64 files
-        try
-        {
-            files.AddRange(Directory.GetFiles(gameDirectory, "*.addon32"));
-            files.AddRange(Directory.GetFiles(gameDirectory, "*.addon64"));
-        }
-        catch (DirectoryNotFoundException)
-        {
-            // Directory doesn't exist, so no files to find
-        }
+        // Find all .addon32 and .addon64 files
+        files.AddRange(Directory.GetFiles(gameDirectory, "*.addon32"));
+        files.AddRange(Directory.GetFiles(gameDirectory, "*.addon64"));
         
         return files;
     }
@@ -60,9 +56,7 @@ public class ReShadeUndeployer
     public void Undeploy(string gameDirectory)
     {
         foreach (var file in FindReShadeFiles(gameDirectory))
-        {
             if (File.Exists(file))
                 File.Delete(file);
-        }
     }
 }
