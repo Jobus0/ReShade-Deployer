@@ -8,6 +8,10 @@
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="ToolTip" BasedOn="{StaticResource DefaultToolTipStyle}">
+                <Setter Property="FontWeight" Value="Normal" />
+                <Setter Property="FontStyle" Value="Normal" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

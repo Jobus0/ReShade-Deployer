@@ -18,10 +18,10 @@
     <StackPanel>
         <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="ReShade.ico" ShowMaximize="False" CanMaximize="False" Padding="7" />
         <Separator />
-        <DockPanel Margin="12, 0, 0, 0" LastChildFill="False">
-            <Label VerticalAlignment="Center" Padding="3 3 3 3" Content="{x:Static rd:UIStrings.VersionPrefix}" />
-            <Label Name="VersionLabel" VerticalAlignment="Center" Padding="0 3 3 3" FontWeight="Bold" />
-            <ui:Button VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="7, 5, 8, 5" Icon="Settings16" FontSize="13" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
+        <DockPanel Height="28" LastChildFill="False">
+            <Label VerticalAlignment="Center" Padding="15 0 3 0" Content="{x:Static rd:UIStrings.VersionPrefix}" />
+            <Label Name="VersionLabel" VerticalAlignment="Center" Padding="0" FontWeight="Bold" />
+            <ui:Button VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="Settings16" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
                        ToolTip="{x:Static rd:UIStrings.Settings_Tooltip}" Click="SettingsButton_OnClick">
                 <Button.ContextMenu>
                     <ContextMenu>
@@ -31,12 +31,12 @@
                                   ToolTip="{x:Static rd:UIStrings.AlwaysExitOnDeploy_Tooltip}" />
                         <Separator/>
                         <MenuItem Name="UpdateDeployerMenuItem" Header="{x:Static rd:UIStrings.UpdateDeployer}" HeaderStringFormat="{}{0}..." Click="UpdateDeployerMenuItem_OnClick" />
-                        <MenuItem Name="UninstallMenuItem" Header="{x:Static rd:UIStrings.UninstallDeployer}" HeaderStringFormat="{}{0}..." Click="UninstallMenuItem_OnClick" />
+                        <MenuItem Header="{x:Static rd:UIStrings.UninstallDeployer}" HeaderStringFormat="{}{0}..." Click="UninstallMenuItem_OnClick" />
                         <MenuItem Header="{x:Static rd:UIStrings.About}" HeaderStringFormat="{}{0}..." Click="AboutMenuItem_OnClick" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </ui:Button>
-            <ui:Button Name="UpdateButton" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="7, 5, 8, 5" Icon="ArrowDownload16" FontSize="13" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
+            <ui:Button Name="UpdateButton" VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="ArrowDownload16" FontSize="12" FontWeight="Bold" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
                        ToolTip="{x:Static rd:UIStrings.UpdateReShade_Tooltip}" Click="UpdateButtonOnClick" />
         </DockPanel>
         <Separator />
@@ -66,11 +66,12 @@
                         <Style TargetType="ComboBoxItem">
                             <Setter Property="Padding" Value="0" />
                             <Setter Property="MinHeight" Value="0" />
+                            <EventSetter Event="PreviewMouseLeftButtonUp" Handler="AddonItem_OnUserClick" />
                         </Style>
                     </ComboBox.ItemContainerStyle>
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Background="Transparent" MouseLeftButtonUp="AddonItem_OnUserClick">
+                            <Grid Background="Transparent">
                                 <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" 
                                           IsHitTestVisible="False"
                                           Margin="5,2" />
