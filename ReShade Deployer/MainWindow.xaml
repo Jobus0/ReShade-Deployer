@@ -72,9 +72,8 @@
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Background="Transparent">
-                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" 
-                                          IsHitTestVisible="False"
-                                          Margin="5,2" />
+                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" IsEnabled="{Binding IsSupported}" 
+                                          IsHitTestVisible="False" Margin="5,2" FontSize="13" />
                             </Grid>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>

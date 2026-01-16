@@ -5,8 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Microsoft.Win32;
 using Wpf.Ui.Common;
 using Button = System.Windows.Controls.Button;
@@ -27,9 +25,10 @@ namespace ReShadeDeployer
         private readonly IConfig _config;
         private readonly IMessageBox _messageBox;
 
-        private ExecutableContext? selectedExecutableContext;
+        private ExecutableContext? _selectedExecutableContext;
+        private IList<AddonItem> _addons;
 
-        private readonly string? assemblyVersion;
+        private readonly string? _assemblyVersion;
         
         public MainWindow(DeploymentOrchestrator deploymentOrchestrator, AddonsDeployer addonsDeployer, ReShadeUndeployer reShadeUndeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer, AppUpdater appUpdater, ReShadeUpdater reShadeUpdater, IConfig config, IMessageBox messageBox)
         {
@@ -43,16 +42,12 @@ namespace ReShadeDeployer
 
             InitializeComponent();
 
-            assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+            _assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
 
-            var addons = addonsDeployer.GetAvailableAddons();
-            var addonItems = new List<AddonItem>();
-            foreach (var addon in addons)
-                addonItems.Add(new AddonItem { Name = addon });
-            
-            AddonsComboBox.ItemsSource = addonItems;
+            _addons = addonsDeployer.GetAvailableAddons();
+            AddonsComboBox.ItemsSource = _addons;
 
-            if (addonItems.Count == 0)
+            if (_addons.Count == 0)
                 AddonsComboGrid.Visibility = Visibility.Collapsed;
             else
                 UpdateAddonsSummaryText();
@@ -78,7 +73,7 @@ namespace ReShadeDeployer
             
             _appUpdater.CleanUpOldVersion();
             
-            if (assemblyVersion != null)
+            if (_assemblyVersion != null)
                 CheckForNewDeployerVersion();
 
             Dispatcher.UnhandledException += DispatcherOnUnhandledException;
@@ -125,7 +120,7 @@ namespace ReShadeDeployer
         
         private async void CheckForNewDeployerVersion()
         {
-            if (assemblyVersion == null)
+            if (_assemblyVersion == null)
                 return;
             
             string latestVersion = _config.LatestDeployerVersionNumber;
@@ -149,14 +144,14 @@ namespace ReShadeDeployer
                 }
             }
 
-            if (assemblyVersion != latestVersion && newerVersionFound)
+            if (_assemblyVersion != latestVersion && newerVersionFound)
                 PromptForUpdate();
         }
         
         public void PromptForUpdate()
         {
             var result = _messageBox.Show(
-                string.Format(UIStrings.UpdateAvailable, _config.LatestDeployerVersionNumber, assemblyVersion!),
+                string.Format(UIStrings.UpdateAvailable, _config.LatestDeployerVersionNumber, _assemblyVersion!),
                 UIStrings.UpdateAvailable_Title,
                 UIStrings.Update,
                 UIStrings.Skip);
@@ -195,7 +190,7 @@ namespace ReShadeDeployer
 
         private void DeployButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (selectedExecutableContext == null)
+            if (_selectedExecutableContext == null)
                 return;
             
             Hide();
@@ -205,8 +200,8 @@ namespace ReShadeDeployer
 
             try
             {
-                var selectedAddons = addonSupport ? GetSelectedAddonsList() : Enumerable.Empty<string>();
-                _deploymentOrchestrator.DeployReShadeForExecutable(selectedExecutableContext, api, addonSupport, selectedAddons);
+                var selectedAddons = addonSupport ? GetSelectedAddons() : Array.Empty<AddonItem>();
+                _deploymentOrchestrator.DeployReShadeForExecutable(_selectedExecutableContext, api, addonSupport, selectedAddons);
             }
             catch (DeploymentException ex)
             {
@@ -238,10 +233,10 @@ namespace ReShadeDeployer
 
         private void UndeployButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (selectedExecutableContext == null)
+            if (_selectedExecutableContext == null)
                 return;
             
-            var files = _reShadeUndeployer.FindReShadeFiles(selectedExecutableContext.DirectoryPath);
+            var files = _reShadeUndeployer.FindReShadeFiles(_selectedExecutableContext.DirectoryPath);
             
             if (files.Count == 0)
             {
@@ -262,7 +257,7 @@ namespace ReShadeDeployer
             
             if (result == IMessageBox.Result.Primary)
             {
-                _reShadeUndeployer.Undeploy(selectedExecutableContext.DirectoryPath);
+                _reShadeUndeployer.Undeploy(_selectedExecutableContext.DirectoryPath);
                 _messageBox.Show(UIStrings.Undeploy_Success, UIStrings.Success);
                 
                 // Re-scan to update button visibility
@@ -272,24 +267,19 @@ namespace ReShadeDeployer
 
         private void UpdateUndeployButtonVisibility()
         {
-            if (selectedExecutableContext == null)
+            if (_selectedExecutableContext == null)
             {
                 UndeployButton.Visibility = Visibility.Collapsed;
                 return;
             }
             
-            var files = _reShadeUndeployer.FindReShadeFiles(selectedExecutableContext.DirectoryPath);
+            var files = _reShadeUndeployer.FindReShadeFiles(_selectedExecutableContext.DirectoryPath);
             UndeployButton.Visibility = files.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private List<string> GetSelectedAddonsList()
+        private IList<AddonItem> GetSelectedAddons()
         {
-            var selectedAddons = new List<string>();
-            if (AddonsComboBox.ItemsSource is IEnumerable<AddonItem> items)
-                foreach (var item in items)
-                    if (item.IsSelected)
-                        selectedAddons.Add(item.Name);
-            return selectedAddons;
+            return _addons.Where(addon => addon.IsSelected && addon.IsSupported).ToArray();
         }
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
@@ -336,7 +326,7 @@ namespace ReShadeDeployer
                 // Remove version label from the update button, keeping only the icon
                 UpdateButton.Content = string.Empty;
                 
-                if (selectedExecutableContext != null)
+                if (_selectedExecutableContext != null)
                     DeployButton.IsEnabled = true;
             }
             
@@ -407,7 +397,7 @@ namespace ReShadeDeployer
         
         private void AboutMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            _messageBox.Show(string.Format(UIStrings.About_Info, assemblyVersion), UIStrings.About);
+            _messageBox.Show(string.Format(UIStrings.About_Info, _assemblyVersion), UIStrings.About);
         }
         
         private void UpdateDeployerMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -439,12 +429,12 @@ namespace ReShadeDeployer
         {
             var button = (Button)sender;
 
-            if (assemblyVersion != null)
+            if (_assemblyVersion != null)
             {
                 foreach (var item in button.ContextMenu!.Items)
                 {
                     if (item is MenuItem {Name: "UpdateDeployerMenuItem"} updateDeployerMenuItem)
-                        updateDeployerMenuItem.Visibility = assemblyVersion == _config.LatestDeployerVersionNumber ? Visibility.Collapsed : Visibility.Visible;
+                        updateDeployerMenuItem.Visibility = _assemblyVersion == _config.LatestDeployerVersionNumber ? Visibility.Collapsed : Visibility.Visible;
                 }
             }
                     
@@ -456,34 +446,34 @@ namespace ReShadeDeployer
             if (!File.Exists(executablePath))
                 return;
             
-            selectedExecutableContext = new ExecutableContext(executablePath);
+            _selectedExecutableContext = new ExecutableContext(executablePath);
             
             SelectGameButtonText.Text = executablePath;
             SelectGameButtonText.ToolTip = executablePath;
             SelectGameButton.Appearance = ControlAppearance.Secondary;
             
-            DeployButton.Content = string.Format(UIStrings.DeployButton_Targeted, selectedExecutableContext.FileName);
+            DeployButton.Content = string.Format(UIStrings.DeployButton_Targeted, _selectedExecutableContext.FileName);
             DeployButton.IsEnabled = true;
 
             ExecutableInfoButton.IsEnabled = true;
 
             // A game might include multiple APIs, so prioritize: Vulkan > DXGI > D3D9 > OpenGL
-            if (selectedExecutableContext.IsVulkan)
+            if (_selectedExecutableContext.IsVulkan)
             {
                 SetCheckedApi(GraphicsApi.Vulkan);
                 HighlightApi(GraphicsApi.Vulkan);
             }
-            else if (selectedExecutableContext.IsDXGI)
+            else if (_selectedExecutableContext.IsDXGI)
             {
                 SetCheckedApi(GraphicsApi.DXGI);
                 HighlightApi(GraphicsApi.DXGI);
             }
-            else if (selectedExecutableContext.IsD3D9)
+            else if (_selectedExecutableContext.IsD3D9)
             {
                 SetCheckedApi(GraphicsApi.D3D9);
                 HighlightApi(GraphicsApi.D3D9);
             }
-            else if (selectedExecutableContext.IsOpenGL)
+            else if (_selectedExecutableContext.IsOpenGL)
             {
                 SetCheckedApi(GraphicsApi.OpenGL);
                 HighlightApi(GraphicsApi.OpenGL);
@@ -494,14 +484,19 @@ namespace ReShadeDeployer
                 HighlightApi(null);
             }
 
+            foreach (AddonItem addonItem in AddonsComboBox.ItemsSource)
+                addonItem.IsSupported = (_selectedExecutableContext.IsX64 && !string.IsNullOrEmpty(addonItem.X64Path))
+                                        || (!_selectedExecutableContext.IsX64 && !string.IsNullOrEmpty(addonItem.X32Path));
+            
+            UpdateAddonsSummaryText();
             UpdateUndeployButtonVisibility();
         }
 
 
         private void ExecutableInfoButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (selectedExecutableContext != null)
-                _messageBox.Show(selectedExecutableContext.ToString(), "Executable Info");
+            if (_selectedExecutableContext != null)
+                _messageBox.Show(_selectedExecutableContext.ToString(), "Executable Info");
         }
         
         private void AddonSupportCheckBox_OnClick(object sender, RoutedEventArgs e)
@@ -516,45 +511,22 @@ namespace ReShadeDeployer
             {
                 item.IsSelected = !item.IsSelected;
                 UpdateAddonsSummaryText();
-                e.Handled = true;
             }
+            
+            e.Handled = true;
         }
 
         private void UpdateAddonsSummaryText()
         {
-            var selected = GetSelectedAddonsList();
+            var selected = GetSelectedAddons();
             if (selected.Count == 0)
             {
                 AddonsSummaryText.Text = UIStrings.AddonSummaryPlaceholder;
             }
             else
             {
-                AddonsSummaryText.Text = string.Join(", ", selected);
+                AddonsSummaryText.Text = string.Join(", ", selected.Select(addon => addon.Name));
             }
-        }
-    }
-    
-    public class AddonItem : INotifyPropertyChanged
-    {
-        public string Name { get; init; } = string.Empty;
-        
-        private bool _isSelected;
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set
-            {
-                if (_isSelected == value) return;
-                _isSelected = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

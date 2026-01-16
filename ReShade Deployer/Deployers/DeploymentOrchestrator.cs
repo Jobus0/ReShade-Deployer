@@ -17,7 +17,7 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDepl
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
     /// <param name="addons">List of addons to deploy.</param>
-    public void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, IEnumerable<string> addons)
+    public void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, IList<AddonItem> addons)
     {
         if (api == GraphicsApi.Vulkan && addonSupport)
         {
