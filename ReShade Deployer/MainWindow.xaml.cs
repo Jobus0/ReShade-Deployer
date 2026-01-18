@@ -45,6 +45,12 @@ namespace ReShadeDeployer
             _assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
 
             _addons = addonsDeployer.GetAvailableAddons();
+
+            var lastSelectedAddons = _config.LastSelectedAddons;
+            foreach (var addonItem in _addons)
+                if (lastSelectedAddons.Contains(addonItem.Name))
+                    addonItem.IsSelected = true;
+            
             AddonsComboBox.ItemsSource = _addons;
 
             if (_addons.Count == 0)
@@ -511,6 +517,7 @@ namespace ReShadeDeployer
             {
                 item.IsSelected = !item.IsSelected;
                 UpdateAddonsSummaryText();
+                _config.LastSelectedAddons = _addons.Where(addon => addon.IsSelected).Select(addon => addon.Name).ToArray();
             }
             
             e.Handled = true;

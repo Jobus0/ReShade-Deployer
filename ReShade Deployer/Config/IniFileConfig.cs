@@ -64,6 +64,12 @@ public class IniFileConfig : IConfig
         set => Write(nameof(AlwaysExitOnDeploy), value.ToString());
     }
 
+    public string[] LastSelectedAddons
+    {
+        get => Read(nameof(LastSelectedAddons))?.Split('|') ?? Array.Empty<string>();
+        set => Write(nameof(LastSelectedAddons), string.Join('|', value));
+    }
+
     /// <summary>
     /// Load ini data from Config.ini if it exists; otherwise create a new one.
     /// </summary>

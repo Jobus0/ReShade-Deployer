@@ -28,4 +28,6 @@ public interface IConfig
     /// Whether the application should automatically exit after deployment.
     /// </summary>
     bool AlwaysExitOnDeploy { get; set; }
+    
+    string[] LastSelectedAddons { get; set; }
 }
