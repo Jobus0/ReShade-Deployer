@@ -24,7 +24,7 @@ public class IniFileConfig : IConfig
     /// </summary>
     public string LatestReShadeVersionNumber
     {
-        get => Read(nameof(LatestReShadeVersionNumber));
+        get => Read(nameof(LatestReShadeVersionNumber)) ?? string.Empty;
         set => Write(nameof(LatestReShadeVersionNumber), value);
     }
     
@@ -42,7 +42,7 @@ public class IniFileConfig : IConfig
     /// </summary>
     public string LatestDeployerVersionNumber
     {
-        get => Read(nameof(LatestDeployerVersionNumber));
+        get => Read(nameof(LatestDeployerVersionNumber)) ?? string.Empty;
         set => Write(nameof(LatestDeployerVersionNumber), value);
     }
     
@@ -78,7 +78,7 @@ public class IniFileConfig : IConfig
     /// <summary>
     /// Read a value by key from Config.ini
     /// </summary>
-    private string Read(string key)
+    private string? Read(string key)
     {
         if (ini == null)
             InitializeIni();
