@@ -16,20 +16,21 @@ A minimal installer program that lets you:
 - Automatically pick the rendering API and 32/64-bit versions by analysing the executable.
 - Automatically redirect the installation path for Unreal Engine Bootstraps and RTX Remix titles.
 - Toggle a checkbox to install the 'Add-on Support' version.
+  - When enabled, a dropdown list becomes available for choosing what add-ons to deploy from your 'Add-ons' folder. It automatically picks the correct 32/64-bit file.
 - Add a 'Deploy ReShade' option to Windows's context (right-click) menu for .exe files and shortcuts.
 - Update all deployed ReShade .dll:s with a single click.
   - Possible because it creates symlinks instead of copying the .dll:s.
 - Update the program itself with a single click.
+- Remove existing ReShade deployments by selecting a game and pressing the trash bin button (only visible if previous deployment exists).
 
 ## Installation
 1. Download the [latest release](https://github.com/Jobus0/ReShade-Deployer/releases/latest).
 2. Extract **ReShade Deployer.exe** anywhere you want it.
-   - This is where you must keep your **Shaders** and **Textures** folders.
+   - This is where you must keep your **Shaders**, **Textures**, and **Add-ons** folders.
    - If you already have a folder for **Shaders** and **Textures**, you can place **ReShade Deployer.exe** in the same folder.
 3. Run the program and allow the first-time setup.
-4. (Optional) Enable **Context Menu Deploy** from the **⚙**options menu.
-5. (Optional) Put any shader and texture files into the **Shaders** and **Textures** folders.
-6. (Optional) Put a **ReShade.ini** and/or **ReShadePreset.ini** next to **ReShade Deployer.exe** to make the deployer automatically include those .ini:s when deploying to games.
+4. (Optional) Enable [Context Menu Deploy](#context-menu) from the **⚙**options menu.
+5. (Optional) Put a **ReShade.ini** and/or **ReShadePreset.ini** next to **ReShade Deployer.exe** to make the deployer automatically include those .ini:s when deploying to games.
    - When your custom **ReShade.ini** is deployed, some specific settings (like the search paths) will be overriden or created if missing. 
 
 ### Folder Structure
@@ -40,6 +41,8 @@ ReShade
 │   └── *.fx/fxh
 ├── Textures                        # Put your textures here.
 │   └── *.png
+├── Add-ons                         # Put your add-ons here.
+│   └── *.addon32/addon64
 ├── ReShade Deployer.exe
 ├── ReShade.ini                     # Optional
 └── ReShadePreset.ini               # Optional
