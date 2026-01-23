@@ -216,25 +216,8 @@ namespace ReShadeDeployer
                 return;
             }
             
-            if (_config.AlwaysExitOnDeploy)
-            {
-                Application.Current.Shutdown();
-            }
-            else
-            {
-                UpdateUndeployButtonVisibility();
-
-                var result = _messageBox.Show(
-                    UIStrings.DeploySuccess,
-                    UIStrings.Success,
-                    UIStrings.Continue,
-                    UIStrings.Exit);
-            
-                if (result == IMessageBox.Result.Secondary)
-                    Application.Current.Shutdown();
-                else
-                    Show();
-            }
+            UpdateUndeployButtonVisibility();
+            Show();
         }
 
         private void UndeployButton_OnClick(object sender, RoutedEventArgs e)

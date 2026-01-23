@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows;
 using Wpf.Ui.Common;
 
 namespace ReShadeDeployer;
@@ -8,7 +9,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer, IMessageBox messageBox)
+public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer, IMessageBox messageBox, IConfig config)
 {
     /// <summary>
     /// Deploys ReShade for a specified executable.
@@ -63,6 +64,22 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDepl
         catch (Exception ex) when (ex is not DeploymentException)
         {
             throw new DeploymentException(ex);
+        }
+
+        if (config.AlwaysExitOnDeploy)
+        {
+            Application.Current.Shutdown();
+        }
+        else
+        {
+            var result = messageBox.Show(
+                UIStrings.DeploySuccess,
+                UIStrings.Success,
+                UIStrings.Continue,
+                UIStrings.Exit);
+            
+            if (result == IMessageBox.Result.Secondary)
+                Application.Current.Shutdown();
         }
     }
 }
