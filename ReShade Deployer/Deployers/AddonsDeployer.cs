@@ -75,7 +75,7 @@ public class AddonsDeployer
             if (File.Exists(filePath))
             {
                 string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
-                SymbolicLink.CreateSymbolicLink(destinationPath, filePath, 0);
+                File.CreateSymbolicLink(destinationPath, filePath);
             }
             else
             {

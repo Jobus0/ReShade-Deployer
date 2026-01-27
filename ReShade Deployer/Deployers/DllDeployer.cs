@@ -51,7 +51,7 @@ public class DllDeployer(VulkanSystemWideDeployer vulkanSystemWideDeployer)
             }
         }
         
-        SymbolicLink.CreateSymbolicLink(symlinkPath, Path.Combine(dllPath, executableContext.IsX64 ? "ReShade64.dll" : "ReShade32.dll"), 0);
+        File.CreateSymbolicLink(symlinkPath, Path.Combine(dllPath, executableContext.IsX64 ? "ReShade64.dll" : "ReShade32.dll"));
     }
 
     private static string DllNameFromApi(GraphicsApi api) => api switch
