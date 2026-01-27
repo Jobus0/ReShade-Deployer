@@ -96,4 +96,45 @@ public class VulkanSystemWideDeployer
             }
         }
     }
+
+    /// <summary>
+    /// Get the currently registered Vulkan layer JSON path for 32-bit version.
+    /// </summary>
+    /// <returns>The path to the currently registered JSON file, or null if none is registered.</returns>
+    private string? GetCurrentVulkan32BitLayerRegistryPath()
+    {
+        try
+        {
+            string subKey = Environment.Is64BitOperatingSystem
+                ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers"
+                : @"Software\Khronos\Vulkan\ImplicitLayers";
+
+            using RegistryKey? key = Registry.LocalMachine.OpenSubKey(subKey);
+
+            if (key == null)
+                return null;
+
+            string expectedJsonPath = Path.Combine(Paths.CommonPathLocal, "ReShade32.json");
+
+            // Check if the expected JSON path is registered
+            if (key.GetValue(expectedJsonPath) != null)
+                return expectedJsonPath;
+        }
+        catch (Exception)
+        {
+            // Return null if registry access fails
+        }
+
+        return null;
+    }
+
+    public bool IsVulkanDeployedWithAddonSupport()
+    {
+        string? registryPath = GetCurrentVulkan32BitLayerRegistryPath();
+        
+        if (registryPath != null)
+            return File.ResolveLinkTarget(registryPath, returnFinalTarget: true)?.FullName == Path.Combine(Paths.AddonDlls, "ReShade32.json");
+
+        return false;
+    }
 }

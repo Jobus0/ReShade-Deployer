@@ -9,7 +9,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer, IMessageBox messageBox, IConfig config)
+public class DeploymentOrchestrator(DllDeployer dllDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer, IMessageBox messageBox, IConfig config)
 {
     /// <summary>
     /// Deploys ReShade for a specified executable.
@@ -20,7 +20,7 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, IniDeployer iniDepl
     /// <param name="addons">List of addons to deploy.</param>
     public void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, IList<AddonItem> addons)
     {
-        if (api == GraphicsApi.Vulkan && addonSupport)
+        if (api == GraphicsApi.Vulkan && addonSupport && !vulkanSystemWideDeployer.IsVulkanDeployedWithAddonSupport())
         {
             var result = messageBox.Show(
                 UIStrings.Vulkan_Addon_Warning,
