@@ -66,6 +66,17 @@ namespace ReShadeDeployer
             var startupArgs = ((App)Application.Current).StartupArgs;
             if (startupArgs.Length > 0 && !string.IsNullOrEmpty(startupArgs[0]))
                 TargetExecutable(startupArgs[0]);
+
+            SingleInstanceManager.OnArgumentsReceived += args =>
+            {
+                if (args.Length > 0 && !string.IsNullOrEmpty(args[0]))
+                    TargetExecutable(args[0]);
+                
+                if (WindowState == WindowState.Minimized)
+                    WindowState = WindowState.Normal;
+
+                Activate();
+            };
             
             if (_reShadeUpdater.TryGetLocalReShadeVersionNumber(out string version))
             {

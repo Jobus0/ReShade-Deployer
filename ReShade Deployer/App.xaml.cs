@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Threading;
+﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ReShadeDeployer;
@@ -15,8 +13,16 @@ public partial class App : Application
         
     protected override void OnStartup(StartupEventArgs e)
     {
+        if (!SingleInstanceManager.IsFirstInstance())
+        {
+            SingleInstanceManager.SendArgumentsToFirstInstance(e.Args);
+            Shutdown();
+            return;
+        }
+
         StartupArgs = e.Args;
-        
+        SingleInstanceManager.OnArgumentsReceived += args => StartupArgs = args;
+
         var services = new ServiceCollection();
         services.AddSingleton<MainWindow>();
         services.AddSingleton<DeploymentOrchestrator>();
@@ -40,6 +46,7 @@ public partial class App : Application
     
     protected override void OnExit(ExitEventArgs e)
     {
+        SingleInstanceManager.Cleanup();
         ServiceProvider?.Dispose();
         
         base.OnExit(e);
