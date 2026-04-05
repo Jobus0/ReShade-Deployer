@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using Wpf.Ui.Common;
@@ -77,6 +78,9 @@ namespace ReShadeDeployer
 
                 Activate();
             };
+            
+            AddonSupportCheckBox.IsChecked = startupArgs.Contains("-addon-support");
+            ToggleAddonsSummaryText(AddonSupportCheckBox.IsChecked ?? false);
             
             if (_reShadeUpdater.TryGetLocalReShadeVersionNumber(out string version))
             {
@@ -499,10 +503,14 @@ namespace ReShadeDeployer
                 _messageBox.Show(_selectedExecutableContext.ToString(), "Executable Info");
         }
         
+        private void ToggleAddonsSummaryText(bool toggle)
+        {
+            AddonsComboGrid.Visibility = toggle && AddonsComboBox.ItemsSource is ICollection<AddonItem> {Count: > 0} ? Visibility.Visible : Visibility.Collapsed;
+        }
+        
         private void AddonSupportCheckBox_OnClick(object sender, RoutedEventArgs e)
         {
-            if (sender is System.Windows.Controls.CheckBox checkBox && AddonsComboBox.ItemsSource is ICollection<AddonItem> {Count: > 0})
-                AddonsComboGrid.Visibility = checkBox.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+            ToggleAddonsSummaryText(((CheckBox)sender).IsChecked ?? false);
         }
 
         private void AddonItem_OnUserClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
