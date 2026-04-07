@@ -6,7 +6,7 @@ namespace ReShadeDeployer;
 
 public class ReShadeUndeployer
 {
-    private static readonly string[] DllNames = { "dxgi.dll", "d3d9.dll", "opengl32.dll" };
+    private static readonly string[] DllNames = { "dxgi.dll", "d3d9.dll", "d3d10.dll", "d3d11.dll", "d3d12.dll", "opengl32.dll" };
     
     /// <summary>
     /// Finds all ReShade-related files in the specified game directory.
