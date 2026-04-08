@@ -9,6 +9,12 @@ public class AddonItem : INotifyPropertyChanged
     public string X32Path { get; set; } = string.Empty;
     public string X64Path { get; set; } = string.Empty;
     
+    public string ShadersPath { get; set; } = string.Empty;
+    public string TexturesPath { get; set; } = string.Empty;
+
+    public bool HasShaders => !string.IsNullOrEmpty(ShadersPath);
+    public bool HasTextures => !string.IsNullOrEmpty(TexturesPath);
+    
     private bool _isSelected;
     public bool IsSelected
     {

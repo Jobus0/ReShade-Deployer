@@ -40,7 +40,7 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, VulkanSystemWideDep
         try
         {
             dllDeployer.Deploy(executableContext, api, addonSupport);
-            iniDeployer.Deploy(executableContext);
+            iniDeployer.Deploy(executableContext, addons);
             
             if (addonSupport)
                 addonsDeployer.Deploy(executableContext, addons);

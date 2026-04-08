@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using IniParser;
 using IniParser.Model;
 
@@ -10,7 +11,7 @@ public class IniDeployer
     /// Create a new ReShade.ini at the given path using the values of a local ReShade.ini file, or fallback to a new minimal one.
     /// </summary>
     /// <param name="executableContext">Context for the executable to deploy.</param>
-    public void Deploy(ExecutableContext executableContext)
+    public void Deploy(ExecutableContext executableContext, IList<AddonItem> addons)
     {
         string path = Path.Combine(executableContext.DirectoryPath, "ReShade.ini");
         
@@ -25,6 +26,15 @@ public class IniDeployer
             : new IniData();
 
         ApplyContextualDefaults(ini, executableContext);
+
+        foreach (var addon in addons)
+        {
+            if (addon.HasShaders)
+                ini["GENERAL"]["EffectSearchPaths"] += "," + addon.ShadersPath + "\\**";
+            
+            if (addon.HasTextures)
+                ini["GENERAL"]["TextureSearchPaths"] += "," + addon.TexturesPath + "\\**";
+        }
         
         iniParser.WriteFile(path, ini);
     }

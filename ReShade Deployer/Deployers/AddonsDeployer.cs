@@ -20,18 +20,17 @@ public class AddonsDeployer
         if (!Directory.Exists(Paths.Addons))
             return Array.Empty<AddonItem>();
 
-        var files = Directory.GetFiles(Paths.Addons, "*.addon*", SearchOption.AllDirectories);
-        
         var addons = new List<AddonItem>();
 
-        foreach (var file in files)
+        var topFiles = Directory.GetFiles(Paths.Addons, "*.addon*", SearchOption.TopDirectoryOnly);
+        foreach (var file in topFiles)
         {
+            string name = Path.GetFileNameWithoutExtension(file);
+            
             bool isAddon32 = file.EndsWith(".addon32", StringComparison.OrdinalIgnoreCase);
             bool isAddon64 = file.EndsWith(".addon64", StringComparison.OrdinalIgnoreCase);
             if (isAddon32 || isAddon64)
             {
-                string name = Path.GetFileNameWithoutExtension(file);
-
                 var addonItem = addons.FirstOrDefault(x => x.Name == name);
                 if (addonItem != null)
                 {
@@ -52,6 +51,22 @@ public class AddonsDeployer
                     addons.Add(addonItem);
                 }
             }
+        }
+
+        var directories = Directory.GetDirectories(Paths.Addons);
+        foreach (var directory in directories)
+        {
+            var files = Directory.GetFileSystemEntries(directory, "*", SearchOption.TopDirectoryOnly);
+            
+            if (files.Length == 0)
+                continue;
+            
+            var addonItem = new AddonItem() {Name = Path.GetFileName(directory)};
+            addonItem.X32Path = files.FirstOrDefault(x => x.EndsWith(".addon32", StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
+            addonItem.X64Path = files.FirstOrDefault(x => x.EndsWith(".addon64", StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
+            addonItem.ShadersPath = files.FirstOrDefault(x => Path.GetFileName(x) == "Shaders") ?? string.Empty; 
+            addonItem.TexturesPath = files.FirstOrDefault(x => Path.GetFileName(x) == "Textures") ?? string.Empty;
+            addons.Add(addonItem);
         }
         
         return addons.OrderBy(x => x.Name).ToArray();
