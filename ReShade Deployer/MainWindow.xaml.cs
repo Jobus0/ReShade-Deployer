@@ -489,8 +489,8 @@ namespace ReShadeDeployer
             }
 
             foreach (AddonItem addonItem in AddonsComboBox.ItemsSource)
-                addonItem.IsSupported = (_selectedExecutableContext.IsX64 && !string.IsNullOrEmpty(addonItem.X64Path))
-                                        || (!_selectedExecutableContext.IsX64 && !string.IsNullOrEmpty(addonItem.X32Path));
+                addonItem.IsSupported = (_selectedExecutableContext.IsX64 && addonItem.HasX64Addon)
+                                        || (!_selectedExecutableContext.IsX64 && addonItem.HasX32Addon);
             
             UpdateAddonsSummaryText();
             UpdateUndeployButtonVisibility();

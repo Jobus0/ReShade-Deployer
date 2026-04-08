@@ -85,16 +85,19 @@ public class AddonsDeployer
 
         foreach (var addon in addons)
         {
-            string filePath = context.IsX64 ? addon.X64Path : addon.X32Path;
+            if (addon.HasAnyAddon)
+            {
+                string filePath = context.IsX64 ? addon.X64Path : addon.X32Path;
             
-            if (File.Exists(filePath))
-            {
-                string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
-                File.CreateSymbolicLink(destinationPath, filePath);
-            }
-            else
-            {
-                throw new FileNotFoundException($"'{Path.GetFileName(filePath)}' not found in Add-ons directory. The target game is a {(context.IsX64 ? "64-bit" : "32-bit")} executable, but the {Path.GetExtension(filePath)} file is missing.");
+                if (File.Exists(filePath))
+                {
+                    string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
+                    File.CreateSymbolicLink(destinationPath, filePath);
+                }
+                else
+                {
+                    throw new FileNotFoundException($"'{Path.GetFileName(filePath)}' not found in Add-ons directory. The target game is a {(context.IsX64 ? "64-bit" : "32-bit")} executable, but the {Path.GetExtension(filePath)} file is missing.");
+                }
             }
         }
     }
