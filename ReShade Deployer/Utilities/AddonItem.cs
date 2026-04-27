@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace ReShadeDeployer;
@@ -18,6 +19,9 @@ public class AddonItem : INotifyPropertyChanged
 
     public bool HasShaders => !string.IsNullOrEmpty(ShadersPath);
     public bool HasTextures => !string.IsNullOrEmpty(TexturesPath);
+    
+    public List<string>? AdditionalFiles { get; set; }
+    public List<string>? AdditionalConfigFiles { get; set; }
     
     private bool _isSelected;
     public bool IsSelected

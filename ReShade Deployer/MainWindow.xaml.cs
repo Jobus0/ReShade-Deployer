@@ -54,10 +54,7 @@ namespace ReShadeDeployer
             
             AddonsComboBox.ItemsSource = _addons;
 
-            if (_addons.Count == 0)
-                AddonsComboGrid.Visibility = Visibility.Collapsed;
-            else
-                UpdateAddonsSummaryText();
+            UpdateAddonsSummaryText();
 
             Loaded += OnLoaded;
         }
@@ -80,7 +77,6 @@ namespace ReShadeDeployer
             };
             
             AddonSupportCheckBox.IsChecked = startupArgs.Contains("-addon-support");
-            ToggleAddonsSummaryText(AddonSupportCheckBox.IsChecked ?? false);
             
             if (_reShadeUpdater.TryGetLocalReShadeVersionNumber(out string version))
             {
@@ -102,6 +98,8 @@ namespace ReShadeDeployer
 #if DEBUG
             ExecutableInfoButton.Visibility = Visibility.Visible;
 #endif
+
+            UpdateAddonsComboGrid();
         }
         
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -487,11 +485,8 @@ namespace ReShadeDeployer
                 // Clear highlight
                 HighlightApi(null);
             }
-
-            foreach (AddonItem addonItem in AddonsComboBox.ItemsSource)
-                addonItem.IsSupported = (_selectedExecutableContext.IsX64 && addonItem.HasX64Addon)
-                                        || (!_selectedExecutableContext.IsX64 && addonItem.HasX32Addon);
             
+            UpdateAddonsComboGrid();
             UpdateAddonsSummaryText();
             UpdateUndeployButtonVisibility();
         }
@@ -503,14 +498,32 @@ namespace ReShadeDeployer
                 _messageBox.Show(_selectedExecutableContext.ToString(), "Executable Info");
         }
         
-        private void ToggleAddonsSummaryText(bool toggle)
+        private void UpdateAddonsComboGrid()
         {
-            AddonsComboGrid.Visibility = toggle && AddonsComboBox.ItemsSource is ICollection<AddonItem> {Count: > 0} ? Visibility.Visible : Visibility.Collapsed;
+            var addons = AddonsComboBox.ItemsSource as ICollection<AddonItem>;
+            
+            if (addons == null)
+            {
+                AddonsComboGrid.Visibility = Visibility.Collapsed;
+                return;
+            }
+            
+            bool addonSupport = AddonSupportCheckBox?.IsChecked ?? false;
+            foreach (AddonItem addonItem in addons)
+            {
+                bool hasMatchingX64 = addonSupport && _selectedExecutableContext is {IsX64: true} && addonItem.HasX64Addon;
+                bool hasMatchingX32 = addonSupport && _selectedExecutableContext is {IsX64: false} && addonItem.HasX32Addon;
+                addonItem.IsSupported = hasMatchingX64 || hasMatchingX32 || !addonItem.HasAnyAddon;
+            }
+            
+            var hasSupportedAddons = addons.Any(a => a.IsSupported);
+            var hasNonAddonAddons = addons.Any(a => !a.HasAnyAddon);
+            AddonsComboGrid.Visibility = ((AddonSupportCheckBox?.IsChecked ?? false) || hasNonAddonAddons) && hasSupportedAddons ? Visibility.Visible : Visibility.Collapsed;
         }
         
         private void AddonSupportCheckBox_OnClick(object sender, RoutedEventArgs e)
         {
-            ToggleAddonsSummaryText(((CheckBox)sender).IsChecked ?? false);
+            UpdateAddonsComboGrid();
         }
 
         private void AddonItem_OnUserClick(object sender, System.Windows.Input.MouseButtonEventArgs e)

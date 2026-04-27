@@ -10,6 +10,8 @@ namespace ReShadeDeployer;
 /// </summary>
 public class AddonsDeployer
 {
+    private readonly string[] configExtensions = [".cfg", ".ini", ".xml", ".json", ".yaml", ".yml"];
+
     /// <summary>
     /// Gets a list of available addon names from the configured Add-ons directory.
     /// .addon32 and .addon64 files with the same name are grouped together.
@@ -22,53 +24,74 @@ public class AddonsDeployer
 
         var addons = new List<AddonItem>();
 
-        var topFiles = Directory.GetFiles(Paths.Addons, "*.addon*", SearchOption.TopDirectoryOnly);
+        var addonsDirInfo = new DirectoryInfo(Paths.Addons);
+        var topFiles = addonsDirInfo.GetFileSystemInfos("*.addon*", SearchOption.TopDirectoryOnly);
         foreach (var file in topFiles)
         {
-            string name = Path.GetFileNameWithoutExtension(file);
-            
-            bool isAddon32 = file.EndsWith(".addon32", StringComparison.OrdinalIgnoreCase);
-            bool isAddon64 = file.EndsWith(".addon64", StringComparison.OrdinalIgnoreCase);
+            string name = Path.GetFileNameWithoutExtension(file.Name);
+
+            bool isAddon32 = file.Extension.Equals(".addon32", StringComparison.OrdinalIgnoreCase);
+            bool isAddon64 = file.Extension.Equals(".addon64", StringComparison.OrdinalIgnoreCase);
             if (isAddon32 || isAddon64)
             {
                 var addonItem = addons.FirstOrDefault(x => x.Name == name);
                 if (addonItem != null)
                 {
                     if (isAddon32)
-                        addonItem.X32Path = file;
+                        addonItem.X32Path = file.FullName;
                     else if (isAddon64)
-                        addonItem.X64Path = file;
+                        addonItem.X64Path = file.FullName;
                 }
                 else
                 {
                     addonItem = new AddonItem() {Name = name};
-                    
+
                     if (isAddon32)
-                        addonItem.X32Path = file;
+                        addonItem.X32Path = file.FullName;
                     else if (isAddon64)
-                        addonItem.X64Path = file;
-                    
+                        addonItem.X64Path = file.FullName;
+
                     addons.Add(addonItem);
                 }
             }
         }
 
-        var directories = Directory.GetDirectories(Paths.Addons);
+        var directories = addonsDirInfo.GetFileSystemInfos("*", SearchOption.TopDirectoryOnly).Where(fsi => fsi is DirectoryInfo);
         foreach (var directory in directories)
         {
-            var files = Directory.GetFileSystemEntries(directory, "*", SearchOption.TopDirectoryOnly);
-            
+            var dirInfo = (DirectoryInfo)directory;
+            var files = dirInfo.GetFileSystemInfos("*", SearchOption.TopDirectoryOnly);
+
             if (files.Length == 0)
                 continue;
+
+            var addonItem = new AddonItem() {Name = dirInfo.Name};
+            var additionalFiles = new List<string>();
+            var additionalConfigFiles = new List<string>();
+
+            bool IsConfigType(string extension) => configExtensions.Any(ext => extension.Equals(ext, StringComparison.OrdinalIgnoreCase));
+
+            foreach (var file in files)
+            {
+                if (file.Extension.Equals(".addon32", StringComparison.OrdinalIgnoreCase))
+                    addonItem.X32Path = file.FullName;
+                else if (file.Extension.Equals(".addon64", StringComparison.OrdinalIgnoreCase))
+                    addonItem.X64Path = file.FullName;
+                else if (file.Name == "Shaders")
+                    addonItem.ShadersPath = file.FullName;
+                else if (file.Name == "Textures")
+                    addonItem.TexturesPath = file.FullName;
+                else if (IsConfigType(file.Extension))
+                    additionalConfigFiles.Add(file.FullName);
+                else
+                    additionalFiles.Add(file.FullName);
+            }
             
-            var addonItem = new AddonItem() {Name = Path.GetFileName(directory)};
-            addonItem.X32Path = files.FirstOrDefault(x => x.EndsWith(".addon32", StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
-            addonItem.X64Path = files.FirstOrDefault(x => x.EndsWith(".addon64", StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
-            addonItem.ShadersPath = files.FirstOrDefault(x => Path.GetFileName(x) == "Shaders") ?? string.Empty; 
-            addonItem.TexturesPath = files.FirstOrDefault(x => Path.GetFileName(x) == "Textures") ?? string.Empty;
+            addonItem.AdditionalFiles = additionalFiles;
+            addonItem.AdditionalConfigFiles = additionalConfigFiles;
             addons.Add(addonItem);
         }
-        
+
         return addons.OrderBy(x => x.Name).ToArray();
     }
 
@@ -88,7 +111,7 @@ public class AddonsDeployer
             if (addon.HasAnyAddon)
             {
                 string filePath = context.IsX64 ? addon.X64Path : addon.X32Path;
-            
+
                 if (File.Exists(filePath))
                 {
                     string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
@@ -97,6 +120,39 @@ public class AddonsDeployer
                 else
                 {
                     throw new FileNotFoundException($"'{Path.GetFileName(filePath)}' not found in Add-ons directory. The target game is a {(context.IsX64 ? "64-bit" : "32-bit")} executable, but the {Path.GetExtension(filePath)} file is missing.");
+                }
+            }
+
+            if (addon.AdditionalFiles != null)
+            {
+                foreach (var filePath in addon.AdditionalFiles)
+                {
+                    if (Path.GetFileName(filePath) == "Shaders" || Path.GetFileName(filePath) == "Textures")
+                        continue;
+
+                    string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
+
+                    // Check if a symlink already exists at the destination to prevent conflicts
+                    // If it points to the same file, skip; otherwise throw an error to prevent overwriting
+                    if (File.Exists(destinationPath) && File.GetAttributes(destinationPath).HasFlag(FileAttributes.ReparsePoint))
+                    {
+                        string target = new string(File.ReadAllText(destinationPath).SkipWhile(c => c != '\"').Skip(1).TakeWhile(c => c != '\"').ToArray());
+                        if (target == filePath)
+                            continue;
+
+                        throw new IOException($"Addon '{addon.Name}' installation failed. '{Path.GetFileName(filePath)}' already exists in the target game's directory.");
+                    }
+
+                    File.CreateSymbolicLink(destinationPath, filePath);
+                }
+            }
+
+            if (addon.AdditionalConfigFiles != null)
+            {
+                foreach (var filePath in addon.AdditionalConfigFiles)
+                {
+                    string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
+                    File.Copy(filePath, destinationPath, false);
                 }
             }
         }
