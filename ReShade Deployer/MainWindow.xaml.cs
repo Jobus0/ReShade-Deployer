@@ -100,6 +100,7 @@ namespace ReShadeDeployer
 #endif
 
             UpdateAddonsComboGrid();
+            UpdateAddonsSummaryText();
         }
         
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -524,6 +525,7 @@ namespace ReShadeDeployer
         private void AddonSupportCheckBox_OnClick(object sender, RoutedEventArgs e)
         {
             UpdateAddonsComboGrid();
+            UpdateAddonsSummaryText();
         }
 
         private void AddonItem_OnUserClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
