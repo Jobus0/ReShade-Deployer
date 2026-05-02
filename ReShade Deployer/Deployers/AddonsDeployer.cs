@@ -143,7 +143,10 @@ public class AddonsDeployer
                         throw new IOException($"Addon '{addon.Name}' installation failed. '{Path.GetFileName(filePath)}' already exists in the target game's directory.");
                     }
 
-                    File.CreateSymbolicLink(destinationPath, filePath);
+                    if (File.GetAttributes(filePath).HasFlag(FileAttributes.Directory))
+                        Directory.CreateSymbolicLink(destinationPath, filePath);
+                    else
+                        File.CreateSymbolicLink(destinationPath, filePath);
                 }
             }
 
