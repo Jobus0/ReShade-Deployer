@@ -27,7 +27,7 @@ namespace ReShadeDeployer
         private readonly IMessageBox _messageBox;
 
         private ExecutableContext? _selectedExecutableContext;
-        private IList<AddonItem> _addons;
+        private readonly IList<AddonItem> _addons;
 
         private readonly string? _assemblyVersion;
         
@@ -220,8 +220,7 @@ namespace ReShadeDeployer
 
             try
             {
-                var selectedAddons = addonSupport ? GetSelectedAddons() : Array.Empty<AddonItem>();
-                _deploymentOrchestrator.DeployReShadeForExecutable(_selectedExecutableContext, api, addonSupport, selectedAddons);
+                _deploymentOrchestrator.DeployReShadeForExecutable(_selectedExecutableContext, api, addonSupport, GetSelectedAddons());
             }
             catch (DeploymentException ex)
             {

@@ -41,9 +41,7 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, VulkanSystemWideDep
         {
             dllDeployer.Deploy(executableContext, api, addonSupport);
             iniDeployer.Deploy(executableContext, addons);
-            
-            if (addonSupport)
-                addonsDeployer.Deploy(executableContext, addons);
+            addonsDeployer.Deploy(executableContext, addons);
 
             // Only deploy preset if a template preset exists in the ReShade Deployer folder
             if (File.Exists(Paths.ReShadePresetIni))
