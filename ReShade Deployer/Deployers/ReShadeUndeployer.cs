@@ -12,12 +12,14 @@ public class ReShadeUndeployer
     /// Finds all ReShade-related files in the specified game directory.
     /// </summary>
     /// <returns>List of full paths to files that can be removed.</returns>
-    public List<string> FindReShadeFiles(string gameDirectory)
+    public ICollection<string> FindReShadeFiles(string gameDirectory)
     {
-        var files = new List<string>();
+        var files = new HashSet<string>();
         
         if (!Directory.Exists(gameDirectory))
             return files;
+        
+        var directoryInfo = new DirectoryInfo(gameDirectory);
         
         // Find ReShade.ini
         string iniPath = Path.Combine(gameDirectory, "ReShade.ini");
@@ -42,10 +44,15 @@ public class ReShadeUndeployer
                 }
             }
         }
+
+        // Find all add-on symlinks
+        foreach (var entry in directoryInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly))
+            if (entry.LinkTarget != null && entry.LinkTarget.StartsWith(Paths.Addons))
+                files.Add(entry.FullName);
         
-        // Find all .addon32 and .addon64 files
-        files.AddRange(Directory.GetFiles(gameDirectory, "*.addon32"));
-        files.AddRange(Directory.GetFiles(gameDirectory, "*.addon64"));
+        // Find all .addon32 and .addon64 files (including manually installed non-symlinks)
+        foreach (var addon in directoryInfo.EnumerateFiles("*.addon32 OR *.addon64", SearchOption.TopDirectoryOnly))
+            files.Add(addon.FullName);
         
         return files;
     }
