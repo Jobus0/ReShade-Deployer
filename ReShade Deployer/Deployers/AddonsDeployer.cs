@@ -103,50 +103,41 @@ public class AddonsDeployer
     /// <param name="addons">list of addons to deploy.</param>
     public void Deploy(ExecutableContext context, IList<AddonItem> addons)
     {
-        if (!Directory.Exists(Paths.Addons))
-            return;
-
         foreach (var addon in addons)
         {
             if (addon.HasAnyAddon)
             {
-                string filePath = context.IsX64 ? addon.X64Path : addon.X32Path;
+                var filePath = context.IsX64 ? addon.X64Path : addon.X32Path;
+                var fileName = Path.GetFileName(filePath);
 
-                if (File.Exists(filePath))
-                {
-                    string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
-                    File.CreateSymbolicLink(destinationPath, filePath);
-                }
-                else
-                {
-                    throw new FileNotFoundException($"'{Path.GetFileName(filePath)}' not found in Add-ons directory. The target game is a {(context.IsX64 ? "64-bit" : "32-bit")} executable, but the {Path.GetExtension(filePath)} file is missing.");
-                }
+                string destinationPath = Path.Combine(context.DirectoryPath, fileName);
+                File.CreateSymbolicLink(destinationPath, filePath);
             }
 
             if (addon.AdditionalFiles != null)
             {
                 foreach (var filePath in addon.AdditionalFiles)
                 {
-                    if (Path.GetFileName(filePath) == "Shaders" || Path.GetFileName(filePath) == "Textures")
+                    string fileName = Path.GetFileName(filePath);
+
+                    if (fileName is "Shaders" or "Textures")
                         continue;
 
-                    string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
+                    string destinationPath = Path.Combine(context.DirectoryPath, fileName);
 
                     // Check if a symlink already exists at the destination to prevent conflicts
                     // If it points to the same file, skip; otherwise throw an error to prevent overwriting
-                    if (File.Exists(destinationPath) && File.GetAttributes(destinationPath).HasFlag(FileAttributes.ReparsePoint))
+                    if (File.Exists(destinationPath))
                     {
-                        string target = new string(File.ReadAllText(destinationPath).SkipWhile(c => c != '\"').Skip(1).TakeWhile(c => c != '\"').ToArray());
-                        if (target == filePath)
+
+                        // If the destination is a symlink pointing to the same file, skip
+                        if (FileHelper.ResolveLinkPath(destinationPath) == filePath)
                             continue;
 
-                        throw new IOException($"Addon '{addon.Name}' installation failed. '{Path.GetFileName(filePath)}' already exists in the target game's directory.");
+                        throw new IOException($"Addon '{addon.Name}' installation failed. '{fileName}' already exists in the target game's directory.");
                     }
 
-                    if (File.GetAttributes(filePath).HasFlag(FileAttributes.Directory))
-                        Directory.CreateSymbolicLink(destinationPath, filePath);
-                    else
-                        File.CreateSymbolicLink(destinationPath, filePath);
+                    FileHelper.CreateSymbolicLink(destinationPath, filePath);
                 }
             }
 
