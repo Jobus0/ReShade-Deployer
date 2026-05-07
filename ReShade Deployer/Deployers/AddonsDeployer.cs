@@ -146,7 +146,9 @@ public class AddonsDeployer
                 foreach (var filePath in addon.AdditionalConfigFiles)
                 {
                     string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
-                    File.Copy(filePath, destinationPath, false);
+                    
+                    if (!File.Exists(destinationPath))
+                        File.Copy(filePath, destinationPath, false);
                 }
             }
         }
