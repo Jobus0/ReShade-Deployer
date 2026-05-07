@@ -77,9 +77,9 @@ public class AddonsDeployer
                     addonItem.X32Path = file.FullName;
                 else if (file.Extension.Equals(".addon64", StringComparison.OrdinalIgnoreCase))
                     addonItem.X64Path = file.FullName;
-                else if (file.Name == "Shaders")
+                else if (file.Name.Equals("Shaders", StringComparison.OrdinalIgnoreCase))
                     addonItem.ShadersPath = file.FullName;
-                else if (file.Name == "Textures")
+                else if (file.Name.Equals("Textures", StringComparison.OrdinalIgnoreCase))
                     addonItem.TexturesPath = file.FullName;
                 else if (IsConfigType(file.Extension))
                     additionalConfigFiles.Add(file.FullName);
