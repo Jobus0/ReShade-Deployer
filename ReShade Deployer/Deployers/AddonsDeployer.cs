@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using IniParser;
+using IniParser.Model.Configuration;
+using IniParser.Parser;
 
 namespace ReShadeDeployer;
 
@@ -100,49 +103,38 @@ public class AddonsDeployer
         return addons.OrderBy(x => x.Name).ToArray();
     }
 
+    private static readonly FileIniDataParser AddonIniParser = new(new IniDataParser(new IniParserConfiguration
+    {
+        AllowKeysWithoutSection = true,
+        SkipInvalidLines = true,
+    }));
+
     /// <summary>
-    /// Parses an addon.ini file and stores its recognised fields on <paramref name="addonItem"/>.
+    /// Parses an Add-on.ini file and stores its recognised fields on <paramref name="addonItem"/>.
+    /// The file has no section headers; all keys live at the top level.
     /// All fields are optional; unrecognised keys are silently ignored.
     /// </summary>
     private static void ReadAddonConfig(AddonItem addonItem, string iniPath)
     {
-        foreach (var rawLine in File.ReadLines(iniPath))
+        var data = AddonIniParser.ReadFile(iniPath);
+
+        // Keys without a section are collected under the "Global" section by IniParser
+        var section = data.Global;
+
+        if (section.ContainsKey("SetupFile"))
+            addonItem.SetupFile = section["SetupFile"];
+
+        if (section.ContainsKey("ReShadeDllNameOverride"))
+            addonItem.ReShadeDllNameOverride = section["ReShadeDllNameOverride"];
+
+        if (section.ContainsKey("OverrideCopy"))
         {
-            var line = rawLine.Trim();
-
-            // Skip comments and section headers
-            if (line.StartsWith(';') || line.StartsWith('#') || line.StartsWith('[') || line.Length == 0)
-                continue;
-
-            int eqIdx = line.IndexOf('=');
-            if (eqIdx <= 0)
-                continue;
-
-            var key   = line[..eqIdx].Trim();
-            var value = line[(eqIdx + 1)..].Trim();
-
-            if (string.IsNullOrEmpty(value))
-                continue;
-
-            switch (key)
+            addonItem.OverrideCopy = section["OverrideCopy"] switch
             {
-                case "SetupFile":
-                    addonItem.SetupFile = value;
-                    break;
-
-                case "ReShadeDllNameOverride":
-                    addonItem.ReShadeDllNameOverride = value;
-                    break;
-
-                case "OverrideCopy":
-                    addonItem.OverrideCopy = value switch
-                    {
-                        "AlwaysCopy"     => OverrideCopyMode.AlwaysCopy,
-                        "AlwaysSymlinks" => OverrideCopyMode.AlwaysSymlinks,
-                        _                => OverrideCopyMode.Default,
-                    };
-                    break;
-            }
+                var s when s.Equals("AlwaysCopy", StringComparison.OrdinalIgnoreCase) => OverrideCopyMode.AlwaysCopy,
+                var s when s.Equals("AlwaysSymlinks", StringComparison.OrdinalIgnoreCase) => OverrideCopyMode.AlwaysSymlinks,
+                _ => OverrideCopyMode.Default,
+            };
         }
     }
 
@@ -195,7 +187,7 @@ public class AddonsDeployer
                     }
 
                     if (alwaysCopy)
-                        File.Copy(filePath, destinationPath, false);
+                        FileHelper.Copy(filePath, destinationPath, false);
                     else
                         FileHelper.CreateSymbolicLink(destinationPath, filePath);
                 }

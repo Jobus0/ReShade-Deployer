@@ -61,4 +61,27 @@ public static class FileHelper
     {
         return GetFileSystemInfo(linkPath).LinkTarget;
     }
+
+    /// <summary>
+    /// Copies a file or directory from sourcePath to destinationPath.
+    /// </summary>
+    /// <param name="sourcePath">Path to the source file or directory.</param>
+    /// <param name="destinationPath">Path to the destination file or directory.</param>
+    /// <param name="overwrite">Whether to overwrite existing files.</param>
+    public static void Copy(string sourcePath, string destinationPath, bool overwrite)
+    {
+        if (File.GetAttributes(sourcePath).HasFlag(FileAttributes.Directory))
+        {
+            Directory.CreateDirectory(destinationPath);
+            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+                Directory.CreateDirectory(dirPath.Replace(sourcePath, destinationPath));
+            foreach (string filePath in Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories))
+                File.Copy(filePath, filePath.Replace(sourcePath, destinationPath), overwrite);
+        }
+        else
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? destinationPath);
+            File.Copy(sourcePath, destinationPath, overwrite);
+        }
+    }
 }
