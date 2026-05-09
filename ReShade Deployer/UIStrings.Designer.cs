@@ -71,7 +71,7 @@ namespace ReShadeDeployer {
         /// <summary>
         ///   Looks up a localized string similar to Version: {0}
         ///
-        ///Copyright © 2024 Jobus
+        ///Copyright © 2026 Jobus
         ///https://github.com/Jobus0/reshade-deployer.
         /// </summary>
         public static string About_Info {
