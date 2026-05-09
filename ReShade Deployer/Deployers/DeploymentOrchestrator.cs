@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -39,7 +39,7 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, VulkanSystemWideDep
 
         try
         {
-            dllDeployer.Deploy(executableContext, api, addonSupport);
+            dllDeployer.Deploy(executableContext, api, addonSupport, addons);
             iniDeployer.Deploy(executableContext, addons);
             addonsDeployer.Deploy(executableContext, addons);
 

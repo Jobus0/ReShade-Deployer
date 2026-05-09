@@ -1,8 +1,23 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace ReShadeDeployer;
+
+/// <summary>
+/// Controls how files are deployed for an addon (symlinks vs. copies).
+/// </summary>
+public enum OverrideCopyMode
+{
+    /// <summary>Default behaviour: addon binaries use symlinks, config files are copied.</summary>
+    Default,
+
+    /// <summary>Always copy all files instead of creating symlinks.</summary>
+    AlwaysCopy,
+
+    /// <summary>Always use symlinks, even for AdditionalConfigFiles.</summary>
+    AlwaysSymlinks,
+}
 
 public class AddonItem : INotifyPropertyChanged
 {
@@ -22,7 +37,31 @@ public class AddonItem : INotifyPropertyChanged
     
     public List<string>? AdditionalFiles { get; set; }
     public List<string>? AdditionalConfigFiles { get; set; }
-    
+
+    // addon.ini config properties:
+
+    /// <summary>
+    /// Optional relative path to a runnable setup script (.bat, .ps1, .exe)
+    /// executed at the end of the addon deployment phase.
+    /// Only populated for addons living in a sub-directory of the Add-ons folder.
+    /// </summary>
+    public string? SetupFile { get; set; }
+
+    /// <summary>
+    /// Optional name or relative path for the ReShade DLL symlink.
+    /// When set, overrides the default API-derived name (e.g. "dxgi.dll").
+    /// A path like "Custom\MyReShade.dll" places the symlink inside a "Custom"
+    /// sub-directory (created if necessary) with the specified file name.
+    /// Only populated for addons living in a sub-directory of the Add-ons folder.
+    /// </summary>
+    public string? ReShadeDllNameOverride { get; set; }
+
+    /// <summary>
+    /// Controls how files are deployed for this addon.
+    /// Only populated for addons living in a sub-directory of the Add-ons folder.
+    /// </summary>
+    public OverrideCopyMode OverrideCopy { get; set; } = OverrideCopyMode.Default;
+
     private bool _isSelected;
     public bool IsSelected
     {

@@ -1,6 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace ReShadeDeployer;
 
@@ -14,7 +16,11 @@ public class DllDeployer(VulkanSystemWideDeployer vulkanSystemWideDeployer)
     /// <param name="executableContext">Context for the executable to deploy.</param>
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
-    public void Deploy(ExecutableContext executableContext, GraphicsApi api, bool addonSupport)
+    /// <param name="addons">
+    /// List of addons being deployed. Used to check for a <c>ReShadeDllNameOverride</c>.
+    /// If more than one addon specifies an override, an <see cref="InvalidOperationException"/> is thrown.
+    /// </param>
+    public void Deploy(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, IList<AddonItem> addons)
     {
         string dllPath = addonSupport ? Paths.AddonDlls : Paths.Dlls;
         
@@ -24,7 +30,34 @@ public class DllDeployer(VulkanSystemWideDeployer vulkanSystemWideDeployer)
             return;
         }
 
-        string symlinkPath = Path.Combine(executableContext.DirectoryPath, DllNameFromApi(api) + ".dll");
+        // Collect active addons that specify a DLL name override
+        var overrides = addons
+            .Where(a => !string.IsNullOrEmpty(a.ReShadeDllNameOverride))
+            .ToList();
+
+        if (overrides.Count > 1)
+        {
+            string names = string.Join(", ", overrides.Select(a => $"'{a.Name}'"));
+            throw new InvalidOperationException($"Multiple addons specify a ReShadeDllNameOverride ({names}). Only one override is allowed at a time.");
+        }
+
+        string symlinkPath;
+        if (overrides.Count == 1)
+        {
+            // The override value may be a plain file name ("MyReShade.dll") or a relative path
+            // ("Custom\MyReShade.dll"). Resolve it relative to the game directory.
+            string overrideRelative = overrides[0].ReShadeDllNameOverride!;
+            symlinkPath = Path.GetFullPath(Path.Combine(executableContext.DirectoryPath, overrideRelative));
+
+            // Ensure any intermediate sub-directories exist
+            string? overrideDir = Path.GetDirectoryName(symlinkPath);
+            if (!string.IsNullOrEmpty(overrideDir))
+                Directory.CreateDirectory(overrideDir);
+        }
+        else
+        {
+            symlinkPath = Path.Combine(executableContext.DirectoryPath, DllNameFromApi(api) + ".dll");
+        }
             
         if (File.Exists(symlinkPath))
         {
@@ -56,8 +89,8 @@ public class DllDeployer(VulkanSystemWideDeployer vulkanSystemWideDeployer)
 
     private static string DllNameFromApi(GraphicsApi api) => api switch
     {
-        GraphicsApi.D3D9 => "d3d9",
-        GraphicsApi.DXGI => "dxgi",
+        GraphicsApi.D3D9   => "d3d9",
+        GraphicsApi.DXGI   => "dxgi",
         GraphicsApi.OpenGL => "opengl32",
         _ => throw new ArgumentOutOfRangeException(nameof(api), api, null)
     };
