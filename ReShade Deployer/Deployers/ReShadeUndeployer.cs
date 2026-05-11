@@ -6,8 +6,6 @@ namespace ReShadeDeployer;
 
 public class ReShadeUndeployer
 {
-    private static readonly string[] DllNames = { "dxgi.dll", "d3d9.dll", "d3d10.dll", "d3d11.dll", "d3d12.dll", "opengl32.dll" };
-    
     /// <summary>
     /// Finds all ReShade-related files in the specified game directory.
     /// </summary>
@@ -27,9 +25,9 @@ public class ReShadeUndeployer
             files.Add(iniPath);
         
         // Find DLLs where FileDescription contains "ReShade"
-        foreach (var dllName in DllNames)
+        foreach (var entry in directoryInfo.EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly))
         {
-            string dllPath = Path.Combine(gameDirectory, dllName);
+            string dllPath = entry.FullName;
             if (File.Exists(dllPath))
             {
                 try
