@@ -42,7 +42,12 @@ ReShade
 ├── Textures                        # Put your textures here.
 │   └── *.png
 ├── Add-ons                         # Put your add-ons here.
-│   └── *.addon32/addon64
+│   ├── *.addon32/addon64
+│   └── My Add-on Folder
+│       ├── *.addon32/addon64
+│       ├── Shaders/Textures        # Add-on specific Shaders/Textures
+│       ├── Add-on.ini              # Advanced per add-on config
+│       └── *                       # Any other file you want to include
 ├── ReShade Deployer.exe
 ├── ReShade.ini                     # Optional
 └── ReShadePreset.ini               # Optional
