@@ -22,11 +22,11 @@ public enum OverrideCopyMode
 public class AddonItem : INotifyPropertyChanged
 {
     public string Name { get; init; } = string.Empty;
-    public string X32Path { get; set; } = string.Empty;
-    public string X64Path { get; set; } = string.Empty;
+    public List<string> X32Paths { get; } = new();
+    public List<string> X64Paths { get; } = new();
     
-    public bool HasX32Addon => !string.IsNullOrEmpty(X32Path);
-    public bool HasX64Addon => !string.IsNullOrEmpty(X64Path);
+    public bool HasX32Addon => X32Paths.Count > 0;
+    public bool HasX64Addon => X64Paths.Count > 0;
     public bool HasAnyAddon => HasX32Addon || HasX64Addon;
 
     public string ShadersPath { get; set; } = string.Empty;

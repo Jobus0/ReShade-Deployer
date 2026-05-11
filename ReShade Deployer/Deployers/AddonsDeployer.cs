@@ -41,24 +41,16 @@ public class AddonsDeployer
             if (isAddon32 || isAddon64)
             {
                 var addonItem = addons.FirstOrDefault(x => x.Name == name);
-                if (addonItem != null)
+                if (addonItem == null)
                 {
-                    if (isAddon32)
-                        addonItem.X32Path = file.FullName;
-                    else if (isAddon64)
-                        addonItem.X64Path = file.FullName;
-                }
-                else
-                {
-                    addonItem = new AddonItem() {Name = name};
-
-                    if (isAddon32)
-                        addonItem.X32Path = file.FullName;
-                    else if (isAddon64)
-                        addonItem.X64Path = file.FullName;
-
+                    addonItem = new AddonItem() { Name = name };
                     addons.Add(addonItem);
                 }
+
+                if (isAddon32)
+                    addonItem.X32Paths.Add(file.FullName);
+                else if (isAddon64)
+                    addonItem.X64Paths.Add(file.FullName);
             }
         }
 
@@ -80,9 +72,9 @@ public class AddonsDeployer
             foreach (var file in files)
             {
                 if (file.Extension.Equals(".addon32", StringComparison.OrdinalIgnoreCase))
-                    addonItem.X32Path = file.FullName;
+                    addonItem.X32Paths.Add(file.FullName);
                 else if (file.Extension.Equals(".addon64", StringComparison.OrdinalIgnoreCase))
-                    addonItem.X64Path = file.FullName;
+                    addonItem.X64Paths.Add(file.FullName);
                 else if (file.Name.Equals("Shaders", StringComparison.OrdinalIgnoreCase))
                     addonItem.ShadersPath = file.FullName;
                 else if (file.Name.Equals("Textures", StringComparison.OrdinalIgnoreCase))
@@ -153,15 +145,17 @@ public class AddonsDeployer
 
             if (addon.HasAnyAddon)
             {
-                var filePath = context.IsX64 ? addon.X64Path : addon.X32Path;
-                var fileName = Path.GetFileName(filePath);
+                var filePaths = context.IsX64 ? addon.X64Paths : addon.X32Paths;
+                foreach (var filePath in filePaths)
+                {
+                    var fileName = Path.GetFileName(filePath);
+                    string destinationPath = Path.Combine(context.DirectoryPath, fileName);
 
-                string destinationPath = Path.Combine(context.DirectoryPath, fileName);
-
-                if (alwaysCopy)
-                    File.Copy(filePath, destinationPath, false);
-                else
-                    File.CreateSymbolicLink(destinationPath, filePath);
+                    if (alwaysCopy)
+                        File.Copy(filePath, destinationPath, false);
+                    else
+                        File.CreateSymbolicLink(destinationPath, filePath);
+                }
             }
 
             if (addon.AdditionalFiles != null)
