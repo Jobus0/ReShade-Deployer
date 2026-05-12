@@ -61,7 +61,11 @@ public class ReShadeUndeployer
     public void Undeploy(string gameDirectory)
     {
         foreach (var file in FindReShadeFiles(gameDirectory))
+        {
             if (File.Exists(file))
                 File.Delete(file);
+            else if (Directory.Exists(file))
+                Directory.Delete(file, true);
+        }
     }
 }
