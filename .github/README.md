@@ -1,4 +1,4 @@
-﻿# ReShade Deployer
+# ReShade Deployer
 ### A centralized alternative to the official ReShade installer
 
 ![Main Window](Readme/MainWindow.png)
@@ -16,7 +16,7 @@ A minimal installer program that lets you:
 - Automatically pick the rendering API and 32/64-bit versions by analysing the executable.
 - Automatically redirect the installation path for Unreal Engine Bootstraps and RTX Remix titles.
 - Toggle a checkbox to install the 'Add-on Support' version.
-  - When enabled, a dropdown list becomes available for choosing what add-ons to deploy from your 'Add-ons' folder. It automatically picks the correct 32/64-bit file.
+  - When enabled, a dropdown list becomes available for choosing what add-ons to deploy from your 'Add-ons' folder. It automatically picks the correct 32/64-bit file. [Read more about advanced usage](ADDONS.md).
 - Add a 'Deploy ReShade' option to Windows's context (right-click) menu for .exe files and shortcuts.
 - Update all deployed ReShade .dll:s with a single click.
   - Possible because it creates symlinks instead of copying the .dll:s.
@@ -29,9 +29,13 @@ A minimal installer program that lets you:
    - This is where you must keep your **Shaders**, **Textures**, and **Add-ons** folders.
    - If you already have a folder for **Shaders** and **Textures**, you can place **ReShade Deployer.exe** in the same folder.
 3. Run the program and allow the first-time setup.
-4. (Optional) Enable [Context Menu Deploy](#context-menu) from the **⚙**options menu.
-5. (Optional) Put a **ReShade.ini** and/or **ReShadePreset.ini** next to **ReShade Deployer.exe** to make the deployer automatically include those .ini:s when deploying to games.
-   - When your custom **ReShade.ini** is deployed, some specific settings (like the search paths) will be overriden or created if missing. 
+
+### Optional Steps
+- Enable [Context Menu Deploy](#context-menu) from the **⚙**options menu.
+- Put a **ReShade.ini** and/or **ReShadePreset.ini** next to **ReShade Deployer.exe** to make the deployer automatically include those .ini:s when deploying to games.
+   - When your custom **ReShade.ini** is deployed, some specific settings (like the search paths) will be overriden or created if missing.
+- Put **.addon32** and **.addon64** files in the **Add-ons** folder (either loosely or grouped in a sub-folder).
+  - See more in [**Advanced Add-ons Usage**](ADDONS.md).
 
 ### Folder Structure
 ```
@@ -42,12 +46,9 @@ ReShade
 ├── Textures                        # Put your textures here.
 │   └── *.png
 ├── Add-ons                         # Put your add-ons here.
-│   ├── *.addon32/addon64
-│   └── My Add-on Folder
-│       ├── *.addon32/addon64
-│       ├── Shaders/Textures        # Add-on specific Shaders/Textures
-│       ├── Add-on.ini              # Advanced per add-on config
-│       └── *                       # Any other file you want to include
+│   ├── My Add-on
+│   │   └── *.addon32/addon64       # Add-on files grouped in sub-folder
+│   └── *.addon32/addon64           # Add-on files loose in Add-ons root
 ├── ReShade Deployer.exe
 ├── ReShade.ini                     # Optional
 └── ReShadePreset.ini               # Optional
@@ -60,15 +61,17 @@ There are two ways to use ReShade Deployer: Running it normally, or running it f
 1. Run the program.
 2. Select the game you want to deploy ReShade to using the 'Select Game' button.
 3. The target graphics API (DirectX, Vulkan, etc) should be automatically selected. If not, select it manually. If you are unsure, check the API section of the game's [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home) page.
-4. Press the 'Deploy to Game' button.
-5. If an existing ReShade preset is detected, it will ask whether to overwrite it.
+4. (Optional) Check the Add-on Support toggle and select your add-ons from the dropdown list.
+5. Press the 'Deploy to Game' button.
+6. If an existing ReShade preset is detected, it will ask whether to overwrite it.
 
 ### Context Menu
 To enable this, run the program, and from the **⚙**options menu, check the **Context Menu Deploy** option.
 1. Right-click any game .exe or shortcut in Windows's file explorer or desktop, and select 'Deploy ReShade'.
 2. The target graphics API (DirectX, Vulkan, etc) should be automatically selected. If not, select it manually. If you are unsure, check the API section of the game's [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home) page.
-3. Press the 'Deploy to Game' button.
-4. If an existing ReShade preset is detected, it will ask whether to overwrite it.
+3. (Optional) Check the Add-on Support toggle and select your add-ons from the dropdown list.
+4. Press the 'Deploy to Game' button.
+5. If an existing ReShade preset is detected, it will ask whether to overwrite it.
 
 ![Main Window](Readme/Deployment.webp)
 
