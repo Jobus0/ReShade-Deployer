@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace ReShadeDeployer;
 
 /// <summary>
-/// Controls how files are deployed for an addon (symlinks vs. copies).
+/// Controls how files are deployed for an addon (symlinks vs. copies). Note that copies are not supported for undeployment.
 /// </summary>
 public enum OverrideCopyMode
 {
