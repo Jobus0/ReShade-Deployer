@@ -589,7 +589,7 @@ namespace ReShadeDeployer {
         ///
         ///Would you like to install it?
         ///
-        ///Changelog is available here:
+        ///Changelog is available at:
         ///https://github.com/Jobus0/ReShade-Deployer/releases.
         /// </summary>
         public static string UpdateAvailable {
@@ -608,7 +608,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update.
+        ///   Looks up a localized string similar to Check for Updates.
         /// </summary>
         public static string UpdateDeployer {
             get {
@@ -631,6 +631,27 @@ namespace ReShadeDeployer {
         public static string UpdateReShade_Tooltip {
             get {
                 return ResourceManager.GetString("UpdateReShade_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No new update of ReShade Deployer is available.
+        ///
+        ///Latest version: {0}
+        ///Current version: {1}.
+        /// </summary>
+        public static string UpdateUnavailable {
+            get {
+                return ResourceManager.GetString("UpdateUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Update Available.
+        /// </summary>
+        public static string UpdateUnavailable_Title {
+            get {
+                return ResourceManager.GetString("UpdateUnavailable_Title", resourceCulture);
             }
         }
         

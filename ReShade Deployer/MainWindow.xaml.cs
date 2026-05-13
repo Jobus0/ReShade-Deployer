@@ -138,14 +138,14 @@ namespace ReShadeDeployer
             return result;
         }
         
-        private async void CheckForNewDeployerVersion()
+        private async void CheckForNewDeployerVersion(bool force = false)
         {
             if (_assemblyVersion == null)
                 return;
             
             string latestVersion = _config.LatestDeployerVersionNumber;
             bool newerVersionFound = false;
-            if (DateTime.Now - _config.LatestDeployerVersionNumberCheckDate > TimeSpan.FromDays(7))
+            if (force || DateTime.Now - _config.LatestDeployerVersionNumberCheckDate > TimeSpan.FromDays(7))
             {
                 try
                 {
@@ -164,8 +164,19 @@ namespace ReShadeDeployer
                 }
             }
 
-            if (_assemblyVersion != latestVersion && newerVersionFound)
-                PromptForUpdate();
+            if (force || newerVersionFound)
+            {
+                if (VersionParser.IsNewerThan(latestVersion, _assemblyVersion))
+                {
+                    PromptForUpdate();
+                }
+                else
+                {
+                    _messageBox.Show(
+                        string.Format(UIStrings.UpdateUnavailable, latestVersion, _assemblyVersion!),
+                        UIStrings.UpdateUnavailable_Title);
+                }
+            }
         }
         
         public void PromptForUpdate()
@@ -404,7 +415,7 @@ namespace ReShadeDeployer
         
         private void UpdateDeployerMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            PromptForUpdate();
+            CheckForNewDeployerVersion(true);
         }
 
         private void UninstallMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -430,16 +441,6 @@ namespace ReShadeDeployer
         private void SettingsButton_OnClick(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
-
-            if (_assemblyVersion != null)
-            {
-                foreach (var item in button.ContextMenu!.Items)
-                {
-                    if (item is MenuItem {Name: "UpdateDeployerMenuItem"} updateDeployerMenuItem)
-                        updateDeployerMenuItem.Visibility = _assemblyVersion == _config.LatestDeployerVersionNumber ? Visibility.Collapsed : Visibility.Visible;
-                }
-            }
-                    
             button.ContextMenu!.IsOpen = true;
         }
 

@@ -192,14 +192,23 @@ Current version: {1}
 
 Would you like to install it?
 
-Changelog is available here:
+Changelog is available at:
 https://github.com/Jobus0/ReShade-Deployer/releases</value>
 	</data>
 	<data name="UpdateAvailable_Title" xml:space="preserve">
 		<value>Update Available</value>
 	</data>
+    <data name="UpdateUnavailable" xml:space="preserve">
+		<value>No new update of ReShade Deployer is available.
+
+Latest version: {0}
+Current version: {1}</value>
+	</data>
+    <data name="UpdateUnavailable_Title" xml:space="preserve">
+		<value>No Update Available</value>
+	</data>
 	<data name="UpdateDeployer" xml:space="preserve">
-		<value>Update</value>
+		<value>Check for Updates</value>
 	</data>
 	<data name="UpdateError" xml:space="preserve">
 		<value>You are already on the latest version.</value>
