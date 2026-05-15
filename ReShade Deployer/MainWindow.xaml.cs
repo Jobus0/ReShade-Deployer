@@ -147,16 +147,17 @@ namespace ReShadeDeployer
             bool newerVersionFound = false;
             if (force || DateTime.Now - _config.LatestDeployerVersionNumberCheckDate > TimeSpan.FromDays(7))
             {
+                _config.LatestDeployerVersionNumberCheckDate = DateTime.Now;
+                
                 try
                 {
                     latestVersion = await _appUpdater.GetLatestOnlineVersionNumber();
 
-                    if (_config.LatestDeployerVersionNumber != latestVersion)
-                    {
+                    if (VersionParser.IsNewerThan(latestVersion, _config.LatestDeployerVersionNumber))
                         _config.LatestDeployerVersionNumber = latestVersion;
+                    
+                    if (VersionParser.IsNewerThan(latestVersion, _assemblyVersion))
                         newerVersionFound = true;
-                    }
-                    _config.LatestDeployerVersionNumberCheckDate = DateTime.Now;
                 }
                 catch (Exception)
                 {
@@ -164,18 +165,15 @@ namespace ReShadeDeployer
                 }
             }
 
-            if (force || newerVersionFound)
+            if (newerVersionFound)
             {
-                if (VersionParser.IsNewerThan(latestVersion, _assemblyVersion))
-                {
-                    PromptForUpdate();
-                }
-                else
-                {
-                    _messageBox.Show(
-                        string.Format(UIStrings.UpdateUnavailable, latestVersion, _assemblyVersion!),
-                        UIStrings.UpdateUnavailable_Title);
-                }
+                PromptForUpdate();
+            }
+            else if (force)
+            {
+                _messageBox.Show(
+                    string.Format(UIStrings.UpdateUnavailable, latestVersion, _assemblyVersion!),
+                    UIStrings.UpdateUnavailable_Title);
             }
         }
         

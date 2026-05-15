@@ -32,8 +32,11 @@ public static partial class VersionParser
     /// <returns>True if version1 is newer than version2, false otherwise.</returns>
     public static bool IsNewerThan(string version1, string version2)
     {
-        if (string.IsNullOrEmpty(version1) || string.IsNullOrEmpty(version2))
+        if (string.IsNullOrEmpty(version1))
             return false;
+        
+        if (string.IsNullOrEmpty(version2))
+            return true;
         
         var v1Parts = version1.Split('.').Select(int.Parse).ToArray();
         var v2Parts = version2.Split('.').Select(int.Parse).ToArray();
