@@ -1,5 +1,6 @@
-﻿using System.Windows;
+using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using ReShadeDeployer.ViewModels;
 
 namespace ReShadeDeployer;
 
@@ -24,6 +25,7 @@ public partial class App : Application
         SingleInstanceManager.OnArgumentsReceived += args => StartupArgs = args;
 
         var services = new ServiceCollection();
+        services.AddSingleton<MainViewModel>();
         services.AddSingleton<MainWindow>();
         services.AddSingleton<DeploymentOrchestrator>();
         services.AddSingleton<DllDeployer>();
