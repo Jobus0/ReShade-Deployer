@@ -28,8 +28,8 @@ namespace ReShadeDeployer
             // Wire up View-level events from the ViewModel
             _viewModel.RequestHide += Hide;
             _viewModel.RequestShow += Show;
-            _viewModel.RequestFirstTimeSetup += FirstTimeSetup;
-            _viewModel.RequestPromptForUpdate += () => _viewModel.PromptForUpdate();
+            _viewModel.Updater.RequestFirstTimeSetup += FirstTimeSetup;
+            _viewModel.Updater.RequestPromptForUpdate += () => _viewModel.Updater.PromptForUpdate();
 
             Loaded += OnLoaded;
         }
@@ -37,7 +37,7 @@ namespace ReShadeDeployer
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             SettingsButton.ContextMenu.DataContext = _viewModel;
-            
+
             var startupArgs = ((App)Application.Current).StartupArgs;
 
             _viewModel.Initialize(startupArgs);
@@ -111,7 +111,7 @@ namespace ReShadeDeployer
                 UIStrings.Exit);
 
             if (result == IMessageBox.Result.Primary)
-                _viewModel.AcceptFirstTimeSetup();
+                _viewModel.Updater.AcceptFirstTimeSetup();
             else
                 Application.Current.Shutdown();
         }
@@ -126,7 +126,7 @@ namespace ReShadeDeployer
         {
             if (sender is FrameworkElement { DataContext: AddonItem item })
             {
-                _viewModel.OnAddonItemClicked(item);
+                _viewModel.Addons.OnAddonItemClicked(item);
             }
 
             e.Handled = true;

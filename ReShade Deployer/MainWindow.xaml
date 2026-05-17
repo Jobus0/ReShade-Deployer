@@ -30,27 +30,27 @@
         <Separator />
         <DockPanel Height="28" LastChildFill="False">
             <Label VerticalAlignment="Center" Padding="15 0 3 0" Content="{x:Static rd:UIStrings.VersionPrefix}" />
-            <Label VerticalAlignment="Center" Padding="0" FontWeight="Bold" Content="{Binding VersionLabelContent}" />
+            <Label VerticalAlignment="Center" Padding="0" FontWeight="Bold" Content="{Binding Updater.VersionLabelContent}" />
             <ui:Button Name="SettingsButton" VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="Settings16" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
                        ToolTip="{x:Static rd:UIStrings.Settings_Tooltip}" Click="SettingsButton_OnClick">
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{x:Static rd:UIStrings.ContextMenuDeploy}" IsCheckable="True" IsChecked="{Binding IsContextMenuRegistered}"
+                        <MenuItem Header="{x:Static rd:UIStrings.ContextMenuDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsContextMenuRegistered}"
                                   ToolTip="{x:Static rd:UIStrings.ContextMenuDeploy_Tooltip}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.AlwaysExitOnDeploy}" IsCheckable="True" IsChecked="{Binding IsAlwaysExitOnDeploy}"
+                        <MenuItem Header="{x:Static rd:UIStrings.AlwaysExitOnDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsAlwaysExitOnDeploy}"
                                   ToolTip="{x:Static rd:UIStrings.AlwaysExitOnDeploy_Tooltip}" />
                         <Separator/>
-                        <MenuItem Header="{x:Static rd:UIStrings.UpdateDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding CheckForDeployerUpdateCommand}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.UninstallDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding UninstallCommand}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.About}" HeaderStringFormat="{}{0}..." Command="{Binding ShowAboutCommand}" />
+                        <MenuItem Header="{x:Static rd:UIStrings.UpdateDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.CheckForDeployerUpdateCommand}" />
+                        <MenuItem Header="{x:Static rd:UIStrings.UninstallDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.UninstallCommand}" />
+                        <MenuItem Header="{x:Static rd:UIStrings.About}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.ShowAboutCommand}" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </ui:Button>
             <ui:Button VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="ArrowDownload16" FontSize="12" FontWeight="Bold" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
-                       ToolTip="{x:Static rd:UIStrings.UpdateReShade_Tooltip}" Command="{Binding UpdateReShadeCommand}" Content="{Binding UpdateButtonContent}" IsEnabled="{Binding IsUpdateEnabled}" />
+                       ToolTip="{x:Static rd:UIStrings.UpdateReShade_Tooltip}" Command="{Binding Updater.UpdateReShadeCommand}" Content="{Binding Updater.UpdateButtonContent}" IsEnabled="{Binding Updater.IsUpdateEnabled}" />
         </DockPanel>
         <Separator />
-        <StackPanel Margin="12" IsEnabled="{Binding IsPanelEnabled}">
+        <StackPanel Margin="12" IsEnabled="{Binding Updater.IsPanelEnabled}">
             <Grid Margin="0, 0, 0, 10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -69,9 +69,9 @@
                     <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.Vulkan}" ToolTip="{x:Static rd:UIStrings.Vulkan_Tooltip}" IsChecked="{Binding IsVulkanChecked}" Tag="{Binding IsVulkanHighlighted}" Style="{StaticResource ApiBoldStyle}" />
                 </StackPanel>
             </GroupBox>
-            <CheckBox Margin="7 7 7 0" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}" IsChecked="{Binding IsAddonSupportChecked}" Command="{Binding ToggleAddonSupportCommand}" />
-            <Grid Margin="7,2,7,7" Visibility="{Binding IsAddonsComboVisible, Converter={StaticResource BoolToVisibility}}">
-                <ComboBox FontSize="13" HorizontalAlignment="Stretch" ItemsSource="{Binding Addons}">
+            <CheckBox Margin="7 7 7 0" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}" IsChecked="{Binding Addons.IsAddonSupportChecked}" Command="{Binding ToggleAddonSupportCommand}" />
+            <Grid Margin="7,2,7,7" Visibility="{Binding Addons.IsAddonsComboVisible, Converter={StaticResource BoolToVisibility}}">
+                <ComboBox FontSize="13" HorizontalAlignment="Stretch" ItemsSource="{Binding Addons.Addons}">
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem">
                             <Setter Property="Padding" Value="0" />
@@ -88,7 +88,7 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <TextBlock Text="{Binding AddonsSummaryText}" Margin="12,0,25,0" VerticalAlignment="Center" IsHitTestVisible="False" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                <TextBlock Text="{Binding Addons.AddonsSummaryText}" Margin="12,0,25,0" VerticalAlignment="Center" IsHitTestVisible="False" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
             </Grid>
             <Grid Margin="0 7 0 0">
                 <Grid.ColumnDefinitions>

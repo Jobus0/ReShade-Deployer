@@ -26,6 +26,9 @@ public partial class App : Application
 
         var services = new ServiceCollection();
         services.AddSingleton<MainViewModel>();
+        services.AddSingleton<UpdaterViewModel>();
+        services.AddSingleton<SettingsViewModel>();
+        services.AddSingleton<AddonsViewModel>();
         services.AddSingleton<MainWindow>();
         services.AddSingleton<DeploymentOrchestrator>();
         services.AddSingleton<DllDeployer>();
