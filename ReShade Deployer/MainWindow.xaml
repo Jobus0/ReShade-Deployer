@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:rd="clr-namespace:ReShadeDeployer"
+             xmlns:conv="clr-namespace:ReShadeDeployer.Converters"
              mc:Ignorable="d"
              ResizeMode="NoResize"
              Icon="ReShade.ico"
@@ -17,6 +18,7 @@
              MinWidth="300" Width="300">
     <ui:UiWindow.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <conv:EnumToBoolConverter x:Key="EnumToBool" />
         <Style x:Key="ApiBoldStyle" TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="True">
@@ -63,10 +65,22 @@
             </Grid>
             <GroupBox Header="{x:Static rd:UIStrings.TargetAPI}" Padding="3, 0" BorderThickness="0" Background="#44000000" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}">
                 <StackPanel>
-                    <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.DirectX10}" ToolTip="{x:Static rd:UIStrings.DirectX10_Tooltip}" IsChecked="{Binding IsDxgiChecked}" Tag="{Binding IsDxgiHighlighted}" Style="{StaticResource ApiBoldStyle}" />
-                    <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.DirectX9}" ToolTip="{x:Static rd:UIStrings.DirectX9_Tooltip}" IsChecked="{Binding IsD3d9Checked}" Tag="{Binding IsD3d9Highlighted}" Style="{StaticResource ApiBoldStyle}" />
-                    <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.OpenGL}" ToolTip="{x:Static rd:UIStrings.OpenGL_Tooltip}" IsChecked="{Binding IsOpenGlChecked}" Tag="{Binding IsOpenGlHighlighted}" Style="{StaticResource ApiBoldStyle}" />
-                    <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.Vulkan}" ToolTip="{x:Static rd:UIStrings.Vulkan_Tooltip}" IsChecked="{Binding IsVulkanChecked}" Tag="{Binding IsVulkanHighlighted}" Style="{StaticResource ApiBoldStyle}" />
+                    <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.DirectX10}" ToolTip="{x:Static rd:UIStrings.DirectX10_Tooltip}"
+                                 IsChecked="{Binding SelectedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.DXGI}}"
+                                 Tag="{Binding HighlightedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.DXGI}}"
+                                 Style="{StaticResource ApiBoldStyle}" />
+                    <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.DirectX9}" ToolTip="{x:Static rd:UIStrings.DirectX9_Tooltip}"
+                                 IsChecked="{Binding SelectedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.D3D9}}"
+                                 Tag="{Binding HighlightedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.D3D9}}"
+                                 Style="{StaticResource ApiBoldStyle}" />
+                    <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.OpenGL}" ToolTip="{x:Static rd:UIStrings.OpenGL_Tooltip}"
+                                 IsChecked="{Binding SelectedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.OpenGL}}"
+                                 Tag="{Binding HighlightedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.OpenGL}}"
+                                 Style="{StaticResource ApiBoldStyle}" />
+                    <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.Vulkan}" ToolTip="{x:Static rd:UIStrings.Vulkan_Tooltip}"
+                                 IsChecked="{Binding SelectedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.Vulkan}}"
+                                 Tag="{Binding HighlightedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.Vulkan}}"
+                                 Style="{StaticResource ApiBoldStyle}" />
                 </StackPanel>
             </GroupBox>
             <CheckBox Margin="7 7 7 0" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}" IsChecked="{Binding Addons.IsAddonSupportChecked}" Command="{Binding ToggleAddonSupportCommand}" />

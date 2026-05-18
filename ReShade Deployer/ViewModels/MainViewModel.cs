@@ -39,31 +39,12 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isExecutableInfoEnabled;
 
-    // API radio buttons
+    // Selected and highlighted graphics API
     [ObservableProperty]
-    private bool _isDxgiChecked = true;
+    private GraphicsApi _selectedApi = GraphicsApi.DXGI;
 
     [ObservableProperty]
-    private bool _isD3d9Checked;
-
-    [ObservableProperty]
-    private bool _isOpenGlChecked;
-
-    [ObservableProperty]
-    private bool _isVulkanChecked;
-
-    // API highlight (bold) state
-    [ObservableProperty]
-    private bool _isDxgiHighlighted;
-
-    [ObservableProperty]
-    private bool _isD3d9Highlighted;
-
-    [ObservableProperty]
-    private bool _isOpenGlHighlighted;
-
-    [ObservableProperty]
-    private bool _isVulkanHighlighted;
+    private GraphicsApi? _highlightedApi;
 
     // Undeploy button visibility
     [ObservableProperty]
@@ -133,7 +114,7 @@ public partial class MainViewModel : ObservableObject
 
         RequestHide?.Invoke();
 
-        var api = GetCheckedApi();
+        var api = SelectedApi;
         var addonSupport = Addons.IsAddonSupportChecked;
 
         try
@@ -217,59 +198,34 @@ public partial class MainViewModel : ObservableObject
         // A game might include multiple APIs, so prioritize: Vulkan > DXGI > D3D9 > OpenGL
         if (SelectedExecutableContext.IsVulkan)
         {
-            SetCheckedApi(GraphicsApi.Vulkan);
-            HighlightApi(GraphicsApi.Vulkan);
+            SelectedApi = GraphicsApi.Vulkan;
+            HighlightedApi = GraphicsApi.Vulkan;
         }
         else if (SelectedExecutableContext.IsDXGI)
         {
-            SetCheckedApi(GraphicsApi.DXGI);
-            HighlightApi(GraphicsApi.DXGI);
+            SelectedApi = GraphicsApi.DXGI;
+            HighlightedApi = GraphicsApi.DXGI;
         }
         else if (SelectedExecutableContext.IsD3D9)
         {
-            SetCheckedApi(GraphicsApi.D3D9);
-            HighlightApi(GraphicsApi.D3D9);
+            SelectedApi = GraphicsApi.D3D9;
+            HighlightedApi = GraphicsApi.D3D9;
         }
         else if (SelectedExecutableContext.IsOpenGL)
         {
-            SetCheckedApi(GraphicsApi.OpenGL);
-            HighlightApi(GraphicsApi.OpenGL);
+            SelectedApi = GraphicsApi.OpenGL;
+            HighlightedApi = GraphicsApi.OpenGL;
         }
         else
         {
-            // Clear highlight
-            HighlightApi(null);
+            HighlightedApi = null;
         }
 
         Addons.Refresh(Addons.IsAddonSupportChecked, SelectedExecutableContext);
         UpdateUndeployVisibility();
     }
 
-    private void SetCheckedApi(GraphicsApi api)
-    {
-        IsVulkanChecked = api == GraphicsApi.Vulkan;
-        IsDxgiChecked   = api == GraphicsApi.DXGI;
-        IsD3d9Checked   = api == GraphicsApi.D3D9;
-        IsOpenGlChecked = api == GraphicsApi.OpenGL;
-    }
 
-    private void HighlightApi(GraphicsApi? api)
-    {
-        IsVulkanHighlighted = api == GraphicsApi.Vulkan;
-        IsDxgiHighlighted   = api == GraphicsApi.DXGI;
-        IsD3d9Highlighted   = api == GraphicsApi.D3D9;
-        IsOpenGlHighlighted = api == GraphicsApi.OpenGL;
-    }
-
-    private GraphicsApi GetCheckedApi()
-    {
-        if (IsDxgiChecked)   return GraphicsApi.DXGI;
-        if (IsD3d9Checked)   return GraphicsApi.D3D9;
-        if (IsOpenGlChecked) return GraphicsApi.OpenGL;
-        if (IsVulkanChecked) return GraphicsApi.Vulkan;
-
-        throw new System.Exception("No API selected!");
-    }
 
     private void UpdateUndeployVisibility()
     {
