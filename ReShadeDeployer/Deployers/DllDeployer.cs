@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 
 namespace ReShadeDeployer;
 
 public enum GraphicsApi { D3D9, DXGI, OpenGL, Vulkan }
 
-public class DllDeployer(VulkanSystemWideDeployer vulkanSystemWideDeployer)
+public class DllDeployer(IFileSystem fileSystem, VulkanSystemWideDeployer vulkanSystemWideDeployer)
 {
     /// <summary>
     /// Deploy ReShade DLL to a game directory.
@@ -47,44 +47,44 @@ public class DllDeployer(VulkanSystemWideDeployer vulkanSystemWideDeployer)
             // The override value may be a plain file name ("MyReShade.dll") or a relative path
             // ("Custom\MyReShade.dll"). Resolve it relative to the game directory.
             string overrideRelative = overrides[0].ReShadeDllNameOverride!;
-            symlinkPath = Path.GetFullPath(Path.Combine(executableContext.DirectoryPath, overrideRelative));
+            symlinkPath = fileSystem.Path.GetFullPath(fileSystem.Path.Combine(executableContext.DirectoryPath, overrideRelative));
 
             // Ensure any intermediate sub-directories exist
-            string? overrideDir = Path.GetDirectoryName(symlinkPath);
+            string? overrideDir = fileSystem.Path.GetDirectoryName(symlinkPath);
             if (!string.IsNullOrEmpty(overrideDir))
-                Directory.CreateDirectory(overrideDir);
+                fileSystem.Directory.CreateDirectory(overrideDir);
         }
         else
         {
-            symlinkPath = Path.Combine(executableContext.DirectoryPath, DllNameFromApi(api) + ".dll");
+            symlinkPath = fileSystem.Path.Combine(executableContext.DirectoryPath, DllNameFromApi(api) + ".dll");
         }
             
-        if (File.Exists(symlinkPath))
+        if (fileSystem.File.Exists(symlinkPath))
         {
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(symlinkPath);
             bool existingFileIsReShade = fileVersionInfo.FileDescription?.Contains("ReShade") ?? false;
             
             if (existingFileIsReShade)
             {
-                File.Delete(symlinkPath);
+                fileSystem.File.Delete(symlinkPath);
             }
             else
             {
                 // Find a unique filename for the existing non-ReShade .dll
                 string oldPath = symlinkPath + ".old";
                 int oldCount = 0;
-                while (File.Exists(oldPath + (oldCount > 0 ? oldCount : null)))
+                while (fileSystem.File.Exists(oldPath + (oldCount > 0 ? oldCount : null)))
                     oldCount++;
 
                 if (oldCount > 0)
                     oldPath += oldCount;
                 
                 // Rename existing .dll to append .old (dxgi.dll becomes dxgi.dll.old, old dxgi.dll.old1 if that exists too)
-                File.Move(symlinkPath, oldPath);
+                fileSystem.File.Move(symlinkPath, oldPath);
             }
         }
         
-        File.CreateSymbolicLink(symlinkPath, Path.Combine(dllPath, executableContext.IsX64 ? "ReShade64.dll" : "ReShade32.dll"));
+        fileSystem.File.CreateSymbolicLink(symlinkPath, fileSystem.Path.Combine(dllPath, executableContext.IsX64 ? "ReShade64.dll" : "ReShade32.dll"));
     }
 
     private static string DllNameFromApi(GraphicsApi api) => api switch

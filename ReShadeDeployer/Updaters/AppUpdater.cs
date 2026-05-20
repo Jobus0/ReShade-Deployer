@@ -1,13 +1,15 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using Testably.Abstractions;
 
 namespace ReShadeDeployer;
 
-public class AppUpdater(DownloadService downloadService, IMessageBox messageBox)
+public class AppUpdater(IFileSystem fileSystem, DownloadService downloadService, IMessageBox messageBox)
 {
     private const string GithubUrl = "https://api.github.com/repos/Jobus0/ReShade-Deployer/releases/latest";
     
@@ -19,7 +21,7 @@ public class AppUpdater(DownloadService downloadService, IMessageBox messageBox)
         // Fetch latest version of ReShade Deployer from GitHub
         string content = await downloadService.GetWebsiteContent(GithubUrl);
         string downloadUrl = Regex.Match(content, @"""browser_download_url"":\s?""(\S*?)""").Groups[1].ToString();
-        string downloadPath = Path.Combine(Paths.Lib, "ReShade-Deployer.zip");
+        string downloadPath = fileSystem.Path.Combine(Paths.Lib, "ReShade-Deployer.zip");
 
         try
         {
@@ -34,14 +36,14 @@ public class AppUpdater(DownloadService downloadService, IMessageBox messageBox)
         // Rename the current exe because we cannot overwrite it while it is running
         string currentExe = Process.GetCurrentProcess().MainModule!.FileName;
         string oldExe = currentExe + ".oldver";
-        File.Move(currentExe, oldExe, overwrite: true);
+        fileSystem.File.Move(currentExe, oldExe, overwrite: true);
         
         // Extract the new version of ReShade Deployer
-        using (ZipArchive zip = new ZipArchive(File.OpenRead(downloadPath), ZipArchiveMode.Read, false))
+        using (IZipArchive zip = fileSystem.ZipArchive().New(fileSystem.File.OpenRead(downloadPath), ZipArchiveMode.Read, false))
             zip.ExtractToDirectory(Paths.Root);
         
         // Delete the downloaded archive
-        File.Delete(downloadPath);
+        fileSystem.File.Delete(downloadPath);
         
         // Run the new version of ReShade Deployer
         var startupArgs = ((App)Application.Current).StartupArgs;
@@ -76,11 +78,11 @@ public class AppUpdater(DownloadService downloadService, IMessageBox messageBox)
     public async void CleanUpOldVersion()
     {
         string oldExe = Process.GetCurrentProcess().MainModule!.FileName + ".oldver";
-        if (File.Exists(oldExe))
+        if (fileSystem.File.Exists(oldExe))
         {
             try
             {
-                File.Delete(oldExe);
+                fileSystem.File.Delete(oldExe);
             }
             catch
             {
@@ -88,7 +90,7 @@ public class AppUpdater(DownloadService downloadService, IMessageBox messageBox)
                 try
                 {
                     await Task.Delay(200);
-                    File.Delete(oldExe);
+                    fileSystem.File.Delete(oldExe);
                 }
                 catch { /* Ignored */ }
             }
@@ -96,15 +98,15 @@ public class AppUpdater(DownloadService downloadService, IMessageBox messageBox)
 
         foreach (var path in new[] {Paths.Dlls, Paths.AddonDlls})
         {
-            if (!Directory.Exists(path))
+            if (!fileSystem.Directory.Exists(path))
                 continue;
 
             // Delete all old dll versions
-            foreach (var file in Directory.EnumerateFiles(path, "*.dll.oldver", SearchOption.TopDirectoryOnly))
+            foreach (var file in fileSystem.Directory.EnumerateFiles(path, "*.dll.oldver", SearchOption.TopDirectoryOnly))
             {
                 try
                 {
-                    File.Delete(file);
+                    fileSystem.File.Delete(file);
                 }
                 catch { /* Ignored */ }
             }

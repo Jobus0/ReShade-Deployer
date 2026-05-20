@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
-using IniParser;
 using IniParser.Model.Configuration;
 using IniParser.Parser;
 
@@ -11,7 +11,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Handles discovery and deployment of ReShade addons.
 /// </summary>
-public class AddonsDeployer
+public class AddonsDeployer(IFileSystem fileSystem, FileHelper fileHelper)
 {
     private readonly string[] configExtensions = [".cfg", ".ini", ".xml", ".json", ".yaml", ".yml"];
 
@@ -25,16 +25,17 @@ public class AddonsDeployer
     /// <returns>A sorted list of AddonItem.</returns>
     public IList<AddonItem> GetAvailableAddons()
     {
-        if (!Directory.Exists(Paths.Addons))
+        if (!fileSystem.Directory.Exists(Paths.Addons))
             return Array.Empty<AddonItem>();
 
         var addons = new List<AddonItem>();
 
-        var addonsDirInfo = new DirectoryInfo(Paths.Addons);
+        
+        var addonsDirInfo = fileSystem.DirectoryInfo.New(Paths.Addons);
         var topFiles = addonsDirInfo.GetFileSystemInfos("*.addon*", SearchOption.TopDirectoryOnly);
         foreach (var file in topFiles)
         {
-            string name = Path.GetFileNameWithoutExtension(file.Name);
+            string name = fileSystem.Path.GetFileNameWithoutExtension(file.Name);
 
             bool isAddon32 = file.Extension.Equals(".addon32", StringComparison.OrdinalIgnoreCase);
             bool isAddon64 = file.Extension.Equals(".addon64", StringComparison.OrdinalIgnoreCase);
@@ -54,10 +55,10 @@ public class AddonsDeployer
             }
         }
 
-        var directories = addonsDirInfo.GetFileSystemInfos("*", SearchOption.TopDirectoryOnly).Where(fsi => fsi is DirectoryInfo);
+        var directories = addonsDirInfo.GetFileSystemInfos("*", SearchOption.TopDirectoryOnly).Where(fsi => fsi is IDirectoryInfo);
         foreach (var directory in directories)
         {
-            var dirInfo = (DirectoryInfo)directory;
+            var dirInfo = (IDirectoryInfo)directory;
             var files = dirInfo.GetFileSystemInfos("*", SearchOption.TopDirectoryOnly);
 
             if (files.Length == 0)
@@ -95,20 +96,20 @@ public class AddonsDeployer
         return addons.OrderBy(x => x.Name).ToArray();
     }
 
-    private static readonly FileIniDataParser AddonIniParser = new(new IniDataParser(new IniParserConfiguration
+    private static readonly IniDataParser AddonIniParser = new(new IniParserConfiguration
     {
         AllowKeysWithoutSection = true,
         SkipInvalidLines = true,
-    }));
+    });
 
     /// <summary>
     /// Parses an Add-on.ini file and stores its recognised fields on <paramref name="addonItem"/>.
     /// The file has no section headers; all keys live at the top level.
     /// All fields are optional; unrecognised keys are silently ignored.
     /// </summary>
-    private static void ReadAddonConfig(AddonItem addonItem, string iniPath)
+    private void ReadAddonConfig(AddonItem addonItem, string iniPath)
     {
-        var data = AddonIniParser.ReadFile(iniPath);
+        var data = AddonIniParser.Parse(fileSystem.File.ReadAllText(iniPath));
 
         // Keys without a section are collected under the "Global" section by IniParser
         var section = data.Global;
@@ -148,13 +149,13 @@ public class AddonsDeployer
                 var filePaths = context.IsX64 ? addon.X64Paths : addon.X32Paths;
                 foreach (var filePath in filePaths)
                 {
-                    var fileName = Path.GetFileName(filePath);
-                    string destinationPath = Path.Combine(context.DirectoryPath, fileName);
+                    var fileName = fileSystem.Path.GetFileName(filePath);
+                    string destinationPath = fileSystem.Path.Combine(context.DirectoryPath, fileName);
 
                     if (alwaysCopy)
-                        File.Copy(filePath, destinationPath, false);
+                        fileSystem.File.Copy(filePath, destinationPath, false);
                     else
-                        File.CreateSymbolicLink(destinationPath, filePath);
+                        fileSystem.File.CreateSymbolicLink(destinationPath, filePath);
                 }
             }
 
@@ -162,28 +163,28 @@ public class AddonsDeployer
             {
                 foreach (var filePath in addon.AdditionalFiles)
                 {
-                    string fileName = Path.GetFileName(filePath);
+                    string fileName = fileSystem.Path.GetFileName(filePath);
 
                     if (fileName is "Shaders" or "Textures")
                         continue;
 
-                    string destinationPath = Path.Combine(context.DirectoryPath, fileName);
+                    string destinationPath = fileSystem.Path.Combine(context.DirectoryPath, fileName);
 
                     // Check if a symlink already exists at the destination to prevent conflicts
                     // If it points to the same file, skip; otherwise throw an error to prevent overwriting
-                    if (File.Exists(destinationPath))
+                    if (fileSystem.File.Exists(destinationPath))
                     {
                         // If the destination is a symlink pointing to the same file, skip
-                        if (FileHelper.ResolveLinkPath(destinationPath) == filePath)
+                        if (fileHelper.ResolveLinkPath(destinationPath) == filePath)
                             continue;
 
                         throw new IOException($"Addon '{addon.Name}' installation failed. '{fileName}' already exists in the target game's directory.");
                     }
 
                     if (alwaysCopy)
-                        FileHelper.Copy(filePath, destinationPath, false);
+                        fileHelper.Copy(filePath, destinationPath, false);
                     else
-                        FileHelper.CreateSymbolicLink(destinationPath, filePath);
+                        fileHelper.CreateSymbolicLink(destinationPath, filePath);
                 }
             }
 
@@ -191,14 +192,14 @@ public class AddonsDeployer
             {
                 foreach (var filePath in addon.AdditionalConfigFiles)
                 {
-                    string destinationPath = Path.Combine(context.DirectoryPath, Path.GetFileName(filePath));
+                    string destinationPath = fileSystem.Path.Combine(context.DirectoryPath, fileSystem.Path.GetFileName(filePath));
 
-                    if (!File.Exists(destinationPath))
+                    if (!fileSystem.File.Exists(destinationPath))
                     {
                         if (alwaysSymlinks)
-                            FileHelper.CreateSymbolicLink(destinationPath, filePath);
+                            fileHelper.CreateSymbolicLink(destinationPath, filePath);
                         else
-                            File.Copy(filePath, destinationPath, false);
+                            fileSystem.File.Copy(filePath, destinationPath, false);
                     }
                 }
             }
@@ -206,7 +207,7 @@ public class AddonsDeployer
             // Run the optional setup script after all files for this addon are deployed
             if (!string.IsNullOrEmpty(addon.SetupFile))
             {
-                string setupFilePath = Path.Combine(context.DirectoryPath, addon.SetupFile);
+                string setupFilePath = fileSystem.Path.Combine(context.DirectoryPath, addon.SetupFile);
                 RunSetupFile(addon.Name, setupFilePath);
             }
         }
@@ -215,13 +216,13 @@ public class AddonsDeployer
     /// <summary>
     /// Launches a setup script (.bat, .ps1, .exe) and waits for it to finish.
     /// </summary>
-    private static void RunSetupFile(string addonName, string setupFilePath)
+    private void RunSetupFile(string addonName, string setupFilePath)
     {
-        if (!File.Exists(setupFilePath))
+        if (!fileSystem.File.Exists(setupFilePath))
             throw new FileNotFoundException($"Addon '{addonName}' setup file not found: {setupFilePath}");
 
-        string workingDirectory = Path.GetDirectoryName(setupFilePath)!;
-        string extension = Path.GetExtension(setupFilePath).ToLowerInvariant();
+        string workingDirectory = fileSystem.Path.GetDirectoryName(setupFilePath)!;
+        string extension = fileSystem.Path.GetExtension(setupFilePath).ToLowerInvariant();
 
         System.Diagnostics.ProcessStartInfo psi = extension switch
         {

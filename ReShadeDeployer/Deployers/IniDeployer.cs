@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using IniParser;
+using System.IO.Abstractions;
 using IniParser.Model;
+using IniParser.Parser;
 
 namespace ReShadeDeployer;
 
-public class IniDeployer
+public class IniDeployer(IFileSystem fileSystem)
 {
     /// <summary>
     /// Create a new ReShade.ini at the given path using the values of a local ReShade.ini file, or fallback to a new minimal one.
@@ -14,17 +14,17 @@ public class IniDeployer
     /// <param name="addons">List of addons being deployed. Used to update EffectSearchPaths and TextureSearchPaths.</param>
     public void Deploy(ExecutableContext executableContext, IList<AddonItem> addons)
     {
-        string path = Path.Combine(executableContext.DirectoryPath, "ReShade.ini");
+        string path = fileSystem.Path.Combine(executableContext.DirectoryPath, "ReShade.ini");
         
-        if (File.Exists(path))
-            File.Delete(path);
+        if (fileSystem.File.Exists(path))
+            fileSystem.File.Delete(path);
         
-        var iniParser = new FileIniDataParser();
-        iniParser.Parser.Configuration.AssigmentSpacer = "";
+        var iniParser = new IniDataParser();
+        iniParser.Configuration.AssigmentSpacer = "";
         
-        IniData ini = File.Exists(Paths.ReShadeIni)
-            ? iniParser.ReadFile(Paths.ReShadeIni)
-            : new IniData();
+        IniData ini = fileSystem.File.Exists(Paths.ReShadeIni)
+            ? iniParser.Parse(fileSystem.File.ReadAllText(Paths.ReShadeIni))
+            : new IniData { Configuration = iniParser.Configuration.Clone() };
 
         ApplyContextualDefaults(ini, executableContext);
 
@@ -37,7 +37,7 @@ public class IniDeployer
                 ini["GENERAL"]["TextureSearchPaths"] += "," + addon.TexturesPath + "\\**";
         }
         
-        iniParser.WriteFile(path, ini);
+        fileSystem.File.WriteAllText(path, ini.ToString());
     }
     
     private void ApplyContextualDefaults(IniData ini, ExecutableContext executableContext)

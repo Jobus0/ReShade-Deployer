@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Testably.Abstractions;
 
 namespace ReShadeDeployer;
 
-public class ReShadeUpdater(DownloadService downloadService, IMessageBox messageBox)
+public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, DownloadService downloadService, IMessageBox messageBox)
 {
     private const string WebsiteUrl = "https://reshade.me";
     
@@ -58,7 +60,7 @@ public class ReShadeUpdater(DownloadService downloadService, IMessageBox message
     /// <param name="directoryPath">Directory to extract .dll into.</param>
     private async Task DownloadAndExtractReShade(string url, string directoryPath)
     {
-        string downloadPath = Path.Combine(directoryPath, "ReShade.exe");
+        string downloadPath = fileSystem.Path.Combine(directoryPath, "ReShade.exe");
 
         try
         {
@@ -73,7 +75,7 @@ public class ReShadeUpdater(DownloadService downloadService, IMessageBox message
         try
         {
             MemoryStream output;
-            await using (FileStream input = File.OpenRead(downloadPath))
+            await using (FileSystemStream input = fileSystem.File.OpenRead(downloadPath))
             {
                 output = new MemoryStream((int)input.Length);
 
@@ -92,7 +94,7 @@ public class ReShadeUpdater(DownloadService downloadService, IMessageBox message
                 }
             }
             
-            ZipArchive zip = new ZipArchive(output, ZipArchiveMode.Read, false);
+            IZipArchive zip = fileSystem.ZipArchive().New(output, ZipArchiveMode.Read, false);
             
             // Validate archive contains the ReShade DLLs
             if (zip.GetEntry("ReShade32.dll") == null || zip.GetEntry("ReShade64.dll") == null)
@@ -102,12 +104,12 @@ public class ReShadeUpdater(DownloadService downloadService, IMessageBox message
 
             foreach (var entry in zip.Entries)
             {
-                string path = Path.Combine(directoryPath, entry.FullName);
+                string path = fileSystem.Path.Combine(directoryPath, entry.FullName);
                 
-                if (File.Exists(path) && FileHelper.IsFileLocked(path))
-                    File.Move(path, path + ".oldver", overwrite: true);
+                if (fileSystem.File.Exists(path) && fileHelper.IsFileLocked(path))
+                    fileSystem.File.Move(path, path + ".oldver", overwrite: true);
                 
-                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                fileSystem.Directory.CreateDirectory(fileSystem.Path.GetDirectoryName(path)!);
                 entry.ExtractToFile(path, true);
             }
             zip.ExtractToDirectory(directoryPath, true);
@@ -118,7 +120,7 @@ public class ReShadeUpdater(DownloadService downloadService, IMessageBox message
         }
         finally
         {
-            File.Delete(downloadPath);
+            fileSystem.File.Delete(downloadPath);
         }
     }
     
@@ -127,12 +129,12 @@ public class ReShadeUpdater(DownloadService downloadService, IMessageBox message
     /// </summary>
     public void CreateDirectories()
     {
-        Directory.CreateDirectory(Paths.Shaders);
-        Directory.CreateDirectory(Paths.Textures);
-        Directory.CreateDirectory(Paths.Addons);
-        Directory.CreateDirectory(Paths.Dlls);
-        Directory.CreateDirectory(Paths.AddonDlls);
-        Directory.CreateDirectory(Paths.Cache);
+        fileSystem.Directory.CreateDirectory(Paths.Shaders);
+        fileSystem.Directory.CreateDirectory(Paths.Textures);
+        fileSystem.Directory.CreateDirectory(Paths.Addons);
+        fileSystem.Directory.CreateDirectory(Paths.Dlls);
+        fileSystem.Directory.CreateDirectory(Paths.AddonDlls);
+        fileSystem.Directory.CreateDirectory(Paths.Cache);
     }
     
     /// <summary>
@@ -142,8 +144,8 @@ public class ReShadeUpdater(DownloadService downloadService, IMessageBox message
     /// <returns>True if the file exists, false otherwise.</returns>
     public bool TryGetLocalReShadeVersionNumber(out string version)
     {
-        string path = Path.Combine(Paths.Dlls, "ReShade64.dll");
-        if (File.Exists(path))
+        string path = fileSystem.Path.Combine(Paths.Dlls, "ReShade64.dll");
+        if (fileSystem.File.Exists(path))
         {
             string fileVersion = FileVersionInfo.GetVersionInfo(path).FileVersion!;
             version = fileVersion.Substring(0, fileVersion.LastIndexOf('.'));

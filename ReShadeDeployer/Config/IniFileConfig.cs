@@ -1,17 +1,18 @@
 ﻿using System;
-using System.IO;
+using System.IO.Abstractions;
 using System.Threading.Tasks;
 using IniParser;
 using IniParser.Model;
+using IniParser.Parser;
 
 namespace ReShadeDeployer;
 
 /// <summary>
 /// Handles the reading and writing of Config.ini. Writing to file is deferred so that it is only done once even if multiple changes are made at once.
 /// </summary>
-public class IniFileConfig : IConfig
+public class IniFileConfig(IFileSystem fileSystem) : IConfig
 {
-    private readonly FileIniDataParser iniParser = new();
+    private readonly IniDataParser iniParser = new();
     private IniData? ini;
 
     /// <summary>
@@ -75,10 +76,10 @@ public class IniFileConfig : IConfig
     /// </summary>
     private void InitializeIni()
     {
-        if (File.Exists(Paths.ConfigIni))
-            ini = iniParser.ReadFile(Paths.ConfigIni);
+        if (fileSystem.File.Exists(Paths.ConfigIni))
+            ini = iniParser.Parse(fileSystem.File.ReadAllText(Paths.ConfigIni));
         else
-            ini = new IniData();
+            ini = new IniData { Configuration = iniParser.Configuration.Clone() };
     }
 
     /// <summary>
@@ -126,7 +127,10 @@ public class IniFileConfig : IConfig
     /// </summary>
     private void Save()
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(Paths.ConfigIni)!);
-        iniParser.WriteFile(Paths.ConfigIni, ini);
+        if (ini == null)
+            return;
+        
+        fileSystem.Directory.CreateDirectory(fileSystem.Path.GetDirectoryName(Paths.ConfigIni)!);
+        fileSystem.File.WriteAllText(Paths.ConfigIni, ini.ToString());
     }
 }

@@ -10,6 +10,7 @@ public partial class MainViewModel : ObservableObject
 {
     private readonly DeploymentOrchestrator _deploymentOrchestrator;
     private readonly ReShadeUndeployer _reShadeUndeployer;
+    private readonly ExecutableContextFactory _executableContextFactory;
     private readonly IMessageBox _messageBox;
 
     // Child ViewModels
@@ -53,7 +54,7 @@ public partial class MainViewModel : ObservableObject
     public MainViewModel(
         DeploymentOrchestrator deploymentOrchestrator,
         ReShadeUndeployer reShadeUndeployer,
-        VulkanSystemWideDeployer vulkanSystemWideDeployer,
+        ExecutableContextFactory executableContextFactory,
         UpdaterViewModel updater,
         SettingsViewModel settings,
         AddonsViewModel addons,
@@ -61,6 +62,7 @@ public partial class MainViewModel : ObservableObject
     {
         _deploymentOrchestrator = deploymentOrchestrator;
         _reShadeUndeployer = reShadeUndeployer;
+        _executableContextFactory = executableContextFactory;
         _messageBox = messageBox;
 
         Updater = updater;
@@ -186,7 +188,7 @@ public partial class MainViewModel : ObservableObject
         if (!File.Exists(executablePath))
             return;
 
-        SelectedExecutableContext = new ExecutableContext(executablePath);
+        SelectedExecutableContext = _executableContextFactory.Create(executablePath);
 
         SelectGameButtonText = executablePath;
         SelectGameButtonAppearance = ControlAppearance.Secondary;

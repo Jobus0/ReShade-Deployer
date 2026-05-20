@@ -1,6 +1,8 @@
+using System.IO.Abstractions;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using ReShadeDeployer.ViewModels;
+using Testably.Abstractions;
 
 namespace ReShadeDeployer;
 
@@ -25,6 +27,8 @@ public partial class App : Application
         SingleInstanceManager.OnArgumentsReceived += args => StartupArgs = args;
 
         var services = new ServiceCollection();
+        services.AddSingleton<IFileSystem, RealFileSystem>();
+        services.AddSingleton<FileHelper>();
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<UpdaterViewModel>();
         services.AddSingleton<SettingsViewModel>();
@@ -41,6 +45,7 @@ public partial class App : Application
         services.AddSingleton<ReShadeUpdater>();
         services.AddSingleton<DownloadService>();
         services.AddSingleton<IConfig, IniFileConfig>();
+        services.AddSingleton<ExecutableContextFactory>();
         services.AddSingleton<IMessageBox, WpfMessageBox>();
         
         ServiceProvider = services.BuildServiceProvider();

@@ -1,8 +1,8 @@
-﻿using System.IO;
+﻿using System.IO.Abstractions;
 
 namespace ReShadeDeployer;
 
-public class PresetDeployer
+public class PresetDeployer(IFileSystem fileSystem)
 {
     /// <summary>
     /// Deploy ReShadePreset.ini to a directory.
@@ -10,8 +10,8 @@ public class PresetDeployer
     /// <param name="executableContext">Context for the executable to deploy.</param>
     public void Deploy(ExecutableContext executableContext)
     {
-        if (File.Exists(Paths.ReShadePresetIni))
-            File.Copy(Paths.ReShadePresetIni, GetPath(executableContext), true);
+        if (fileSystem.File.Exists(Paths.ReShadePresetIni))
+            fileSystem.File.Copy(Paths.ReShadePresetIni, GetPath(executableContext), true);
     }
 
     /// <summary>
@@ -21,6 +21,6 @@ public class PresetDeployer
     /// <returns>The full path to the ReShadePreset.ini file.</returns>
     public string GetPath(ExecutableContext executableContext)
     {
-        return Path.Combine(executableContext.DirectoryPath, "ReShadePreset.ini");
+        return fileSystem.Path.Combine(executableContext.DirectoryPath, "ReShadePreset.ini");
     }
 }

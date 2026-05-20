@@ -1,6 +1,6 @@
 ﻿using System.IO;
+using System.IO.Abstractions;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ReShadeDeployer;
@@ -8,7 +8,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for downloading and extracting files.
 /// </summary>
-public class DownloadService
+public class DownloadService(IFileSystem fileSystem)
 {
     /// <summary>
     /// Retrieves the content of a given URL using an HTTP GET request.
@@ -30,7 +30,7 @@ public class DownloadService
     {
         using HttpClient httpClient = new HttpClient();
         await using var httpStream = await httpClient.GetStreamAsync(url);
-        await using var fileStream = new FileStream(downloadSavePath, FileMode.Create);
+        await using var fileStream = fileSystem.FileStream.New(downloadSavePath, FileMode.Create);
         await httpStream.CopyToAsync(fileStream);
     }
 }

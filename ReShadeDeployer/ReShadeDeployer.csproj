@@ -29,6 +29,8 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
         <PackageReference Include="ini-parser-new" Version="2.6.2" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+        <PackageReference Include="Testably.Abstractions" Version="10.2.0" />
+        <PackageReference Include="Testably.Abstractions.Compression" Version="6.4.0" />
         <PackageReference Include="WPF-UI" Version="2.1.0" />
     </ItemGroup>
 

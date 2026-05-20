@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
 
 namespace ReShadeDeployer;
 
-public class ReShadeUndeployer
+public class ReShadeUndeployer(IFileSystem fileSystem)
 {
     /// <summary>
     /// Finds all ReShade-related files in the specified game directory.
@@ -14,21 +15,21 @@ public class ReShadeUndeployer
     {
         var files = new HashSet<string>();
         
-        if (!Directory.Exists(gameDirectory))
+        if (!fileSystem.Directory.Exists(gameDirectory))
             return files;
         
-        var directoryInfo = new DirectoryInfo(gameDirectory);
+        var directoryInfo = fileSystem.DirectoryInfo.New(gameDirectory);
         
         // Find ReShade.ini
-        string iniPath = Path.Combine(gameDirectory, "ReShade.ini");
-        if (File.Exists(iniPath))
+        string iniPath = fileSystem.Path.Combine(gameDirectory, "ReShade.ini");
+        if (fileSystem.File.Exists(iniPath))
             files.Add(iniPath);
         
         // Find DLLs where FileDescription contains "ReShade"
         foreach (var entry in directoryInfo.EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly))
         {
             string dllPath = entry.FullName;
-            if (File.Exists(dllPath))
+            if (fileSystem.File.Exists(dllPath))
             {
                 try
                 {
@@ -62,10 +63,10 @@ public class ReShadeUndeployer
     {
         foreach (var file in FindReShadeFiles(gameDirectory))
         {
-            if (File.Exists(file))
-                File.Delete(file);
-            else if (Directory.Exists(file))
-                Directory.Delete(file, true);
+            if (fileSystem.File.Exists(file))
+                fileSystem.File.Delete(file);
+            else if (fileSystem.Directory.Exists(file))
+                fileSystem.Directory.Delete(file, true);
         }
     }
 }

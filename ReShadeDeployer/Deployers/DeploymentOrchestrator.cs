@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO.Abstractions;
 using System.Windows;
 using Wpf.Ui.Common;
 
@@ -9,7 +9,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public class DeploymentOrchestrator(DllDeployer dllDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer, IMessageBox messageBox, IConfig config)
+public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer, IMessageBox messageBox, IConfig config)
 {
     /// <summary>
     /// Deploys ReShade for a specified executable.
@@ -44,10 +44,10 @@ public class DeploymentOrchestrator(DllDeployer dllDeployer, VulkanSystemWideDep
             addonsDeployer.Deploy(executableContext, addons);
 
             // Only deploy preset if a template preset exists in the ReShade Deployer folder
-            if (File.Exists(Paths.ReShadePresetIni))
+            if (fileSystem.File.Exists(Paths.ReShadePresetIni))
             {
                 // If the preset already exists in the target executable directory, ask to overwrite
-                bool deployedPresetExists = File.Exists(presetDeployer.GetPath(executableContext));
+                bool deployedPresetExists = fileSystem.File.Exists(presetDeployer.GetPath(executableContext));
                 bool doDeploy = !deployedPresetExists || messageBox.Show(
                     UIStrings.PresetOverwrite,
                     UIStrings.PresetOverwrite_Title,

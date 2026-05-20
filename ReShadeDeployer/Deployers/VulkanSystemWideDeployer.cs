@@ -1,10 +1,10 @@
 ﻿using System;
-using System.IO;
+using System.IO.Abstractions;
 using Microsoft.Win32;
 
 namespace ReShadeDeployer;
 
-public class VulkanSystemWideDeployer
+public class VulkanSystemWideDeployer(IFileSystem fileSystem)
 {
     /// <summary>
     /// Deploy ReShade DLLs to a common local directory, and then register them for Vulkan system-wide.
@@ -20,15 +20,15 @@ public class VulkanSystemWideDeployer
             // Add new Vulkan ReShade registries and files using symlinks
             foreach (var layerModuleName in new[] {"ReShade64", "ReShade32"})
             {
-                string symlinkDllPath = Path.Combine(Paths.CommonPathLocal, layerModuleName + ".dll");
-                string sourceDllPath = Path.Combine(dllPath, layerModuleName + ".dll");
+                string symlinkDllPath = fileSystem.Path.Combine(Paths.CommonPathLocal, layerModuleName + ".dll");
+                string sourceDllPath = fileSystem.Path.Combine(dllPath, layerModuleName + ".dll");
 
-                string symlinkJsonPath = Path.Combine(Paths.CommonPathLocal, layerModuleName + ".json");
-                string sourceJsonPath = Path.Combine(dllPath, layerModuleName + ".json");
+                string symlinkJsonPath = fileSystem.Path.Combine(Paths.CommonPathLocal, layerModuleName + ".json");
+                string sourceJsonPath = fileSystem.Path.Combine(dllPath, layerModuleName + ".json");
 
-                Directory.CreateDirectory(Paths.CommonPathLocal);
-                File.CreateSymbolicLink(symlinkDllPath, sourceDllPath);
-                File.CreateSymbolicLink(symlinkJsonPath, sourceJsonPath);
+                fileSystem.Directory.CreateDirectory(Paths.CommonPathLocal);
+                fileSystem.File.CreateSymbolicLink(symlinkDllPath, sourceDllPath);
+                fileSystem.File.CreateSymbolicLink(symlinkJsonPath, sourceJsonPath);
 
                 string subKey = Environment.Is64BitOperatingSystem && layerModuleName == "ReShade32"
                     ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers"
@@ -50,45 +50,45 @@ public class VulkanSystemWideDeployer
     public void RemoveVulkanGlobally()
     {
         // Delete old Vulkan layer registries.
-        string localApplicationData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ReShade");
+        string localApplicationData = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ReShade");
         using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Khronos\Vulkan\ExplicitLayers", true))
         {
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
         }
 
         using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Khronos\Vulkan\ImplicitLayers", true))
         {
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade.json"), false);
-            key?.DeleteValue(Path.Combine(localApplicationData, "VkLayer_override.json"), false);
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32_vk_override_layer.json"), false);
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade64_vk_override_layer.json"), false);
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "VkLayer_override.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade32_vk_override_layer.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade64_vk_override_layer.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
         }
 
         using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"Software\Khronos\Vulkan\ImplicitLayers", true))
         {
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
         }
 
         using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers", true))
         {
-            key?.DeleteValue(Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
+            key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
         }
 
         // Delete current Vulkan layer registries and files.
         foreach (var layerModuleName in new[] {"ReShade64", "ReShade32"})
         {
-            string symlinkDllPath = Path.Combine(Paths.CommonPathLocal, layerModuleName + ".dll");
-            string symlinkJsonPath = Path.Combine(Paths.CommonPathLocal, layerModuleName + ".json");
+            string symlinkDllPath = fileSystem.Path.Combine(Paths.CommonPathLocal, layerModuleName + ".dll");
+            string symlinkJsonPath = fileSystem.Path.Combine(Paths.CommonPathLocal, layerModuleName + ".json");
 
-            if (File.Exists(symlinkDllPath))
-                File.Delete(symlinkDllPath);
+            if (fileSystem.File.Exists(symlinkDllPath))
+                fileSystem.File.Delete(symlinkDllPath);
 
-            if (File.Exists(symlinkJsonPath))
-                File.Delete(symlinkJsonPath);
+            if (fileSystem.File.Exists(symlinkJsonPath))
+                fileSystem.File.Delete(symlinkJsonPath);
 
             using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(Environment.Is64BitOperatingSystem && layerModuleName == "ReShade32" ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers" : @"Software\Khronos\Vulkan\ImplicitLayers", true))
             {
@@ -114,7 +114,7 @@ public class VulkanSystemWideDeployer
             if (key == null)
                 return null;
 
-            string expectedJsonPath = Path.Combine(Paths.CommonPathLocal, "ReShade32.json");
+            string expectedJsonPath = fileSystem.Path.Combine(Paths.CommonPathLocal, "ReShade32.json");
 
             // Check if the expected JSON path is registered
             if (key.GetValue(expectedJsonPath) != null)
@@ -133,7 +133,7 @@ public class VulkanSystemWideDeployer
         string? registryPath = GetCurrentVulkan32BitLayerRegistryPath();
         
         if (registryPath != null)
-            return File.ResolveLinkTarget(registryPath, returnFinalTarget: true)?.FullName == Path.Combine(Paths.AddonDlls, "ReShade32.json");
+            return fileSystem.File.ResolveLinkTarget(registryPath, returnFinalTarget: true)?.FullName == fileSystem.Path.Combine(Paths.AddonDlls, "ReShade32.json");
 
         return false;
     }
