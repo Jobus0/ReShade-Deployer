@@ -13,6 +13,7 @@ public partial class UpdaterViewModel : ObservableObject
     private readonly ReShadeUpdater _reShadeUpdater;
     private readonly IConfig _config;
     private readonly IMessageBox _messageBox;
+    private readonly RegistryHelper _registryHelper;
 
     public string? AssemblyVersion { get; }
 
@@ -38,12 +39,14 @@ public partial class UpdaterViewModel : ObservableObject
         AppUpdater appUpdater,
         ReShadeUpdater reShadeUpdater,
         IConfig config,
-        IMessageBox messageBox)
+        IMessageBox messageBox,
+        RegistryHelper registryHelper)
     {
         _appUpdater = appUpdater;
         _reShadeUpdater = reShadeUpdater;
         _config = config;
         _messageBox = messageBox;
+        _registryHelper = registryHelper;
 
         AssemblyVersion = Assembly.GetEntryAssembly()?.GetName().Version?.ToString(3);
     }
@@ -96,8 +99,8 @@ public partial class UpdaterViewModel : ObservableObject
 
         if (result == IMessageBox.Result.Primary)
         {
-            if (RegistryHelper.IsContextMenuActionRegistered("Deploy ReShade"))
-                RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
+            if (_registryHelper.IsContextMenuActionRegistered("Deploy ReShade"))
+                _registryHelper.UnregisterContextMenuAction("Deploy ReShade");
 
             // VulkanSystemWideDeployer is handled by MainViewModel/DI; accessed via service
             _messageBox.Show(UIStrings.UninstallDeployer_Success, UIStrings.Success);

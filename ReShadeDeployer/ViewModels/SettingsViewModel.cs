@@ -6,6 +6,7 @@ namespace ReShadeDeployer.ViewModels;
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly IConfig _config;
+    private readonly RegistryHelper _registryHelper;
 
     [ObservableProperty]
     private bool _isContextMenuRegistered;
@@ -13,22 +14,23 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isAlwaysExitOnDeploy;
 
-    public SettingsViewModel(IConfig config)
+    public SettingsViewModel(IConfig config, RegistryHelper registryHelper)
     {
         _config = config;
+        _registryHelper = registryHelper;
 
         IsAlwaysExitOnDeploy = _config.AlwaysExitOnDeploy;
-        IsContextMenuRegistered = RegistryHelper.IsContextMenuActionRegistered("Deploy ReShade");
+        IsContextMenuRegistered = _registryHelper.IsContextMenuActionRegistered("Deploy ReShade");
     }
 
     partial void OnIsContextMenuRegisteredChanged(bool value)
     {
         if (value)
-            RegistryHelper.RegisterContextMenuAction("Deploy ReShade",
+            _registryHelper.RegisterContextMenuAction("Deploy ReShade",
                 Environment.ProcessPath! + " \"%1\"",
                 Environment.ProcessPath! + ",0");
         else
-            RegistryHelper.UnregisterContextMenuAction("Deploy ReShade");
+            _registryHelper.UnregisterContextMenuAction("Deploy ReShade");
     }
 
     partial void OnIsAlwaysExitOnDeployChanged(bool value)

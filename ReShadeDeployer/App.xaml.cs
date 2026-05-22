@@ -29,6 +29,8 @@ public partial class App : Application
         var services = new ServiceCollection();
         services.AddSingleton<IFileSystem, RealFileSystem>();
         services.AddSingleton<FileHelper>();
+        services.AddSingleton<IRegistry, WindowsRegistry>();
+        services.AddSingleton<RegistryHelper>();
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<UpdaterViewModel>();
         services.AddSingleton<SettingsViewModel>();

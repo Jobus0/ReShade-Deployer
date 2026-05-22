@@ -4,7 +4,7 @@ using Microsoft.Win32;
 
 namespace ReShadeDeployer;
 
-public class VulkanSystemWideDeployer(IFileSystem fileSystem)
+public class VulkanSystemWideDeployer(IFileSystem fileSystem, IRegistry registry)
 {
     /// <summary>
     /// Deploy ReShade DLLs to a common local directory, and then register them for Vulkan system-wide.
@@ -34,7 +34,7 @@ public class VulkanSystemWideDeployer(IFileSystem fileSystem)
                     ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers"
                     : @"Software\Khronos\Vulkan\ImplicitLayers";
 
-                using (RegistryKey key = Registry.LocalMachine.CreateSubKey(subKey))
+                using (IRegistryKey key = registry.LocalMachine.CreateSubKey(subKey))
                     key.SetValue(symlinkJsonPath, 0, RegistryValueKind.DWord);
             }
         }
@@ -51,13 +51,13 @@ public class VulkanSystemWideDeployer(IFileSystem fileSystem)
     {
         // Delete old Vulkan layer registries.
         string localApplicationData = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ReShade");
-        using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Khronos\Vulkan\ExplicitLayers", true))
+        using (IRegistryKey? key = registry.CurrentUser.OpenSubKey(@"Software\Khronos\Vulkan\ExplicitLayers", true))
         {
             key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
             key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
         }
 
-        using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Khronos\Vulkan\ImplicitLayers", true))
+        using (IRegistryKey? key = registry.CurrentUser.OpenSubKey(@"Software\Khronos\Vulkan\ImplicitLayers", true))
         {
             key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade.json"), false);
             key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "VkLayer_override.json"), false);
@@ -67,13 +67,13 @@ public class VulkanSystemWideDeployer(IFileSystem fileSystem)
             key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
         }
 
-        using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"Software\Khronos\Vulkan\ImplicitLayers", true))
+        using (IRegistryKey? key = registry.LocalMachine.OpenSubKey(@"Software\Khronos\Vulkan\ImplicitLayers", true))
         {
             key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
             key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade64", "ReShade64.json"), false);
         }
 
-        using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers", true))
+        using (IRegistryKey? key = registry.LocalMachine.OpenSubKey(@"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers", true))
         {
             key?.DeleteValue(fileSystem.Path.Combine(localApplicationData, "ReShade32", "ReShade32.json"), false);
         }
@@ -90,7 +90,7 @@ public class VulkanSystemWideDeployer(IFileSystem fileSystem)
             if (fileSystem.File.Exists(symlinkJsonPath))
                 fileSystem.File.Delete(symlinkJsonPath);
 
-            using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(Environment.Is64BitOperatingSystem && layerModuleName == "ReShade32" ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers" : @"Software\Khronos\Vulkan\ImplicitLayers", true))
+            using (IRegistryKey? key = registry.LocalMachine.OpenSubKey(Environment.Is64BitOperatingSystem && layerModuleName == "ReShade32" ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers" : @"Software\Khronos\Vulkan\ImplicitLayers", true))
             {
                 key?.DeleteValue(symlinkJsonPath, false);
             }
@@ -109,7 +109,7 @@ public class VulkanSystemWideDeployer(IFileSystem fileSystem)
                 ? @"Software\Wow6432Node\Khronos\Vulkan\ImplicitLayers"
                 : @"Software\Khronos\Vulkan\ImplicitLayers";
 
-            using RegistryKey? key = Registry.LocalMachine.OpenSubKey(subKey);
+            using IRegistryKey? key = registry.LocalMachine.OpenSubKey(subKey);
 
             if (key == null)
                 return null;
