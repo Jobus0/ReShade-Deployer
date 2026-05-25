@@ -1,16 +1,25 @@
-﻿using static ReShadeDeployer.Tests.TestHelpers;
+using static ReShadeDeployer.Tests.TestHelpers;
+using Testably.Abstractions.Testing;
 
 namespace ReShadeDeployer.Tests.Deployers;
 
 public class IniDeployerTests
 {
+    private readonly ExecutableContext _executableContext;
+    private readonly MockFileSystem _fileSystem;
+    private readonly IniDeployer _deployer;
+
+    public IniDeployerTests()
+    {
+        _executableContext = CreateExecutableContext();
+        _fileSystem = CreateMockFileSystem(_executableContext.DirectoryPath);
+        _deployer = new IniDeployer(_fileSystem);
+    }
+
     [Fact]
     public void Deploy_CreatesReShadeIniWithCorrectContent()
     {
         // Arrange
-        var executableContext = CreateExecutableContext();
-        var fileSystem = CreateMockFileSystem(executableContext.DirectoryPath);
-
         var addons = new List<AddonItem>
         {
             new()
@@ -26,16 +35,14 @@ public class IniDeployerTests
             }
         };
 
-        var deployer = new IniDeployer(fileSystem);
-
         // Act
-        deployer.Deploy(executableContext, addons);
+        _deployer.Deploy(_executableContext, addons);
 
         // Assert
         string expectedPath = @"C:\Games\MyGame\ReShade.ini";
-        Assert.True(fileSystem.File.Exists(expectedPath));
+        Assert.True(_fileSystem.File.Exists(expectedPath));
         
-        string content = fileSystem.File.ReadAllText(expectedPath);
+        string content = _fileSystem.File.ReadAllText(expectedPath);
         Assert.Contains("[GENERAL]", content);
         Assert.Contains($@"EffectSearchPaths={Paths.Shaders}\**,C:\Addons\TestAddon1\Shaders\**,C:\Addons\TestAddon2\Shaders\**", content);
         Assert.Contains($@"TextureSearchPaths={Paths.Textures}\**,C:\Addons\TestAddon1\Textures\**", content);
@@ -53,20 +60,16 @@ public class IniDeployerTests
     public void Deploy_DeletesExistingReShadeIniBeforeCreating()
     {
         // Arrange
-        var executableContext = CreateExecutableContext();
-        var fileSystem = CreateMockFileSystem(executableContext.DirectoryPath);
-
-        string existingIniPath = fileSystem.Path.Combine(executableContext.DirectoryPath, "ReShade.ini");
-        fileSystem.File.WriteAllText(existingIniPath, "Old content");
+        string existingIniPath = _fileSystem.Path.Combine(_executableContext.DirectoryPath, "ReShade.ini");
+        _fileSystem.File.WriteAllText(existingIniPath, "Old content");
 
         var addons = new List<AddonItem>();
-        var deployer = new IniDeployer(fileSystem);
 
         // Act
-        deployer.Deploy(executableContext, addons);
+        _deployer.Deploy(_executableContext, addons);
 
         // Assert
-        string content = fileSystem.File.ReadAllText(existingIniPath);
+        string content = _fileSystem.File.ReadAllText(existingIniPath);
         Assert.DoesNotContain("Old content", content);
     }
 }

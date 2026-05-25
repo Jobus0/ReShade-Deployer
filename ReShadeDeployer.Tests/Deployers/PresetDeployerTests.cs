@@ -1,64 +1,62 @@
-﻿using static ReShadeDeployer.Tests.TestHelpers;
+using static ReShadeDeployer.Tests.TestHelpers;
+using Testably.Abstractions.Testing;
 
 namespace ReShadeDeployer.Tests.Deployers;
 
 public class PresetDeployerTests
 {
+    private readonly ExecutableContext _executableContext;
+    private readonly MockFileSystem _fileSystem;
+    private readonly PresetDeployer _deployer;
+
+    public PresetDeployerTests()
+    {
+        _executableContext = CreateExecutableContext();
+        _fileSystem = CreateMockFileSystem(_executableContext.DirectoryPath);
+        _deployer = new PresetDeployer(_fileSystem);
+    }
+
     [Fact]
     public void Deploy_CopiesReShadePresetIniWhenSourceExists()
     {
         // Arrange
-        var executableContext = CreateExecutableContext();
-        var fileSystem = CreateMockFileSystem(executableContext.DirectoryPath);
-        fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "Preset content");
-
-        var deployer = new PresetDeployer(fileSystem);
+        _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "Preset content");
 
         // Act
-        deployer.Deploy(executableContext);
+        _deployer.Deploy(_executableContext);
 
         // Assert
         string expectedPath = @"C:\Games\MyGame\ReShadePreset.ini";
-        Assert.True(fileSystem.File.Exists(expectedPath));
-        string content = fileSystem.File.ReadAllText(expectedPath);
+        Assert.True(_fileSystem.File.Exists(expectedPath));
+        string content = _fileSystem.File.ReadAllText(expectedPath);
         Assert.Equal("Preset content", content);
     }
 
     [Fact]
     public void Deploy_DoesNothingWhenSourceDoesNotExist()
     {
-        // Arrange
-        var executableContext = CreateExecutableContext();
-        var fileSystem = CreateMockFileSystem(executableContext.DirectoryPath);
-
-        var deployer = new PresetDeployer(fileSystem);
-
         // Act
-        deployer.Deploy(executableContext);
+        _deployer.Deploy(_executableContext);
 
         // Assert
         string expectedPath = @"C:\Games\MyGame\ReShadePreset.ini";
-        Assert.False(fileSystem.File.Exists(expectedPath));
+        Assert.False(_fileSystem.File.Exists(expectedPath));
     }
 
     [Fact]
     public void Deploy_OverwritesExistingFile()
     {
         // Arrange
-        var executableContext = CreateExecutableContext();
-        var fileSystem = CreateMockFileSystem(executableContext.DirectoryPath);
-        fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "New preset content");
+        _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "New preset content");
         
-        string existingPresetPath = fileSystem.Path.Combine(executableContext.DirectoryPath, "ReShadePreset.ini");
-        fileSystem.File.WriteAllText(existingPresetPath, "Old preset content");
-
-        var deployer = new PresetDeployer(fileSystem);
+        string existingPresetPath = _fileSystem.Path.Combine(_executableContext.DirectoryPath, "ReShadePreset.ini");
+        _fileSystem.File.WriteAllText(existingPresetPath, "Old preset content");
 
         // Act
-        deployer.Deploy(executableContext);
+        _deployer.Deploy(_executableContext);
 
         // Assert
-        string content = fileSystem.File.ReadAllText(existingPresetPath);
+        string content = _fileSystem.File.ReadAllText(existingPresetPath);
         Assert.Equal("New preset content", content);
         Assert.DoesNotContain("Old preset content", content);
     }
@@ -66,14 +64,8 @@ public class PresetDeployerTests
     [Fact]
     public void GetPath_ReturnsCorrectPath()
     {
-        // Arrange
-        var executableContext = CreateExecutableContext();
-        var fileSystem = CreateMockFileSystem(executableContext.DirectoryPath);
-
-        var deployer = new PresetDeployer(fileSystem);
-
         // Act
-        string result = deployer.GetPath(executableContext);
+        string result = _deployer.GetPath(_executableContext);
 
         // Assert
         Assert.Equal(@"C:\Games\MyGame\ReShadePreset.ini", result);
