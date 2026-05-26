@@ -139,9 +139,9 @@ public class ExecutableContextFactory(IFileSystem fileSystem)
             useAspectRatioHeuristics);
     }
     
-    private static bool TryGetFileCopyrightYear(string executablePath, out int year)
+    private bool TryGetFileCopyrightYear(string executablePath, out int year)
     {
-        var info = FileVersionInfo.GetVersionInfo(executablePath);
+        var info = fileSystem.FileVersionInfo.GetVersionInfo(executablePath);
         if (info.LegalCopyright != null)
         {
             Match match = new Regex("(20[0-9]{2})", RegexOptions.RightToLeft).Match(info.LegalCopyright);

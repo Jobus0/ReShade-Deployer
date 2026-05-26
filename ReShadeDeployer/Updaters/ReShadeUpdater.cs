@@ -147,7 +147,7 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, Downl
         string path = fileSystem.Path.Combine(Paths.Dlls, "ReShade64.dll");
         if (fileSystem.File.Exists(path))
         {
-            string fileVersion = FileVersionInfo.GetVersionInfo(path).FileVersion!;
+            string fileVersion = fileSystem.FileVersionInfo.GetVersionInfo(path).FileVersion!;
             version = fileVersion.Substring(0, fileVersion.LastIndexOf('.'));
             return true;
         }

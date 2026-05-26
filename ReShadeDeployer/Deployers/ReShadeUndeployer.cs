@@ -33,7 +33,7 @@ public class ReShadeUndeployer(IFileSystem fileSystem)
             {
                 try
                 {
-                    var fileInfo = FileVersionInfo.GetVersionInfo(dllPath);
+                    var fileInfo = fileSystem.FileVersionInfo.GetVersionInfo(dllPath);
                     if (fileInfo.FileDescription?.Contains("ReShade") == true)
                         files.Add(dllPath);
                 }

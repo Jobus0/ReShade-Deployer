@@ -61,7 +61,7 @@ public class DllDeployer(IFileSystem fileSystem, VulkanSystemWideDeployer vulkan
             
         if (fileSystem.File.Exists(symlinkPath))
         {
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(symlinkPath);
+            var fileVersionInfo = fileSystem.FileVersionInfo.GetVersionInfo(symlinkPath);
             bool existingFileIsReShade = fileVersionInfo.FileDescription?.Contains("ReShade") ?? false;
             
             if (existingFileIsReShade)
