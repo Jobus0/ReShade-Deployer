@@ -45,7 +45,7 @@ public partial class App : Application
         services.AddSingleton<ReShadeUndeployer>();
         services.AddSingleton<AppUpdater>();
         services.AddSingleton<ReShadeUpdater>();
-        services.AddSingleton<DownloadService>();
+        services.AddSingleton<IDownloadService, DownloadService>();
         services.AddSingleton<IConfig, IniFileConfig>();
         services.AddSingleton<ExecutableContextFactory>();
         services.AddSingleton<IMessageBox, WpfMessageBox>();

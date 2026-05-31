@@ -8,7 +8,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for downloading and extracting files.
 /// </summary>
-public class DownloadService(IFileSystem fileSystem)
+public class DownloadService(IFileSystem fileSystem) : IDownloadService
 {
     /// <summary>
     /// Retrieves the content of a given URL using an HTTP GET request.

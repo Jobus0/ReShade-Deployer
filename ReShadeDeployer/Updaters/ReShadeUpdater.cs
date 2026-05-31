@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Compression;
@@ -10,7 +9,7 @@ using Testably.Abstractions;
 
 namespace ReShadeDeployer;
 
-public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, DownloadService downloadService, IMessageBox messageBox)
+public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDownloadService downloadService, IMessageBox messageBox)
 {
     private const string WebsiteUrl = "https://reshade.me";
     

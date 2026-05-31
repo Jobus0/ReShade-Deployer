@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Wpf.Ui.Common;
@@ -63,7 +62,7 @@ public partial class UpdaterViewModel : ObservableObject
             RequestFirstTimeSetup?.Invoke();
         }
 
-        _appUpdater.CleanUpOldVersion();
+        _ = _appUpdater.CleanUpOldVersion();
 
         if (AssemblyVersion != null)
             CheckForNewDeployerVersion();
@@ -119,7 +118,7 @@ public partial class UpdaterViewModel : ObservableObject
         {
             IsPanelEnabled = false;
             IsUpdateEnabled = false;
-            _appUpdater.Update();
+            _ = _appUpdater.Update();
         }
     }
 

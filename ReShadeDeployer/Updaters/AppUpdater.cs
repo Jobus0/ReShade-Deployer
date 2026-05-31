@@ -9,14 +9,14 @@ using Testably.Abstractions;
 
 namespace ReShadeDeployer;
 
-public class AppUpdater(IFileSystem fileSystem, DownloadService downloadService, IMessageBox messageBox)
+public class AppUpdater(IFileSystem fileSystem, IDownloadService downloadService, IMessageBox messageBox)
 {
     private const string GithubUrl = "https://api.github.com/repos/Jobus0/ReShade-Deployer/releases/latest";
     
     /// <summary>
     /// Download the latest version of ReShade Deployer from GitHub and restart the application with the new version.
     /// </summary>
-    public async void Update()
+    public async Task Update()
     {
         // Fetch latest version of ReShade Deployer from GitHub
         string content = await downloadService.GetWebsiteContent(GithubUrl);
@@ -75,7 +75,7 @@ public class AppUpdater(IFileSystem fileSystem, DownloadService downloadService,
     /// <summary>
     /// Delete the old version of ReShade Deployer if it exists.
     /// </summary>
-    public async void CleanUpOldVersion()
+    public async Task CleanUpOldVersion()
     {
         string oldExe = Process.GetCurrentProcess().MainModule!.FileName + ".oldver";
         if (fileSystem.File.Exists(oldExe))
