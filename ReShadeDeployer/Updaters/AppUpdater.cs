@@ -46,18 +46,21 @@ public class AppUpdater(IFileSystem fileSystem, IDownloadService downloadService
         fileSystem.File.Delete(downloadPath);
         
         // Run the new version of ReShade Deployer
-        var startupArgs = ((App)Application.Current).StartupArgs;
-        var startInfo = new ProcessStartInfo
+        if (Application.Current is App app)
         {
-            FileName = currentExe,
-            Arguments = startupArgs.Length > 0 ? $"\"{startupArgs[0]}\"" : string.Empty,
-            UseShellExecute = true,
-            Verb = "runas",
-        };
-        Process.Start(startInfo);
-        
-        // Close the current (old) version of ReShade Deployer
-        Application.Current.Shutdown();
+            var startupArgs = app.StartupArgs;
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = currentExe,
+                Arguments = startupArgs.Length > 0 ? $"\"{startupArgs[0]}\"" : string.Empty,
+                UseShellExecute = true,
+                Verb = "runas",
+            };
+            Process.Start(startInfo);
+            
+            // Close the current (old) version of ReShade Deployer
+            app.Shutdown();
+        }
     }
     
     /// <summary>
