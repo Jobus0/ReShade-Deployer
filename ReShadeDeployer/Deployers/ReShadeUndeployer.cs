@@ -50,7 +50,9 @@ public class ReShadeUndeployer(IFileSystem fileSystem)
                 files.Add(entry.FullName);
         
         // Find all .addon32 and .addon64 files (including manually installed non-symlinks)
-        foreach (var addon in directoryInfo.EnumerateFiles("*.addon32 OR *.addon64", SearchOption.TopDirectoryOnly))
+        foreach (var addon in directoryInfo.EnumerateFiles("*.addon32", SearchOption.TopDirectoryOnly))
+            files.Add(addon.FullName);
+        foreach (var addon in directoryInfo.EnumerateFiles("*.addon64", SearchOption.TopDirectoryOnly))
             files.Add(addon.FullName);
         
         return files;
