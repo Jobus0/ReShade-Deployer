@@ -12,7 +12,7 @@ if (Test-Path "TestResults") {
 
 # 3. Run tests
 Write-Host "Running tests..." -ForegroundColor Cyan
-dotnet test --collect:"Code Coverage;Format=cobertura" --results-directory TestResults
+dotnet test -s .config/net.runsettings --collect:"Code Coverage" --results-directory TestResults
 
 # 4. Generate report using the local tool (prefixed with 'dotnet')
 Write-Host "Generating HTML report..." -ForegroundColor Cyan
