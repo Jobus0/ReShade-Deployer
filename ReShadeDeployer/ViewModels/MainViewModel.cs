@@ -227,8 +227,6 @@ public partial class MainViewModel : ObservableObject
         UpdateUndeployVisibility();
     }
 
-
-
     private void UpdateUndeployVisibility()
     {
         if (SelectedExecutableContext == null)

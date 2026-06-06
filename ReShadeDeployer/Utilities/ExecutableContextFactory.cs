@@ -88,7 +88,7 @@ public class ExecutableContextFactory(IFileSystem fileSystem, IPeInfoReader peIn
                 builder.IsVulkan = true;
         }
 
-        builder.IsX64 = pe.Type == PEInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64;
+        builder.IsX64 = pe.Type == PeInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64;
     }
 
     private void ApplyCompatibilitySettings(string executablePath, ContextBuilder builder)

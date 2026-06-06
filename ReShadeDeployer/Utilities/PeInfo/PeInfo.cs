@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace ReShade.Setup.Utilities
 {
-	public unsafe class PEInfo
+	public unsafe class PeInfo
 	{
 		public enum BinaryType : UInt16
 		{
@@ -111,7 +111,7 @@ namespace ReShade.Setup.Utilities
 		private static extern UInt32 SizeofResource([In] IntPtr hModule, [In] IntPtr hResInfo);
 
 		// Adapted from http://stackoverflow.com/a/4696857/2055880
-		public PEInfo(string path)
+		public PeInfo(string path)
 		{
 			var modules = new List<string>();
 

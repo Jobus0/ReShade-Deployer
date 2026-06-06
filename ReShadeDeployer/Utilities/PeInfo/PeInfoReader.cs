@@ -6,12 +6,12 @@ public class PeInfoReader : IPeInfoReader
 {
     public PeInfoData Read(string executablePath)
     {
-        var pe = new PEInfo(executablePath);
+        var pe = new PeInfo(executablePath);
         return new PeInfoData(pe.Type, pe.Modules);
     }
 
     public string? ReadResourceString(string executablePath, ushort id)
     {
-        return PEInfo.ReadResourceString(executablePath, id);
+        return PeInfo.ReadResourceString(executablePath, id);
     }
 }

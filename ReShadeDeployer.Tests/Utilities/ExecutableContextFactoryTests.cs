@@ -29,7 +29,7 @@ public class ExecutableContextFactoryTests
         _fileSystem.File.WriteAllText(exePath, "");
 
         _peInfoReader.ReadFunc = _ => new PeInfoData(
-            PEInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
+            PeInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
             ["kernel32.dll"]
         );
 
@@ -60,7 +60,7 @@ public class ExecutableContextFactoryTests
         _fileSystem.File.WriteAllText(targetPath, "");
 
         _peInfoReader.ReadFunc = _ => new PeInfoData(
-            PEInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
+            PeInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
             ["kernel32.dll"]
         );
         _peInfoReader.ReadResourceStringFunc = (_, id) =>
@@ -96,7 +96,7 @@ public class ExecutableContextFactoryTests
         _fileSystem.File.WriteAllText(exePath, "");
 
         _peInfoReader.ReadFunc = _ => new PeInfoData(
-            PEInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
+            PeInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
             [moduleName]
         );
 
@@ -123,7 +123,7 @@ public class ExecutableContextFactoryTests
             info.SetLegalCopyright("Copyright (C) 2015 Valve Corporation"));
 
         _peInfoReader.ReadFunc = _ => new PeInfoData(
-            PEInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
+            PeInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
             []
         );
 
@@ -146,7 +146,7 @@ public class ExecutableContextFactoryTests
             info.SetLegalCopyright("Copyright (C) 2009 Valve Corporation"));
 
         _peInfoReader.ReadFunc = _ => new PeInfoData(
-            PEInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
+            PeInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
             []
         );
 
@@ -166,7 +166,7 @@ public class ExecutableContextFactoryTests
         _fileSystem.File.WriteAllText(exePath, "");
 
         _peInfoReader.ReadFunc = _ => new PeInfoData(
-            PEInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
+            PeInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64,
             []
         );
 
@@ -212,7 +212,7 @@ public class ExecutableContextFactoryTests
         _fileSystem.File.WriteAllText(bridgePath, "");
 
         _peInfoReader.ReadFunc = _ => new PeInfoData(
-            PEInfo.BinaryType.IMAGE_FILE_MACHINE_I386, // 32-bit in PE
+            PeInfo.BinaryType.IMAGE_FILE_MACHINE_I386, // 32-bit in PE
             ["d3d9.dll"]
         );
 
@@ -256,7 +256,7 @@ public class MockPeInfoReader : IPeInfoReader
         if (ReadFunc != null)
             return ReadFunc(executablePath);
         
-        return new PeInfoData(PEInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64, Array.Empty<string>());
+        return new PeInfoData(PeInfo.BinaryType.IMAGE_FILE_MACHINE_AMD64, Array.Empty<string>());
     }
 
     public string? ReadResourceString(string executablePath, ushort id)

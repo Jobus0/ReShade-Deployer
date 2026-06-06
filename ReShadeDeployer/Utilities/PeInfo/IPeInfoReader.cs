@@ -9,8 +9,8 @@ public interface IPeInfoReader
     string? ReadResourceString(string executablePath, ushort id);
 }
 
-public class PeInfoData(PEInfo.BinaryType type, IEnumerable<string> modules)
+public class PeInfoData(PeInfo.BinaryType type, IEnumerable<string> modules)
 {
-    public PEInfo.BinaryType Type { get; } = type;
+    public PeInfo.BinaryType Type { get; } = type;
     public IEnumerable<string> Modules { get; } = modules;
 }
