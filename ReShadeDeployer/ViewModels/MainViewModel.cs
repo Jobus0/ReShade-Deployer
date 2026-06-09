@@ -1,4 +1,4 @@
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -8,6 +8,7 @@ namespace ReShadeDeployer.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
+    private readonly IFileSystem _fileSystem;
     private readonly DeploymentOrchestrator _deploymentOrchestrator;
     private readonly ReShadeUndeployer _reShadeUndeployer;
     private readonly ExecutableContextFactory _executableContextFactory;
@@ -52,6 +53,7 @@ public partial class MainViewModel : ObservableObject
     private bool _isUndeployVisible;
 
     public MainViewModel(
+        IFileSystem fileSystem,
         DeploymentOrchestrator deploymentOrchestrator,
         ReShadeUndeployer reShadeUndeployer,
         ExecutableContextFactory executableContextFactory,
@@ -60,6 +62,7 @@ public partial class MainViewModel : ObservableObject
         AddonsViewModel addons,
         IMessageBox messageBox)
     {
+        _fileSystem = fileSystem;
         _deploymentOrchestrator = deploymentOrchestrator;
         _reShadeUndeployer = reShadeUndeployer;
         _executableContextFactory = executableContextFactory;
@@ -152,7 +155,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         // Build file list for dialog (show only file names)
-        string fileList = string.Join("\n", files.Select(Path.GetFileName));
+        string fileList = string.Join("\n", files.Select(_fileSystem.Path.GetFileName));
         string message = UIStrings.Undeploy_Confirm + "\n\n" + fileList;
 
         var result = _messageBox.Show(
@@ -185,7 +188,7 @@ public partial class MainViewModel : ObservableObject
 
     public void TargetExecutable(string executablePath)
     {
-        if (!File.Exists(executablePath))
+        if (!_fileSystem.File.Exists(executablePath))
             return;
 
         SelectedExecutableContext = _executableContextFactory.Create(executablePath);
