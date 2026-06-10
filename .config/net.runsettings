@@ -5,10 +5,16 @@
       <DataCollector friendlyName="Code Coverage">
         <Configuration>
           <Format>cobertura</Format>
+          <IncludeTestAssembly>False</IncludeTestAssembly>
           <CodeCoverage>
+            <ModulePaths>
+              <Exclude>
+                <ModulePath>.*\.Tests?\.dll$</ModulePath>
+              </Exclude>
+            </ModulePaths>
             <Attributes>
               <Exclude>
-                <!-- Exclude code with [GeneratedCode] or [CompilerGenerated] attributes -->
+                <!-- Exclude code ith [GeneratedCode] or [CompilerGenerated] attributes -->
                 <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
                 <Attribute>^System\.Runtime\.CompilerServices\.CompilerGeneratedAttribute$</Attribute>
               </Exclude>
