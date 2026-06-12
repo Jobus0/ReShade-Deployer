@@ -11,6 +11,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IConfig _config;
     private readonly RegistryHelper _registryHelper;
     private readonly IMessageBox _messageBox;
+    private readonly VulkanSystemWideDeployer _vulkanSystemWideDeployer;
 
     public string? AssemblyVersion { get; }
 
@@ -20,11 +21,12 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isAlwaysExitOnDeploy;
 
-    public SettingsViewModel(IConfig config, RegistryHelper registryHelper, IMessageBox messageBox)
+    public SettingsViewModel(IConfig config, RegistryHelper registryHelper, IMessageBox messageBox, VulkanSystemWideDeployer vulkanSystemWideDeployer)
     {
         _config = config;
         _registryHelper = registryHelper;
         _messageBox = messageBox;
+        _vulkanSystemWideDeployer = vulkanSystemWideDeployer;
 
         IsAlwaysExitOnDeploy = _config.AlwaysExitOnDeploy;
         IsContextMenuRegistered = _registryHelper.IsContextMenuActionRegistered("Deploy ReShade");
@@ -67,7 +69,8 @@ public partial class SettingsViewModel : ObservableObject
             if (_registryHelper.IsContextMenuActionRegistered("Deploy ReShade"))
                 _registryHelper.UnregisterContextMenuAction("Deploy ReShade");
 
-            // VulkanSystemWideDeployer is handled by MainViewModel/DI; accessed via service
+            _vulkanSystemWideDeployer.RemoveVulkanGlobally();
+            
             _messageBox.Show(UIStrings.UninstallDeployer_Success, UIStrings.Success);
         }
     }
