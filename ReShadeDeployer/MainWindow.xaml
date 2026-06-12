@@ -43,8 +43,8 @@
                                   ToolTip="{x:Static rd:UIStrings.AlwaysExitOnDeploy_Tooltip}" />
                         <Separator/>
                         <MenuItem Header="{x:Static rd:UIStrings.UpdateDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.CheckForDeployerUpdateCommand}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.UninstallDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.UninstallCommand}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.About}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.ShowAboutCommand}" />
+                        <MenuItem Header="{x:Static rd:UIStrings.UninstallDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding Settings.UninstallCommand}" />
+                        <MenuItem Header="{x:Static rd:UIStrings.About}" HeaderStringFormat="{}{0}..." Command="{Binding Settings.ShowAboutCommand}" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </ui:Button>

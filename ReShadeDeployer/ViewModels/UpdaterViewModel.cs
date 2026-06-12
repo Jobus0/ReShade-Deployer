@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Wpf.Ui.Common;
 
 namespace ReShadeDeployer.ViewModels;
 
@@ -12,7 +11,6 @@ public partial class UpdaterViewModel : ObservableObject
     private readonly ReShadeUpdater _reShadeUpdater;
     private readonly IConfig _config;
     private readonly IMessageBox _messageBox;
-    private readonly RegistryHelper _registryHelper;
 
     public string? AssemblyVersion { get; }
 
@@ -38,14 +36,12 @@ public partial class UpdaterViewModel : ObservableObject
         AppUpdater appUpdater,
         ReShadeUpdater reShadeUpdater,
         IConfig config,
-        IMessageBox messageBox,
-        RegistryHelper registryHelper)
+        IMessageBox messageBox)
     {
         _appUpdater = appUpdater;
         _reShadeUpdater = reShadeUpdater;
         _config = config;
         _messageBox = messageBox;
-        _registryHelper = registryHelper;
 
         AssemblyVersion = Assembly.GetEntryAssembly()?.GetName().Version?.ToString(3);
     }
@@ -78,32 +74,6 @@ public partial class UpdaterViewModel : ObservableObject
     private void CheckForDeployerUpdate()
     {
         CheckForNewDeployerVersion(true);
-    }
-
-    [RelayCommand]
-    private void ShowAbout()
-    {
-        _messageBox.Show(string.Format(UIStrings.About_Info, AssemblyVersion), UIStrings.About);
-    }
-
-    [RelayCommand]
-    private void Uninstall()
-    {
-        var result = _messageBox.Show(
-            UIStrings.UninstallDeployer_Content,
-            UIStrings.UninstallDeployer,
-            UIStrings.UninstallDeployer,
-            UIStrings.Cancel,
-            ControlAppearance.Caution);
-
-        if (result == IMessageBox.Result.Primary)
-        {
-            if (_registryHelper.IsContextMenuActionRegistered("Deploy ReShade"))
-                _registryHelper.UnregisterContextMenuAction("Deploy ReShade");
-
-            // VulkanSystemWideDeployer is handled by MainViewModel/DI; accessed via service
-            _messageBox.Show(UIStrings.UninstallDeployer_Success, UIStrings.Success);
-        }
     }
 
     public void PromptForUpdate()
