@@ -11,6 +11,13 @@ namespace ReShadeDeployer;
 /// </summary>
 public static partial class VersionParser
 {
+    public enum VersionComparisonResult
+    {
+        Newer,
+        Older,
+        Equal
+    }
+
     [GeneratedRegex("\\d+(\\.\\d+)*")]
     private static partial Regex VersionNumberPattern();
     
@@ -25,18 +32,18 @@ public static partial class VersionParser
     }
     
     /// <summary>
-    /// Checks if one version number is higher/newer than another.
+    /// Compares two version numbers and returns their relationship.
     /// </summary>
     /// <param name="version1">The first version to compare.</param>
     /// <param name="version2">The second version to compare.</param>
-    /// <returns>True if version1 is newer than version2, false otherwise.</returns>
-    public static bool IsNewerThan(string version1, string version2)
+    /// <returns>Newer if version1 is newer than version2, Older if version1 is older, Equal if they are the same.</returns>
+    public static VersionComparisonResult Compare(string version1, string version2)
     {
         if (string.IsNullOrEmpty(version1))
-            return false;
+            return VersionComparisonResult.Older;
         
         if (string.IsNullOrEmpty(version2))
-            return true;
+            return VersionComparisonResult.Newer;
         
         var v1Parts = version1.Split('.').Select(int.Parse).ToArray();
         var v2Parts = version2.Split('.').Select(int.Parse).ToArray();
@@ -49,11 +56,22 @@ public static partial class VersionParser
             int v2Part = i < v2Parts.Length ? v2Parts[i] : 0;
             
             if (v1Part > v2Part)
-                return true;
+                return VersionComparisonResult.Newer;
             if (v1Part < v2Part)
-                return false;
+                return VersionComparisonResult.Older;
         }
         
-        return false;
+        return VersionComparisonResult.Equal;
+    }
+
+    /// <summary>
+    /// Checks if one version number is higher/newer than another.
+    /// </summary>
+    /// <param name="version1">The first version to compare.</param>
+    /// <param name="version2">The second version to compare.</param>
+    /// <returns>True if version1 is newer than version2, false otherwise.</returns>
+    public static bool IsNewerThan(string version1, string version2)
+    {
+        return Compare(version1, version2) == VersionComparisonResult.Newer;
     }
 }
