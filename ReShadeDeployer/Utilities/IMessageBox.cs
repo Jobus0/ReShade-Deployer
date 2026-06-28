@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Wpf.Ui.Common;
 
 namespace ReShadeDeployer;
@@ -9,5 +9,6 @@ public interface IMessageBox
     
     void Show(string contentText, string title);
     Result Show(string contentText, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary);
+    Result Show(Func<object> contentFactory, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary);
     void Show(Exception exception, string title, string primaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary);
 }

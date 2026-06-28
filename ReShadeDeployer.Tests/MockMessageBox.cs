@@ -21,6 +21,14 @@ public class MockMessageBox : IMessageBox
         return NextResult;
     }
 
+    public List<(Func<object> ContentFactory, string Title, string PrimaryText, string SecondaryText, ControlAppearance Appearance)> ShowWithFuncCalls { get; } = new();
+
+    public IMessageBox.Result Show(Func<object> contentFactory, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
+    {
+        ShowWithFuncCalls.Add((contentFactory, title, primaryButtonText, secondaryButtonText, primaryButtonAppearance));
+        return NextResult;
+    }
+
     public void Show(Exception exception, string title, string primaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
     {
         ShowExceptionCalls.Add((exception, title, primaryButtonText, primaryButtonAppearance));

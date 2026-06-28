@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,6 +50,40 @@ public partial class WpfMessageBox : IMessageBox
         {
             Title = title,
             Content = content,
+            ResizeMode = ResizeMode.NoResize,
+            SizeToContent = SizeToContent.Height,
+            ButtonLeftName = primaryButtonText,
+            ButtonRightName = secondaryButtonText,
+            ButtonLeftAppearance = primaryButtonAppearance,
+            MinWidth = 360,
+            MaxWidth = 500,
+            MinHeight = 120
+        };
+        messageBox.ButtonLeftClick += (_, _) =>
+        {
+            messageBox.DialogResult = true;
+            messageBox.Close();
+        };
+        messageBox.ButtonRightClick += (_, _) =>
+        {
+            messageBox.DialogResult = false;
+            messageBox.Close();
+        };
+
+        return messageBox.ShowDialog() switch
+        {
+            null => Result.Close,
+            true => Result.Primary,
+            false => Result.Secondary
+        };
+    }
+    
+    public Result Show(Func<object> contentFactory, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
+    {
+        var messageBox = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = title,
+            Content = contentFactory(),
             ResizeMode = ResizeMode.NoResize,
             SizeToContent = SizeToContent.Height,
             ButtonLeftName = primaryButtonText,
