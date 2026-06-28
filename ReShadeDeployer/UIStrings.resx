@@ -99,7 +99,9 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 		<value>d3d9.dll</value>
 	</data>
 	<data name="DownloadError" xml:space="preserve">
-		<value>Failed to access '{0}'. Try again later, or please report to the developer.</value>
+		<value>Failed to access URL: {0}
+
+The server is down, the connection was blocked, or the URL is invalid. Try again later, or report to the developer.</value>
 	</data>
 	<data name="DownloadError_Title" xml:space="preserve">
 		<value>Download Failed</value>
