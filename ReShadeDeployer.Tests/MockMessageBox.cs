@@ -9,10 +9,18 @@ public class MockMessageBox : IMessageBox
     public List<(Exception Exception, string Title, string PrimaryText, ControlAppearance Appearance)> ShowExceptionCalls { get; } = new();
 
     public IMessageBox.Result NextResult { get; set; } = IMessageBox.Result.Close;
+    public string NextTextBox { get; set; } = string.Empty;
 
     public void Show(string contentText, string title)
     {
         ShowCalls.Add((contentText, title));
+    }
+
+    public IMessageBox.Result ShowWithTextBox(string contentText, string title, string primaryButtonText, string secondaryButtonText, out string textBoxText)
+    {
+        ShowCalls.Add((contentText, title));
+        textBoxText = NextTextBox;
+        return NextResult;
     }
 
     public IMessageBox.Result Show(string contentText, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)

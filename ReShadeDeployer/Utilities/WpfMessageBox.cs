@@ -2,11 +2,13 @@ using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
 using Clipboard = System.Windows.Clipboard;
 using TextBlock = System.Windows.Controls.TextBlock;
 using Result = ReShadeDeployer.IMessageBox.Result;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace ReShadeDeployer;
 
@@ -76,6 +78,68 @@ public partial class WpfMessageBox : IMessageBox
             true => Result.Primary,
             false => Result.Secondary
         };
+    }
+    
+    public Result ShowWithTextBox(string contentText, string title, string primaryButtonText, string secondaryButtonText, out string textBoxText)
+    {
+        TextBlock content = new TextBlock {Text = contentText, TextWrapping = TextWrapping.Wrap};
+        ConvertStringLinksToHyperlinks(content);
+        
+        TextBox inputTextBox = new TextBox
+        {
+            Margin = new Thickness(0, 8, 0, 0),
+            Padding = new Thickness(5),
+            FontSize = 14
+        };
+
+        StackPanel panel = new StackPanel();
+        panel.Children.Add(content);
+        panel.Children.Add(inputTextBox);
+        
+        var messageBox = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = title,
+            Content = panel,
+            ResizeMode = ResizeMode.NoResize,
+            SizeToContent = SizeToContent.Height,
+            ButtonLeftName = primaryButtonText,
+            ButtonRightName = secondaryButtonText,
+            ButtonLeftAppearance = ControlAppearance.Primary,
+            MinWidth = 360,
+            MaxWidth = 500,
+            MinHeight = 120
+        };
+        messageBox.ButtonLeftClick += (_, _) =>
+        {
+            messageBox.DialogResult = true;
+            messageBox.Close();
+        };
+        messageBox.ButtonRightClick += (_, _) =>
+        {
+            messageBox.DialogResult = false;
+            messageBox.Close();
+        };
+        
+        inputTextBox.Loaded += (s, e) => inputTextBox.Focus();
+        inputTextBox.KeyUp += (s, e) =>
+        {
+            if (e.Key == Key.Return)
+            {
+                messageBox.DialogResult = true;
+                messageBox.Close();
+            }
+        };
+        
+        var result = messageBox.ShowDialog() switch
+        {
+            null => Result.Close,
+            true => Result.Primary,
+            false => Result.Secondary
+        };
+
+        textBoxText = inputTextBox.Text;
+        
+        return result;
     }
     
     public Result Show(Func<object> contentFactory, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
