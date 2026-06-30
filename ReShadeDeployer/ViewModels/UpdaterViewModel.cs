@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -67,13 +68,30 @@ public partial class UpdaterViewModel : ObservableObject
     [RelayCommand]
     private void UpdateReShade()
     {
-        DownloadReShade();
+        _ = DownloadReShade();
     }
 
     [RelayCommand]
     private void CheckForDeployerUpdate()
     {
         CheckForNewDeployerVersion(true);
+    }
+
+    [RelayCommand]
+    private async Task DownloadSpecificVersion()
+    {
+        var result = _messageBox.ShowWithTextBox(
+            UIStrings.DownloadSpecificVersion_Content,
+            UIStrings.DownloadSpecificVersion_Title,
+            UIStrings.Download,
+            UIStrings.Cancel,
+            out string version
+        );
+
+        version = VersionParser.Parse(version);
+
+        if (result == IMessageBox.Result.Primary && !string.IsNullOrEmpty(version))
+            await DownloadReShade(version);
     }
 
     public void PromptForUpdate()
@@ -97,7 +115,7 @@ public partial class UpdaterViewModel : ObservableObject
     /// </summary>
     public void AcceptFirstTimeSetup()
     {
-        DownloadReShade();
+        _ = DownloadReShade();
     }
 
     /// <summary>
@@ -169,21 +187,29 @@ public partial class UpdaterViewModel : ObservableObject
         }
     }
 
-    internal async void DownloadReShade()
+    internal async Task DownloadReShade(string? specificVersion = null)
     {
         IsUpdateEnabled = false;
 
-        await _reShadeUpdater.Update();
+        await _reShadeUpdater.Update(specificVersion);
 
         if (_reShadeUpdater.TryGetLocalReShadeVersionNumber(out string version))
         {
             VersionLabelContent = version;
 
-            _config.LatestReShadeVersionNumber = version;
-            _config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
-
-            // Remove version label from the update button, keeping only the icon
-            UpdateButtonContent = string.Empty;
+            var versionComparison = VersionParser.Compare(version, _config.LatestReShadeVersionNumber);
+            if (versionComparison is VersionParser.VersionComparisonResult.Newer or VersionParser.VersionComparisonResult.Equal)
+            {
+                _config.LatestReShadeVersionNumber = version;
+                _config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
+                
+                // Remove version label from the update button, keeping only the icon
+                UpdateButtonContent = string.Empty;
+            }
+            else
+            {
+                UpdateButtonContent = _config.LatestReShadeVersionNumber;
+            }
 
             ReShadeDownloadCompleted?.Invoke();
         }

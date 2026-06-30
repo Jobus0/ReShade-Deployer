@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Compression;
@@ -16,33 +16,48 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
     /// <summary>
     /// Download the latest version of ReShade (including add-on support version) from the official website and extract it into the lib folder.
     /// </summary>
-    public async Task Update()
+    public async Task Update(string? specificVersion = null)
     {
-        string websiteContent;
-        try
-        {
-            websiteContent = await downloadService.GetWebsiteContent(WebsiteUrl);
-        }
-        catch
-        {
-            messageBox.Show(UIStrings.ConnectionError, UIStrings.ConnectionError_Title);
-            return;
-        }
-        
         // Make sure the required folders exist
         CreateDirectories();
 
-        string downloadUrl = Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString();
-        
-        if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == VersionParser.Parse(downloadUrl))
+        if (specificVersion != null)
         {
-            messageBox.Show(UIStrings.UpdateError, UIStrings.Update);
-            return;
+            string standardUrl = $"https://reshade.me/downloads/ReShade_Setup_{specificVersion}.exe";
+            string addonUrl = $"https://reshade.me/downloads/ReShade_Setup_{specificVersion}_Addon.exe";
+
+            if (await DownloadAndExtractReShade(standardUrl, Paths.Dlls))
+            {
+                await DownloadAndExtractReShade(addonUrl, Paths.AddonDlls);
+            }
         }
-        
-        // Download the standard and the add-on supported ReShade files.
-        await DownloadAndExtractReShade(WebsiteUrl + downloadUrl, Paths.Dlls);
-        await DownloadAndExtractReShade(WebsiteUrl + Regex.Match(websiteContent, "/downloads/\\S*_Addon.exe"), Paths.AddonDlls);
+        else
+        {
+            string websiteContent;
+            try
+            {
+                websiteContent = await downloadService.GetWebsiteContent(WebsiteUrl);
+            }
+            catch
+            {
+                messageBox.Show(UIStrings.ConnectionError, UIStrings.ConnectionError_Title);
+                return;
+            }
+
+            string downloadUrl = Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString();
+            
+            if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == VersionParser.Parse(downloadUrl))
+            {
+                messageBox.Show(UIStrings.UpdateError, UIStrings.Update);
+                return;
+            }
+            
+            // Download the standard and the add-on supported ReShade files.
+            if (await DownloadAndExtractReShade(WebsiteUrl + downloadUrl, Paths.Dlls))
+            {
+                await DownloadAndExtractReShade(WebsiteUrl + Regex.Match(websiteContent, "/downloads/\\S*_Addon.exe"), Paths.AddonDlls);
+            }
+        }
         
         // Download Compatibility.ini
         try
@@ -57,7 +72,7 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
     /// </summary>
     /// <param name="url">URL to an official ReShade installer.</param>
     /// <param name="directoryPath">Directory to extract .dll into.</param>
-    private async Task DownloadAndExtractReShade(string url, string directoryPath)
+    private async Task<bool> DownloadAndExtractReShade(string url, string directoryPath)
     {
         string downloadPath = fileSystem.Path.Combine(directoryPath, "ReShade.exe");
 
@@ -68,7 +83,7 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
         catch
         {
             messageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
-            return;
+            return false;
         }
 
         try
@@ -112,10 +127,12 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
                 entry.ExtractToFile(path, true);
             }
             zip.ExtractToDirectory(directoryPath, true);
+            return true;
         }
         catch (Exception ex)
         {
             messageBox.Show(ex.GetType() + ": " + ex.Message, UIStrings.ExtractionError_Title);
+            return false;
         }
         finally
         {

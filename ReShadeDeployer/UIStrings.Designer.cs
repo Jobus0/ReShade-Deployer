@@ -296,7 +296,18 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to access &apos;{0}&apos;. Try again later, or please report to the developer..
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        public static string Download {
+            get {
+                return ResourceManager.GetString("Download", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to access URL: {0}
+        ///
+        ///The server is down, the connection was blocked, or the URL is invalid. Try again later, or report to the developer..
         /// </summary>
         public static string DownloadError {
             get {
@@ -310,6 +321,24 @@ namespace ReShadeDeployer {
         public static string DownloadError_Title {
             get {
                 return ResourceManager.GetString("DownloadError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter ReShade version to download (e.g., 5.9.2):.
+        /// </summary>
+        public static string DownloadSpecificVersion_Content {
+            get {
+                return ResourceManager.GetString("DownloadSpecificVersion_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download Specific Version.
+        /// </summary>
+        public static string DownloadSpecificVersion_Title {
+            get {
+                return ResourceManager.GetString("DownloadSpecificVersion_Title", resourceCulture);
             }
         }
         
@@ -608,7 +637,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check for Updates.
+        ///   Looks up a localized string similar to Check for Deployer Updates.
         /// </summary>
         public static string UpdateDeployer {
             get {

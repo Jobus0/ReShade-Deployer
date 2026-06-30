@@ -98,6 +98,9 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 	<data name="DirectX9_Tooltip" xml:space="preserve">
 		<value>d3d9.dll</value>
 	</data>
+	<data name="DownloadSpecificVersion_Title" xml:space="preserve">
+		<value>Download Specific Version</value>
+	</data>
 	<data name="DownloadError" xml:space="preserve">
 		<value>Failed to access URL: {0}
 
@@ -210,7 +213,7 @@ Current version: {1}</value>
 		<value>No Update Available</value>
 	</data>
 	<data name="UpdateDeployer" xml:space="preserve">
-		<value>Check for Updates</value>
+		<value>Check for Deployer Updates</value>
 	</data>
 	<data name="UpdateError" xml:space="preserve">
 		<value>You are already on the latest version.</value>
@@ -263,4 +266,10 @@ The following files will be deleted:</value>
 	<data name="UndeployButton_Tooltip" xml:space="preserve">
 		<value>Remove existing ReShade deployment from the selected game.</value>
 	</data>
+    <data name="DownloadSpecificVersion_Content" xml:space="preserve">
+        <value>Enter ReShade version to download (e.g., 5.9.2):</value>
+    </data>
+    <data name="Download" xml:space="preserve">
+        <value>Download</value>
+    </data>
 </root>
