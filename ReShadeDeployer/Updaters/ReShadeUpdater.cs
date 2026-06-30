@@ -48,7 +48,7 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
             
             if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == VersionParser.Parse(downloadUrl))
             {
-                messageBox.Show(UIStrings.UpdateError, UIStrings.Update);
+                messageBox.Show(UIStrings.UpdateError, UIStrings.UpdateUnavailable_Title);
                 return;
             }
             

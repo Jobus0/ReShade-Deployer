@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -24,6 +25,9 @@ public partial class UpdaterViewModel : ObservableObject
     [ObservableProperty]
     private string _versionLabelContent = string.Empty;
 
+    [ObservableProperty]
+    private Visibility _updateButtonVisibility = Visibility.Collapsed;
+    
     [ObservableProperty]
     private string? _updateButtonContent;
 
@@ -184,6 +188,11 @@ public partial class UpdaterViewModel : ObservableObject
         if (localVersion != latestVersion)
         {
             UpdateButtonContent = latestVersion;
+            UpdateButtonVisibility = Visibility.Visible;
+        }
+        else
+        {
+            UpdateButtonVisibility = Visibility.Collapsed;
         }
     }
 
@@ -205,10 +214,12 @@ public partial class UpdaterViewModel : ObservableObject
                 
                 // Remove version label from the update button, keeping only the icon
                 UpdateButtonContent = string.Empty;
+                UpdateButtonVisibility = Visibility.Collapsed;
             }
             else
             {
                 UpdateButtonContent = _config.LatestReShadeVersionNumber;
+                UpdateButtonVisibility = Visibility.Visible;
             }
 
             ReShadeDownloadCompleted?.Invoke();

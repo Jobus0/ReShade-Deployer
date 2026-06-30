@@ -325,6 +325,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check for ReShade Updates.
+        /// </summary>
+        public static string DownloadLatestVersion_Title {
+            get {
+                return ResourceManager.GetString("DownloadLatestVersion_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter ReShade version to download (e.g., 5.9.2):.
         /// </summary>
         public static string DownloadSpecificVersion_Content {
@@ -334,7 +343,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download Specific Version.
+        ///   Looks up a localized string similar to Download Specific ReShade Version.
         /// </summary>
         public static string DownloadSpecificVersion_Title {
             get {
@@ -651,6 +660,15 @@ namespace ReShadeDeployer {
         public static string UpdateError {
             get {
                 return ResourceManager.GetString("UpdateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update ReShade.
+        /// </summary>
+        public static string UpdateReShade_Title {
+            get {
+                return ResourceManager.GetString("UpdateReShade_Title", resourceCulture);
             }
         }
         

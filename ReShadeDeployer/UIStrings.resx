@@ -98,8 +98,14 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
 	<data name="DirectX9_Tooltip" xml:space="preserve">
 		<value>d3d9.dll</value>
 	</data>
+    <data name="UpdateReShade_Title" xml:space="preserve">
+		<value>Update ReShade</value>
+	</data>
+    <data name="DownloadLatestVersion_Title" xml:space="preserve">
+		<value>Check for ReShade Updates</value>
+	</data>
 	<data name="DownloadSpecificVersion_Title" xml:space="preserve">
-		<value>Download Specific Version</value>
+		<value>Download Specific ReShade Version</value>
 	</data>
 	<data name="DownloadError" xml:space="preserve">
 		<value>Failed to access URL: {0}
