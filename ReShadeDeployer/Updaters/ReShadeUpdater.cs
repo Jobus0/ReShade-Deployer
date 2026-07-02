@@ -40,7 +40,7 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
             }
             catch
             {
-                messageBox.Show(UIStrings.ConnectionError, UIStrings.ConnectionError_Title);
+                await messageBox.Show(UIStrings.ConnectionError_Title, UIStrings.ConnectionError);
                 return;
             }
 
@@ -48,7 +48,7 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
             
             if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == VersionParser.Parse(downloadUrl))
             {
-                messageBox.Show(UIStrings.UpdateError, UIStrings.UpdateUnavailable_Title);
+                await messageBox.Show(UIStrings.UpdateUnavailable_Title, UIStrings.UpdateError);
                 return;
             }
             
@@ -82,7 +82,7 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
         }
         catch
         {
-            messageBox.Show(string.Format(UIStrings.DownloadError, url), UIStrings.DownloadError_Title);
+            await messageBox.Show(UIStrings.DownloadError_Title, string.Format(UIStrings.DownloadError, url));
             return false;
         }
 
@@ -131,7 +131,7 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
         }
         catch (Exception ex)
         {
-            messageBox.Show(ex.GetType() + ": " + ex.Message, UIStrings.ExtractionError_Title);
+            await messageBox.Show(UIStrings.ExtractionError_Title, ex.GetType() + ": " + ex.Message);
             return false;
         }
         finally

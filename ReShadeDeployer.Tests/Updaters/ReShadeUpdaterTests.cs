@@ -81,7 +81,7 @@ public class ReShadeUpdaterTests
 
         // Assert
         Assert.Single(_messageBox.ShowCalls);
-        Assert.Equal(UIStrings.ConnectionError, _messageBox.ShowCalls[0].Content);
+        Assert.Equal(UIStrings.ConnectionError, _messageBox.ShowCalls[0].ContentText);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public class ReShadeUpdaterTests
 
         // Assert
         Assert.Single(_messageBox.ShowCalls);
-        Assert.Equal(UIStrings.UpdateError, _messageBox.ShowCalls[0].Content);
+        Assert.Equal(UIStrings.UpdateError, _messageBox.ShowCalls[0].ContentText);
         // Verify no downloads were initiated
         Assert.Empty(_downloadService.DownloadCalls);
     }

@@ -1,5 +1,6 @@
 using Testably.Abstractions.Testing;
 using ReShadeDeployer.ViewModels;
+using Wpf.Ui.Controls;
 
 namespace ReShadeDeployer.Tests.ViewModels;
 
@@ -176,7 +177,7 @@ public class MainViewModelTests
 
         // Assert
         Assert.False(mainVm.IsUndeployVisible);
-        Assert.Empty(_messageBox.ShowWithButtonsCalls);
+        Assert.Empty(_messageBox.ShowCalls);
     }
 
     [Fact]
@@ -196,14 +197,15 @@ public class MainViewModelTests
         Assert.True(mainVm.IsUndeployVisible);
 
         // Setup user to click Confirm/Uninstall
-        _messageBox.NextResult = IMessageBox.Result.Primary;
+        _messageBox.NextResult = MessageBoxResult.Primary;
 
         // Act
         mainVm.UndeployCommand.Execute(null);
 
         // Assert
-        Assert.Single(_messageBox.ShowWithButtonsCalls);
-        Assert.Contains(UIStrings.Undeploy_Confirm, _messageBox.ShowWithButtonsCalls[0].Content);
+        Assert.Equal(2, _messageBox.ShowCalls.Count);
+        Assert.Contains(UIStrings.Undeploy_Confirm, _messageBox.ShowCalls[0].ContentText);
+        Assert.Contains(UIStrings.Undeploy_Success, _messageBox.ShowCalls[1].ContentText);
         // File was deleted
         Assert.False(_fileSystem.File.Exists(iniPath));
         // Undeploy visibility updated

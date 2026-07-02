@@ -137,7 +137,7 @@ public class AppUpdaterTests
         // Assert
         // 1. Verify message box was shown with error
         Assert.Single(_messageBox.ShowCalls);
-        Assert.Contains(downloadUrl, _messageBox.ShowCalls[0].Content);
+        Assert.Contains(downloadUrl, _messageBox.ShowCalls[0].ContentText);
 
         // 2. Verify current exe was not moved (still exists, and no .oldver exists)
         Assert.True(_fileSystem.File.Exists(_currentExePath));

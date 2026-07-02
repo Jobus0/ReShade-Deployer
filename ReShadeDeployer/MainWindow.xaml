@@ -1,4 +1,4 @@
-<ui:UiWindow x:Class="ReShadeDeployer.MainWindow"
+<ui:FluentWindow x:Class="ReShadeDeployer.MainWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,12 +11,13 @@
              Icon="ReShade.ico"
              ExtendsContentIntoTitleBar="True"
              WindowBackdropType="Mica"
+             Background="#222"
              Title="ReShade Deployer"
              FontSize="13"
              SizeToContent="Height"
              WindowStartupLocation="CenterScreen"
              MinWidth="300" Width="300">
-    <ui:UiWindow.Resources>
+    <ui:FluentWindow.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <conv:EnumToBoolConverter x:Key="EnumToBool" />
         <Style x:Key="ApiBoldStyle" TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
@@ -26,14 +27,13 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-    </ui:UiWindow.Resources>
+    </ui:FluentWindow.Resources>
     <StackPanel>
-        <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="ReShade.ico" ShowMaximize="False" CanMaximize="False" Padding="7" />
-        <Separator />
-        <DockPanel Height="28" LastChildFill="False">
+        <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="{ui:ImageIcon ReShade.ico}" ShowMaximize="False" CanMaximize="False" Padding="7" />
+        <DockPanel Height="28">
             <Label VerticalAlignment="Center" Padding="15 0 3 0" Content="{x:Static rd:UIStrings.VersionPrefix}" />
             <Label VerticalAlignment="Center" Padding="0" FontWeight="Bold" Content="{Binding Updater.VersionLabelContent}" />
-            <ui:Button Name="SettingsButton" VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="Settings16" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
+            <ui:Button Name="SettingsButton" VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="{ui:SymbolIcon Settings16}" Appearance="Transparent" CornerRadius="0"
                        ToolTip="{x:Static rd:UIStrings.Settings_Tooltip}" Click="SettingsButton_OnClick">
                 <Button.ContextMenu>
                     <ContextMenu>
@@ -52,7 +52,7 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </ui:Button>
-            <ui:Button VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="ArrowDownload16" FontSize="12" FontWeight="Bold" Appearance="Transparent" BorderThickness="1, 0, 0, 0" CornerRadius="0"
+            <ui:Button VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="{ui:SymbolIcon ArrowDownload16}" FontSize="12" FontWeight="Bold" Appearance="Transparent" BorderThickness="0" CornerRadius="0"
                        Visibility="{Binding Updater.UpdateButtonVisibility}"
                        ToolTip="{x:Static rd:UIStrings.UpdateReShade_Tooltip}" Command="{Binding Updater.UpdateReShadeCommand}" Content="{Binding Updater.UpdateButtonContent}" IsEnabled="{Binding Updater.IsUpdateEnabled}"  />
         </DockPanel>
@@ -63,10 +63,10 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ui:Button HorizontalAlignment="Stretch" Icon="Open16" Appearance="{Binding SelectGameButtonAppearance}" ClipToBounds="True" Margin="0, 0, 1, 0" Click="SelectGameButton_OnClick">
+                <ui:Button HorizontalAlignment="Stretch" Icon="{ui:SymbolIcon Open16}" Appearance="{Binding SelectGameButtonAppearance}" ClipToBounds="True" Margin="0, 0, 1, 0" Click="SelectGameButton_OnClick">
                     <TextBlock HorizontalAlignment="Right" Text="{Binding SelectGameButtonText}" ToolTip="{Binding SelectGameButtonText}" FontSize="13"/>
                 </ui:Button>
-                <ui:Button Name="ExecutableInfoButton" Grid.Column="1" Icon="Info16" IsEnabled="{Binding IsExecutableInfoEnabled}" Visibility="Collapsed" Margin="3, 0, 0, 0" Padding="4" Command="{Binding ShowExecutableInfoCommand}"/>
+                <ui:Button Name="ExecutableInfoButton" Grid.Column="1" Icon="{ui:SymbolIcon Info16}" IsEnabled="{Binding IsExecutableInfoEnabled}" Visibility="Collapsed" Margin="3, 0, 0, 0" Padding="4" Command="{Binding ShowExecutableInfoCommand}"/>
             </Grid>
             <GroupBox Header="{x:Static rd:UIStrings.TargetAPI}" Padding="3, 0" BorderThickness="0" Background="#44000000" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}">
                 <StackPanel>
@@ -125,4 +125,4 @@
             </Grid>
         </StackPanel>
     </StackPanel>
-</ui:UiWindow>
+</ui:FluentWindow>

@@ -1,6 +1,3 @@
-using ReShadeDeployer;
-using Xunit;
-
 namespace ReShadeDeployer.Tests.Utilities;
 
 public class VersionParserTests

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using ReShade.Setup.Utilities;
-using IniParser;
-using IniParser.Model;
+﻿using System.Text;
 
 namespace ReShadeDeployer;
 

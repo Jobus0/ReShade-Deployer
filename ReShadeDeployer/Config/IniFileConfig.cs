@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
-using IniParser;
 using IniParser.Model;
 using IniParser.Parser;
 

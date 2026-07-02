@@ -1,10 +1,11 @@
+using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using ReShadeDeployer.ViewModels;
-using Wpf.Ui.Common;
+using Wpf.Ui.Controls;
 using Button = System.Windows.Controls.Button;
+using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
 namespace ReShadeDeployer
 {
@@ -60,10 +61,10 @@ namespace ReShadeDeployer
 #endif
         }
 
-        private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private async void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             Hide();
-            _messageBox.Show(e.Exception, UIStrings.CriticalError_Title, UIStrings.Exit, ControlAppearance.Danger);
+            await _messageBox.ShowException(UIStrings.CriticalError_Title, e.Exception, UIStrings.Exit, ControlAppearance.Danger);
 
             if (!System.Diagnostics.Debugger.IsAttached)
             {
@@ -99,18 +100,17 @@ namespace ReShadeDeployer
         /// Creates a message box explaining that the required folder structure will be
         /// created in the current folder, and if accepted, downloads the latest ReShade.
         /// </summary>
-        private void FirstTimeSetup()
+        private async void FirstTimeSetup()
         {
             // Disable buttons until ReShade is downloaded
             _viewModel.IsDeployEnabled = false;
 
-            var result = _messageBox.Show(
+            var result = await _messageBox.Show(UIStrings.FirstTimeSetup_Title,
                 UIStrings.FirstTimeSetup,
-                UIStrings.FirstTimeSetup_Title,
-                UIStrings.Continue,
-                UIStrings.Exit);
+                primaryButtonText: UIStrings.Continue,
+                closeButtonText: UIStrings.Exit);
 
-            if (result == IMessageBox.Result.Primary)
+            if (result == MessageBoxResult.Primary)
                 _viewModel.Updater.AcceptFirstTimeSetup();
             else
                 Application.Current.Shutdown();

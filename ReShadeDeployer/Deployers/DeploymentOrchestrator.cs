@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
+using System.Threading.Tasks;
 using System.Windows;
-using Wpf.Ui.Common;
+using Wpf.Ui.Controls;
+using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
 namespace ReShadeDeployer;
 
@@ -18,23 +20,21 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
     /// <param name="addons">List of addons to deploy.</param>
-    public void DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, IList<AddonItem> addons)
+    public async Task DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, IList<AddonItem> addons)
     {
         if (api == GraphicsApi.Vulkan && addonSupport && !vulkanSystemWideDeployer.IsVulkanDeployedWithAddonSupport())
         {
-            var result = messageBox.Show(
+            var result = await messageBox.Show(UIStrings.Warning,
                 UIStrings.Vulkan_Addon_Warning,
-                UIStrings.Warning,
-                UIStrings.Continue,
-                UIStrings.Cancel,
-                ControlAppearance.Caution);
+                primaryButtonText: UIStrings.Continue, ControlAppearance.Caution,
+                closeButtonText: UIStrings.Cancel);
             
-            if (result != IMessageBox.Result.Primary)
+            if (result != MessageBoxResult.Primary)
                 return;
         }
         else if (api == GraphicsApi.D3D9 && executableContext.IsD3D8)
         {
-            messageBox.Show(UIStrings.D3D8_Info, UIStrings.Notice);
+            await messageBox.Show(UIStrings.Notice, UIStrings.D3D8_Info);
         }
 
         try
@@ -48,12 +48,10 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
             {
                 // If the preset already exists in the target executable directory, ask to overwrite
                 bool deployedPresetExists = fileSystem.File.Exists(presetDeployer.GetPath(executableContext));
-                bool doDeploy = !deployedPresetExists || messageBox.Show(
+                bool doDeploy = !deployedPresetExists || await messageBox.Show(UIStrings.PresetOverwrite_Title,
                     UIStrings.PresetOverwrite,
-                    UIStrings.PresetOverwrite_Title,
-                    UIStrings.PresetOverwrite_Yes,
-                    UIStrings.PresetOverwrite_No,
-                    ControlAppearance.Danger) == IMessageBox.Result.Primary;
+                    primaryButtonText: UIStrings.PresetOverwrite_Yes, ControlAppearance.Danger,
+                    closeButtonText: UIStrings.PresetOverwrite_No) == MessageBoxResult.Primary;
 
                 if (doDeploy)
                     presetDeployer.Deploy(executableContext);
@@ -70,13 +68,13 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
         }
         else
         {
-            var result = messageBox.Show(
+            var result = await messageBox.Show(UIStrings.Success,
                 UIStrings.DeploySuccess,
-                UIStrings.Success,
-                UIStrings.Continue,
-                UIStrings.Exit);
+                primaryButtonText: UIStrings.Continue,
+                secondaryButtonText: UIStrings.Exit,
+                closeButtonText: string.Empty);
             
-            if (result == IMessageBox.Result.Secondary)
+            if (result == MessageBoxResult.Secondary)
                 Application.Current.Shutdown();
         }
     }

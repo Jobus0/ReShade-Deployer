@@ -1,8 +1,9 @@
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Wpf.Ui.Common;
+using Wpf.Ui.Controls;
 
 namespace ReShadeDeployer.ViewModels;
 
@@ -49,29 +50,27 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void ShowAbout()
+    private async Task ShowAbout()
     {
-        _messageBox.Show(string.Format(UIStrings.About_Info, AssemblyVersion), UIStrings.About);
+        await _messageBox.Show(UIStrings.About, string.Format(UIStrings.About_Info, AssemblyVersion));
     }
 
     [RelayCommand]
-    private void Uninstall()
+    private async Task Uninstall()
     {
-        var result = _messageBox.Show(
+        var result = await _messageBox.Show(UIStrings.UninstallDeployer,
             UIStrings.UninstallDeployer_Content,
-            UIStrings.UninstallDeployer,
-            UIStrings.UninstallDeployer,
-            UIStrings.Cancel,
-            ControlAppearance.Caution);
+            primaryButtonText: UIStrings.UninstallDeployer, ControlAppearance.Caution,
+            closeButtonText: UIStrings.Cancel);
 
-        if (result == IMessageBox.Result.Primary)
+        if (result == MessageBoxResult.Primary)
         {
             if (_registryHelper.IsContextMenuActionRegistered("Deploy ReShade"))
                 _registryHelper.UnregisterContextMenuAction("Deploy ReShade");
 
             _vulkanSystemWideDeployer.RemoveVulkanGlobally();
             
-            _messageBox.Show(UIStrings.UninstallDeployer_Success, UIStrings.Success);
+            await _messageBox.Show(UIStrings.Success, UIStrings.UninstallDeployer_Success);
         }
     }
 }

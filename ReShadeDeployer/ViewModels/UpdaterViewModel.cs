@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
 namespace ReShadeDeployer.ViewModels;
 
@@ -84,29 +85,24 @@ public partial class UpdaterViewModel : ObservableObject
     [RelayCommand]
     private async Task DownloadSpecificVersion()
     {
-        var result = _messageBox.ShowWithTextBox(
+        var (result, version) = await _messageBox.ShowWithTextBox(UIStrings.DownloadSpecificVersion_Title,
             UIStrings.DownloadSpecificVersion_Content,
-            UIStrings.DownloadSpecificVersion_Title,
-            UIStrings.Download,
-            UIStrings.Cancel,
-            out string version
-        );
+            UIStrings.Download, UIStrings.Cancel);
 
         version = VersionParser.Parse(version);
 
-        if (result == IMessageBox.Result.Primary && !string.IsNullOrEmpty(version))
+        if (result == MessageBoxResult.Primary && !string.IsNullOrEmpty(version))
             await DownloadReShade(version);
     }
 
-    public void PromptForUpdate()
+    public async Task PromptForUpdate()
     {
-        var result = _messageBox.Show(
+        var result = await _messageBox.Show(UIStrings.UpdateAvailable_Title,
             string.Format(UIStrings.UpdateAvailable, _config.LatestDeployerVersionNumber, AssemblyVersion!),
-            UIStrings.UpdateAvailable_Title,
-            UIStrings.Update,
-            UIStrings.Skip);
+            primaryButtonText: UIStrings.Update,
+            closeButtonText: UIStrings.Skip);
 
-        if (result == IMessageBox.Result.Primary)
+        if (result == MessageBoxResult.Primary)
         {
             IsPanelEnabled = false;
             IsUpdateEnabled = false;
@@ -161,9 +157,7 @@ public partial class UpdaterViewModel : ObservableObject
         }
         else if (force)
         {
-            _messageBox.Show(
-                string.Format(UIStrings.UpdateUnavailable, latestVersion, AssemblyVersion!),
-                UIStrings.UpdateUnavailable_Title);
+            await _messageBox.Show(UIStrings.UpdateUnavailable_Title, string.Format(UIStrings.UpdateUnavailable, latestVersion, AssemblyVersion!));
         }
     }
 

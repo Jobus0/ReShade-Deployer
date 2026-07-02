@@ -1,44 +1,31 @@
-using Wpf.Ui.Common;
+using Wpf.Ui.Controls;
 
 namespace ReShadeDeployer.Tests;
 
 public class MockMessageBox : IMessageBox
 {
-    public List<(string Content, string Title)> ShowCalls { get; } = new();
-    public List<(string Content, string Title, string PrimaryText, string SecondaryText, ControlAppearance Appearance)> ShowWithButtonsCalls { get; } = new();
-    public List<(Exception Exception, string Title, string PrimaryText, ControlAppearance Appearance)> ShowExceptionCalls { get; } = new();
+    public List<(string Title, string ContentText, string PrimaryButtonTex, ControlAppearance PrimaryButtonAppearance, string SecondaryButtonText, ControlAppearance SecondaryButtonAppearance, string CloseButtonText)> ShowCalls { get; } = new();
+    public List<(string Title, string ContentText, string PrimaryButtonText, string SecondaryButtonText)> ShowWithTextBoxCalls { get; } = new();
+    public List<(string Title, Exception Exception, string PrimaryButtonText, ControlAppearance PrimaryButtonAppearance)> ShowExceptionCalls { get; } = new();
 
-    public IMessageBox.Result NextResult { get; set; } = IMessageBox.Result.Close;
+    public MessageBoxResult NextResult { get; set; } = MessageBoxResult.None;
     public string NextTextBox { get; set; } = string.Empty;
 
-    public void Show(string contentText, string title)
+    public Task<MessageBoxResult> Show(string title, string contentText, string primaryButtonText = "", ControlAppearance primaryButtonAppearance = ControlAppearance.Primary, string secondaryButtonText = "", ControlAppearance secondaryButtonAppearance = ControlAppearance.Secondary, string closeButtonText = "OK")
     {
-        ShowCalls.Add((contentText, title));
+        ShowCalls.Add((title, contentText, primaryButtonText, primaryButtonAppearance, secondaryButtonText, secondaryButtonAppearance, closeButtonText));
+        return Task.FromResult(NextResult);
     }
 
-    public IMessageBox.Result ShowWithTextBox(string contentText, string title, string primaryButtonText, string secondaryButtonText, out string textBoxText)
+    public Task<(MessageBoxResult Result, string TextBoxText)> ShowWithTextBox(string title, string contentText, string primaryButtonText, string secondaryButtonText)
     {
-        ShowCalls.Add((contentText, title));
-        textBoxText = NextTextBox;
-        return NextResult;
+        ShowWithTextBoxCalls.Add((title, contentText, primaryButtonText, secondaryButtonText));
+        return Task.FromResult((NextResult, NextTextBox));
     }
 
-    public IMessageBox.Result Show(string contentText, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
+    public Task<MessageBoxResult> ShowException(string title, Exception exception, string primaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Secondary)
     {
-        ShowWithButtonsCalls.Add((contentText, title, primaryButtonText, secondaryButtonText, primaryButtonAppearance));
-        return NextResult;
-    }
-
-    public List<(Func<object> ContentFactory, string Title, string PrimaryText, string SecondaryText, ControlAppearance Appearance)> ShowWithFuncCalls { get; } = new();
-
-    public IMessageBox.Result Show(Func<object> contentFactory, string title, string primaryButtonText, string secondaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
-    {
-        ShowWithFuncCalls.Add((contentFactory, title, primaryButtonText, secondaryButtonText, primaryButtonAppearance));
-        return NextResult;
-    }
-
-    public void Show(Exception exception, string title, string primaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Primary)
-    {
-        ShowExceptionCalls.Add((exception, title, primaryButtonText, primaryButtonAppearance));
+        ShowExceptionCalls.Add((title, exception, primaryButtonText, primaryButtonAppearance));
+        return Task.FromResult(NextResult);
     }
 }

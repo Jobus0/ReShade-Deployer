@@ -1,5 +1,4 @@
-﻿using System;
-using Testably.Abstractions.Testing;
+﻿using Testably.Abstractions.Testing;
 
 namespace ReShadeDeployer.Tests;
 

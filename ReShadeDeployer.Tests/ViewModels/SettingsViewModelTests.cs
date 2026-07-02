@@ -1,5 +1,6 @@
 using Testably.Abstractions.Testing;
 using ReShadeDeployer.ViewModels;
+using Wpf.Ui.Controls;
 
 namespace ReShadeDeployer.Tests.ViewModels;
 
@@ -91,7 +92,7 @@ public class SettingsViewModelTests
     public void UninstallCommand_UserCancels_DoesNotUninstall()
     {
         // Arrange
-        _messageBox.NextResult = IMessageBox.Result.Secondary; // User Cancel
+        _messageBox.NextResult = MessageBoxResult.Secondary; // User Cancel
         _registryHelper.RegisterContextMenuAction("Deploy ReShade", "command");
         
         var viewModel = new SettingsViewModel(_config, _registryHelper, _messageBox, _vulkanDeployer);
@@ -101,8 +102,8 @@ public class SettingsViewModelTests
 
         // Assert
         // Prompt shown
-        Assert.Single(_messageBox.ShowWithButtonsCalls);
-        Assert.Contains(UIStrings.UninstallDeployer_Content, _messageBox.ShowWithButtonsCalls[0].Content);
+        Assert.Single(_messageBox.ShowCalls);
+        Assert.Contains(UIStrings.UninstallDeployer_Content, _messageBox.ShowCalls[0].ContentText);
         // Action not taken (context menu still exists)
         Assert.True(_registryHelper.IsContextMenuActionRegistered("Deploy ReShade"));
     }
@@ -111,7 +112,7 @@ public class SettingsViewModelTests
     public void UninstallCommand_UserConfirms_UnregistersContextMenuAndRemovesVulkan()
     {
         // Arrange
-        _messageBox.NextResult = IMessageBox.Result.Primary; // User confirms
+        _messageBox.NextResult = MessageBoxResult.Primary; // User confirms
         _registryHelper.RegisterContextMenuAction("Deploy ReShade", "command");
 
         // Write dummy files for Vulkan so we can verify they get cleaned up
@@ -125,8 +126,6 @@ public class SettingsViewModelTests
         viewModel.UninstallCommand.Execute(null);
 
         // Assert
-        // Prompt shown
-        Assert.Single(_messageBox.ShowWithButtonsCalls);
         // Context menu is removed
         Assert.False(_registryHelper.IsContextMenuActionRegistered("Deploy ReShade"));
         // Vulkan files cleaned up

@@ -1,8 +1,10 @@
+using System;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Wpf.Ui.Common;
+using Wpf.Ui.Controls;
 
 namespace ReShadeDeployer.ViewModels;
 
@@ -112,7 +114,7 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(CanDeploy))]
-    private void Deploy()
+    private async Task Deploy()
     {
         if (SelectedExecutableContext == null)
             return;
@@ -124,12 +126,11 @@ public partial class MainViewModel : ObservableObject
 
         try
         {
-            _deploymentOrchestrator.DeployReShadeForExecutable(
-                SelectedExecutableContext, api, addonSupport, Addons.GetSelectedAddons());
+            await _deploymentOrchestrator.DeployReShadeForExecutable(SelectedExecutableContext, api, addonSupport, Addons.GetSelectedAddons());
         }
         catch (DeploymentException ex)
         {
-            _messageBox.Show(ex, UIStrings.DeployError_Title, UIStrings.OK);
+            await _messageBox.ShowException(UIStrings.DeployError_Title, ex, UIStrings.OK);
             RequestShow?.Invoke();
             return;
         }
@@ -141,7 +142,7 @@ public partial class MainViewModel : ObservableObject
     private bool CanDeploy() => SelectedExecutableContext != null && IsDeployEnabled;
 
     [RelayCommand(CanExecute = nameof(CanUndeploy))]
-    private void Undeploy()
+    private async Task Undeploy()
     {
         if (SelectedExecutableContext == null)
             return;
@@ -158,17 +159,15 @@ public partial class MainViewModel : ObservableObject
         string fileList = string.Join("\n", files.Select(_fileSystem.Path.GetFileName));
         string message = UIStrings.Undeploy_Confirm + "\n\n" + fileList;
 
-        var result = _messageBox.Show(
+        var result = await _messageBox.Show(UIStrings.Undeploy_Confirm_Title,
             message,
-            UIStrings.Undeploy_Confirm_Title,
-            UIStrings.Undeploy,
-            UIStrings.Cancel,
-            ControlAppearance.Caution);
+            primaryButtonText: UIStrings.Undeploy, ControlAppearance.Caution,
+            closeButtonText: UIStrings.Cancel);
 
-        if (result == IMessageBox.Result.Primary)
+        if (result == MessageBoxResult.Primary)
         {
             _reShadeUndeployer.Undeploy(SelectedExecutableContext.DirectoryPath);
-            _messageBox.Show(UIStrings.Undeploy_Success, UIStrings.Success);
+            await _messageBox.Show(UIStrings.Success, UIStrings.Undeploy_Success);
 
             // Re-scan to update button visibility
             UpdateUndeployVisibility();
@@ -181,7 +180,7 @@ public partial class MainViewModel : ObservableObject
     private void ShowExecutableInfo()
     {
         if (SelectedExecutableContext != null)
-            _messageBox.Show(SelectedExecutableContext.ToString(), "Executable Info");
+            _ = _messageBox.Show("Executable Info", SelectedExecutableContext.ToString());
     }
 
     private bool CanShowExecutableInfo() => SelectedExecutableContext != null;

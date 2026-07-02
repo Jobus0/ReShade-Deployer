@@ -29,7 +29,7 @@ public class AppUpdater(IFileSystem fileSystem, IDownloadService downloadService
         }
         catch
         {
-            messageBox.Show(string.Format(UIStrings.DownloadError, downloadUrl), UIStrings.DownloadError_Title);
+            await messageBox.Show(UIStrings.DownloadError_Title, string.Format(UIStrings.DownloadError, downloadUrl));
             return;
         }
         

@@ -1,5 +1,6 @@
 using Testably.Abstractions.Testing;
 using ReShadeDeployer.ViewModels;
+using Wpf.Ui.Controls;
 
 namespace ReShadeDeployer.Tests.ViewModels;
 
@@ -94,7 +95,7 @@ public class UpdaterViewModelTests
     public void PromptForUpdate_UserCancels_DoesNotTriggerUpdate()
     {
         // Arrange
-        _messageBox.NextResult = IMessageBox.Result.Secondary; // Cancel/Skip
+        _messageBox.NextResult = MessageBoxResult.Secondary; // Cancel/Skip
         _config.LatestDeployerVersionNumber = "2.0.0";
         
         var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox);

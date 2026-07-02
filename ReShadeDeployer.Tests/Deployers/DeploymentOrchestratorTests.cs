@@ -1,4 +1,5 @@
 using Testably.Abstractions.Testing;
+using Wpf.Ui.Controls;
 using static ReShadeDeployer.Tests.TestHelpers;
 
 namespace ReShadeDeployer.Tests.Deployers;
@@ -63,7 +64,7 @@ public class DeploymentOrchestratorTests
     {
         // Arrange
         // We set NextResult to Close (or Cancel/Secondary) so the user cancels
-        _messageBox.NextResult = IMessageBox.Result.Secondary;
+        _messageBox.NextResult = MessageBoxResult.Secondary;
         
         var addons = new List<AddonItem>();
 
@@ -72,8 +73,8 @@ public class DeploymentOrchestratorTests
 
         // Assert
         // MessageBox was shown
-        Assert.Single(_messageBox.ShowWithButtonsCalls);
-        Assert.Contains(UIStrings.Vulkan_Addon_Warning, _messageBox.ShowWithButtonsCalls[0].Content);
+        Assert.Single(_messageBox.ShowCalls);
+        Assert.Contains(UIStrings.Vulkan_Addon_Warning, _messageBox.ShowCalls[0].ContentText);
 
         // Since user cancelled, DLL deployer wasn't called (no files in CommonPathLocal or target dir)
         Assert.False(_fileSystem.File.Exists(_fileSystem.Path.Combine(Paths.CommonPathLocal, "ReShade64.dll")));
@@ -99,7 +100,7 @@ public class DeploymentOrchestratorTests
 
         // Assert
         // MessageBox shows D3D8 informational message
-        Assert.Contains(_messageBox.ShowCalls, call => call.Content == UIStrings.D3D8_Info);
+        Assert.Contains(_messageBox.ShowCalls, call => call.ContentText == UIStrings.D3D8_Info);
         
         // Assert dll was still deployed
         string expectedDllPath = _fileSystem.Path.Combine(context.DirectoryPath, "d3d9.dll");
@@ -140,7 +141,7 @@ public class DeploymentOrchestratorTests
         _fileSystem.File.WriteAllText(targetPresetPath, "original preset content");
 
         // User chooses NOT to overwrite
-        _messageBox.NextResult = IMessageBox.Result.Secondary;
+        _messageBox.NextResult = MessageBoxResult.Secondary;
 
         // Act
         try
@@ -153,8 +154,8 @@ public class DeploymentOrchestratorTests
         }
 
         // Assert
-        Assert.Equal(2, _messageBox.ShowWithButtonsCalls.Count);
-        Assert.Contains(UIStrings.PresetOverwrite, _messageBox.ShowWithButtonsCalls[0].Content);
+        Assert.Equal(2, _messageBox.ShowCalls.Count);
+        Assert.Contains(UIStrings.PresetOverwrite, _messageBox.ShowCalls[0].ContentText);
         // Original content is preserved
         Assert.Equal("original preset content", _fileSystem.File.ReadAllText(targetPresetPath));
     }
@@ -169,7 +170,7 @@ public class DeploymentOrchestratorTests
         _fileSystem.File.WriteAllText(targetPresetPath, "original preset content");
 
         // User chooses TO overwrite (Primary button)
-        _messageBox.NextResult = IMessageBox.Result.Primary;
+        _messageBox.NextResult = MessageBoxResult.Primary;
 
         // Act
         try
@@ -186,14 +187,14 @@ public class DeploymentOrchestratorTests
     }
 
     [Fact]
-    public void DeployReShadeForExecutable_ThrowsDeploymentException_WhenUnderlyingDeployerFails()
+    public async void DeployReShadeForExecutable_ThrowsDeploymentException_WhenUnderlyingDeployerFails()
     {
         // Arrange
         // Use an invalid directory path that will cause file operations to throw
         var invalidContext = CreateExecutableContext(directoryPath: "C:\\Invalid<|>?*Path");
 
         // Act & Assert
-        Assert.Throws<DeploymentException>(() =>
+        _ = await Assert.ThrowsAsync<DeploymentException>(() =>
             _orchestrator.DeployReShadeForExecutable(invalidContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>()));
     }
 }
