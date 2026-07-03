@@ -21,7 +21,7 @@ public partial class WpfMessageBox : IMessageBox
             Title = title,
             Content = content,
             ResizeMode = ResizeMode.NoResize,
-            SizeToContent = SizeToContent.Height,
+            SizeToContent = SizeToContent.WidthAndHeight,
             MinWidth = 360,
             MaxWidth = 500,
             MinHeight = 120,
@@ -34,6 +34,12 @@ public partial class WpfMessageBox : IMessageBox
         
         if (string.IsNullOrEmpty(closeButtonText))
             messageBox.IsCloseButtonEnabled = false;
+        
+        messageBox.Loaded += (s, e) =>
+        {
+            messageBox.SizeToContent = SizeToContent.Manual;
+            messageBox.SizeToContent = SizeToContent.Height;
+        };
 
         return messageBox;
     }
