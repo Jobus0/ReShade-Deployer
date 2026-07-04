@@ -101,6 +101,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add-ons.
+        /// </summary>
+        public static string Addons {
+            get {
+                return ResourceManager.GetString("Addons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Add-ons....
         /// </summary>
         public static string AddonSummaryPlaceholder {

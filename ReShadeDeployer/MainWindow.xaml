@@ -16,7 +16,7 @@
              FontSize="13"
              SizeToContent="Height"
              WindowStartupLocation="CenterScreen"
-             MinWidth="300" Width="300">
+             MinWidth="300" Width="340">
     <ui:FluentWindow.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <conv:EnumToBoolConverter x:Key="EnumToBool" />
@@ -29,14 +29,25 @@
         </Style>
     </ui:FluentWindow.Resources>
     <StackPanel>
-        <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="{ui:ImageIcon ReShade.ico}" ShowMaximize="False" CanMaximize="False" Padding="7" />
-        <DockPanel Height="28">
-            <Label VerticalAlignment="Center" Padding="15 0 3 0" Content="{x:Static rd:UIStrings.VersionPrefix}" />
-            <Label VerticalAlignment="Center" Padding="0" FontWeight="Bold" Content="{Binding Updater.VersionLabelContent}" />
-            <ui:Button Name="SettingsButton" VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="{ui:SymbolIcon Settings16}" Appearance="Transparent" CornerRadius="0"
+        <StackPanel.Resources>
+            <Style TargetType="ui:Card" BasedOn="{StaticResource {x:Type ui:Card}}">
+                <Setter Property="Padding" Value="14 5"/>
+                <Setter Property="Border.CornerRadius" Value="8"/>
+            </Style>
+        </StackPanel.Resources>
+        <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="{ui:ImageIcon ReShade.ico}" ShowMaximize="False" CanMaximize="False" Padding="14 0" />
+        <DockPanel Height="28" Margin="25 0 25 5">
+            <Label VerticalAlignment="Center" Padding="0 0 3 0" Content="{x:Static rd:UIStrings.VersionPrefix}" />
+            <Label VerticalAlignment="Center" Padding="0" FontWeight="SemiBold" Content="{Binding Updater.VersionLabelContent}" />
+            <ui:DropDownButton Name="SettingsButton" VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="{ui:SymbolIcon Settings16}" Appearance="Transparent"
                        ToolTip="{x:Static rd:UIStrings.Settings_Tooltip}" Click="SettingsButton_OnClick">
-                <Button.ContextMenu>
+                <ui:DropDownButton.Flyout>
                     <ContextMenu>
+                        <ContextMenu.Resources>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="FontSize" Value="13"/>
+                            </Style>
+                        </ContextMenu.Resources>
                         <MenuItem Header="{x:Static rd:UIStrings.ContextMenuDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsContextMenuRegistered}"
                                   ToolTip="{x:Static rd:UIStrings.ContextMenuDeploy_Tooltip}" />
                         <MenuItem Header="{x:Static rd:UIStrings.AlwaysExitOnDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsAlwaysExitOnDeploy}"
@@ -50,25 +61,31 @@
                         <MenuItem Header="{x:Static rd:UIStrings.UninstallDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding Settings.UninstallCommand}" />
                         <MenuItem Header="{x:Static rd:UIStrings.About}" HeaderStringFormat="{}{0}..." Command="{Binding Settings.ShowAboutCommand}" />
                     </ContextMenu>
-                </Button.ContextMenu>
-            </ui:Button>
-            <ui:Button VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Icon="{ui:SymbolIcon ArrowDownload16}" FontSize="12" FontWeight="Bold" Appearance="Transparent" BorderThickness="0" CornerRadius="0"
+                </ui:DropDownButton.Flyout>
+            </ui:DropDownButton>
+            <ui:Button VerticalAlignment="Stretch" DockPanel.Dock="Right" Padding="7, 0, 8, 0" Margin="5 0"
+                       Icon="{ui:SymbolIcon ArrowDownload16}" FontSize="12" FontWeight="Bold"
                        Visibility="{Binding Updater.UpdateButtonVisibility}"
-                       ToolTip="{x:Static rd:UIStrings.UpdateReShade_Tooltip}" Command="{Binding Updater.UpdateReShadeCommand}" Content="{Binding Updater.UpdateButtonContent}" IsEnabled="{Binding Updater.IsUpdateEnabled}"  />
+                       Content="{Binding Updater.UpdateButtonContent}" ToolTip="{x:Static rd:UIStrings.UpdateReShade_Tooltip}"
+                       Command="{Binding Updater.UpdateReShadeCommand}"
+                       IsEnabled="{Binding Updater.IsUpdateEnabled}" />
         </DockPanel>
-        <Separator />
-        <StackPanel Margin="12" IsEnabled="{Binding Updater.IsPanelEnabled}">
+        <Separator/>
+        <StackPanel Margin="15" IsEnabled="{Binding Updater.IsPanelEnabled}">
             <Grid Margin="0, 0, 0, 10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ui:Button HorizontalAlignment="Stretch" Icon="{ui:SymbolIcon Open16}" Appearance="{Binding SelectGameButtonAppearance}" ClipToBounds="True" Margin="0, 0, 1, 0" Click="SelectGameButton_OnClick">
+                <ui:Button HorizontalAlignment="Stretch" Icon="{ui:SymbolIcon Open16}" Appearance="{Binding SelectGameButtonAppearance}"
+                           ClipToBounds="True" Margin="0, 0, 1, 0" Click="SelectGameButton_OnClick">
                     <TextBlock HorizontalAlignment="Right" Text="{Binding SelectGameButtonText}" ToolTip="{Binding SelectGameButtonText}" FontSize="13"/>
                 </ui:Button>
-                <ui:Button Name="ExecutableInfoButton" Grid.Column="1" Icon="{ui:SymbolIcon Info16}" IsEnabled="{Binding IsExecutableInfoEnabled}" Visibility="Collapsed" Margin="3, 0, 0, 0" Padding="4" Command="{Binding ShowExecutableInfoCommand}"/>
+                <ui:Button Name="ExecutableInfoButton" Grid.Column="1" Icon="{ui:SymbolIcon Info16}" IsEnabled="{Binding IsExecutableInfoEnabled}"
+                           Visibility="Collapsed" Margin="3, 0, 0, 0" Padding="4" Command="{Binding ShowExecutableInfoCommand}"/>
             </Grid>
-            <GroupBox Header="{x:Static rd:UIStrings.TargetAPI}" Padding="3, 0" BorderThickness="0" Background="#44000000" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}">
+            <TextBlock Text="{x:Static rd:UIStrings.TargetAPI}" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}" FontWeight="SemiBold" Margin="8 0" />
+            <ui:Card Margin="0, 0, 0, 10">
                 <StackPanel>
                     <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.DirectX10}" ToolTip="{x:Static rd:UIStrings.DirectX10_Tooltip}"
                                  IsChecked="{Binding SelectedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.DXGI}}"
@@ -87,35 +104,43 @@
                                  Tag="{Binding HighlightedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.Vulkan}}"
                                  Style="{StaticResource ApiBoldStyle}" />
                 </StackPanel>
-            </GroupBox>
-            <CheckBox Margin="7 7 7 0" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}" IsChecked="{Binding Addons.IsAddonSupportChecked}" Command="{Binding ToggleAddonSupportCommand}" />
-            <Grid Margin="7,2,7,7" Visibility="{Binding Addons.IsAddonsComboVisible, Converter={StaticResource BoolToVisibility}}">
-                <ComboBox FontSize="13" HorizontalAlignment="Stretch" ItemsSource="{Binding Addons.Addons}">
-                    <ComboBox.ItemContainerStyle>
-                        <Style TargetType="ComboBoxItem">
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="MinHeight" Value="0" />
-                            <EventSetter Event="PreviewMouseLeftButtonUp" Handler="AddonItem_OnUserClick" />
-                        </Style>
-                    </ComboBox.ItemContainerStyle>
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Background="Transparent">
-                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" IsEnabled="{Binding IsSupported}" 
-                                          IsHitTestVisible="False" Margin="5,2" FontSize="13" />
-                            </Grid>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <TextBlock Text="{Binding Addons.AddonsSummaryText}" Margin="12,0,25,0" VerticalAlignment="Center" IsHitTestVisible="False" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-            </Grid>
-            <Grid Margin="0 7 0 0">
+            </ui:Card>
+            <TextBlock Text="{x:Static rd:UIStrings.Addons}" FontWeight="SemiBold" Margin="8 0" />
+            <ui:Card Margin="0, 0, 0, 14">
+                <StackPanel>
+                    <CheckBox Margin="0 0 0 0" Padding="0" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}"
+                              IsChecked="{Binding Addons.IsAddonSupportChecked}" Command="{Binding ToggleAddonSupportCommand}" />
+                    <Grid Margin="0 6 0 6" Visibility="{Binding Addons.IsAddonsComboVisible, Converter={StaticResource BoolToVisibility}}">
+                        <ComboBox FontSize="13" HorizontalAlignment="Stretch" ItemsSource="{Binding Addons.Addons}">
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem">
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="MinHeight" Value="0" />
+                                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="AddonItem_OnUserClick" />
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Background="Transparent">
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" IsEnabled="{Binding IsSupported}" 
+                                                  IsHitTestVisible="False" Margin="5,2" FontSize="13" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock Text="{Binding Addons.AddonsSummaryText}" Margin="12,0,25,0" VerticalAlignment="Center"
+                                   IsHitTestVisible="False" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </Grid>
+                </StackPanel>
+            </ui:Card>
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ui:Button Grid.Column="0" Height="50" HorizontalAlignment="Stretch" IsEnabled="{Binding IsDeployEnabled}" Appearance="Primary" Content="{Binding DeployButtonContent}" ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}" Command="{Binding DeployCommand}">
-                </ui:Button>
+                <ui:Button Grid.Column="0" Height="50" HorizontalAlignment="Stretch" IsEnabled="{Binding IsDeployEnabled}" Appearance="Primary"
+                           Content="{Binding DeployButtonContent}" ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}"
+                           Command="{Binding DeployCommand}"/>
                 <ui:Button Grid.Column="1" Padding="12" Margin="5,0,0,0" Appearance="Danger"
                            Visibility="{Binding IsUndeployVisible, Converter={StaticResource BoolToVisibility}}"
                            ToolTip="{x:Static rd:UIStrings.UndeployButton_Tooltip}" 

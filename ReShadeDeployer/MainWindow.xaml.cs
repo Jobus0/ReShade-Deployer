@@ -30,14 +30,14 @@ namespace ReShadeDeployer
             _viewModel.RequestHide += Hide;
             _viewModel.RequestShow += Show;
             _viewModel.Updater.RequestFirstTimeSetup += FirstTimeSetup;
-            _viewModel.Updater.RequestPromptForUpdate += () => _viewModel.Updater.PromptForUpdate();
+            _viewModel.Updater.RequestPromptForUpdate += () => _ = _viewModel.Updater.PromptForUpdate();
 
             Loaded += OnLoaded;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            SettingsButton.ContextMenu.DataContext = _viewModel;
+            SettingsButton.DataContext = _viewModel;
 
             var startupArgs = ((App)Application.Current).StartupArgs;
 

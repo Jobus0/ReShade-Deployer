@@ -278,4 +278,7 @@ The following files will be deleted:</value>
     <data name="Download" xml:space="preserve">
         <value>Download</value>
     </data>
+    <data name="Addons" xml:space="preserve">
+        <value>Add-ons</value>
+    </data>
 </root>
