@@ -81,7 +81,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add-on Support.
+        ///   Looks up a localized string similar to Add-on support.
         /// </summary>
         public static string Addon {
             get {
@@ -110,7 +110,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Add-ons....
+        ///   Looks up a localized string similar to Select add-ons....
         /// </summary>
         public static string AddonSummaryPlaceholder {
             get {
@@ -119,7 +119,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Always Exit On Deploy.
+        ///   Looks up a localized string similar to Always exit on deploy.
         /// </summary>
         public static string AlwaysExitOnDeploy {
             get {
@@ -155,7 +155,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connection Failed.
+        ///   Looks up a localized string similar to Connection failed.
         /// </summary>
         public static string ConnectionError_Title {
             get {
@@ -164,7 +164,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Context Menu Deploy.
+        ///   Looks up a localized string similar to Context menu deploy.
         /// </summary>
         public static string ContextMenuDeploy {
             get {
@@ -200,7 +200,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Critical Error.
+        ///   Looks up a localized string similar to Critical error.
         /// </summary>
         public static string CriticalError_Title {
             get {
@@ -222,7 +222,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy to Game.
+        ///   Looks up a localized string similar to Deploy to game.
         /// </summary>
         public static string DeployButton {
             get {
@@ -240,7 +240,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure you have picked the correct Target API above first.
+        ///   Looks up a localized string similar to Make sure you have picked the correct target API above first.
         ///
         ///If you are unsure, check the API section of the game&apos;s PCGamingWiki page..
         /// </summary>
@@ -251,7 +251,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deployment Failed.
+        ///   Looks up a localized string similar to Deployment failed.
         /// </summary>
         public static string DeployError_Title {
             get {
@@ -325,7 +325,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download Failed.
+        ///   Looks up a localized string similar to Download failed.
         /// </summary>
         public static string DownloadError_Title {
             get {
@@ -334,7 +334,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check for ReShade Updates.
+        ///   Looks up a localized string similar to Check for ReShade updates.
         /// </summary>
         public static string DownloadLatestVersion_Title {
             get {
@@ -352,7 +352,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download Specific ReShade Version.
+        ///   Looks up a localized string similar to Download specific ReShade version.
         /// </summary>
         public static string DownloadSpecificVersion_Title {
             get {
@@ -370,7 +370,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extraction Failed.
+        ///   Looks up a localized string similar to Extraction failed.
         /// </summary>
         public static string ExtractionError_Title {
             get {
@@ -392,7 +392,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to First-Time Setup.
+        ///   Looks up a localized string similar to First-time setup.
         /// </summary>
         public static string FirstTimeSetup_Title {
             get {
@@ -419,7 +419,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the game&apos;s runtime executable..
+        ///   Looks up a localized string similar to Select the game&apos;s runtime executable.
         /// </summary>
         public static string OpenFileDialog_Title {
             get {
@@ -466,7 +466,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Overwrite Preset.
+        ///   Looks up a localized string similar to Overwrite preset.
         /// </summary>
         public static string PresetOverwrite_Title {
             get {
@@ -484,7 +484,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Game.
+        ///   Looks up a localized string similar to Select game.
         /// </summary>
         public static string SelectGameButton {
             get {
@@ -562,7 +562,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm Undeploy.
+        ///   Looks up a localized string similar to Confirm undeploy.
         /// </summary>
         public static string Undeploy_Confirm_Title {
             get {
@@ -611,7 +611,7 @@ namespace ReShadeDeployer {
         /// <summary>
         ///   Looks up a localized string similar to ReShade Deployer was successfully uninstalled!
         ///		
-        ///The Vulkan ReShade layer have been removed system-wide. Games using Vulkan will no longer use ReShade..
+        ///The Vulkan ReShade layer has been removed system-wide. Games using Vulkan will no longer use ReShade..
         /// </summary>
         public static string UninstallDeployer_Success {
             get {
@@ -646,7 +646,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update Available.
+        ///   Looks up a localized string similar to Update available.
         /// </summary>
         public static string UpdateAvailable_Title {
             get {
@@ -655,7 +655,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check for Deployer Updates.
+        ///   Looks up a localized string similar to Check for deployer updates.
         /// </summary>
         public static string UpdateDeployer {
             get {
@@ -703,7 +703,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Update Available.
+        ///   Looks up a localized string similar to No update available.
         /// </summary>
         public static string UpdateUnavailable_Title {
             get {
@@ -730,11 +730,11 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are about to install ReShade with Add-on Support for Vulkan globally.
+        ///   Looks up a localized string similar to You are about to install ReShade with add-on support for Vulkan globally.
         ///
         ///Be aware of ban risks if you play an online game using Vulkan that you have deployed ReShade to before.
         ///
-        ///To be safe, press Cancel and uncheck Add-on Support before deploying again..
+        ///To be safe, press Cancel and uncheck add-on support before deploying again..
         /// </summary>
         public static string Vulkan_Addon_Warning {
             get {

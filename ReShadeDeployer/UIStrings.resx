@@ -1,201 +1,201 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <root>
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:element name="root" msdata:IsDataSet="true">
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
 
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>1.3</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="About" xml:space="preserve">
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="About" xml:space="preserve">
 		<value>About</value>
 	</data>
-	<data name="About_Info" xml:space="preserve">
+    <data name="About_Info" xml:space="preserve">
 		<value>Version: {0}
 
 Copyright © 2026 Jobus
 https://github.com/Jobus0/reshade-deployer</value>
 	</data>
-	<data name="ExtractionError_Title" xml:space="preserve">
-		<value>Extraction Failed</value>
+    <data name="ExtractionError_Title" xml:space="preserve">
+		<value>Extraction failed</value>
 	</data>
-	<data name="Addon" xml:space="preserve">
-		<value>Add-on Support</value>
+    <data name="Addon" xml:space="preserve">
+		<value>Add-on support</value>
 	</data>
-	<data name="Addon_Tooltip" xml:space="preserve">
+    <data name="Addon_Tooltip" xml:space="preserve">
 		<value>Enable this if you plan to install a ReShade add-on to the game.
 
 Warning: Intended for singleplayer games only and may cause bans in multiplayer games.</value>
 	</data>
-	<data name="AlwaysExitOnDeploy" xml:space="preserve">
-		<value>Always Exit On Deploy</value>
+    <data name="AlwaysExitOnDeploy" xml:space="preserve">
+		<value>Always exit on deploy</value>
 	</data>
-	<data name="AlwaysExitOnDeploy_Tooltip" xml:space="preserve">
+    <data name="AlwaysExitOnDeploy_Tooltip" xml:space="preserve">
 		<value>Always exit the program after deploying ReShade without asking.</value>
 	</data>
-	<data name="Cancel" xml:space="preserve">
+    <data name="Cancel" xml:space="preserve">
 		<value>Cancel</value>
 	</data>
-	<data name="ConnectionError" xml:space="preserve">
+    <data name="ConnectionError" xml:space="preserve">
 		<value>ReShade website (https://reshade.me) is down or the connection was blocked.</value>
 	</data>
-	<data name="ConnectionError_Title" xml:space="preserve">
-		<value>Connection Failed</value>
+    <data name="ConnectionError_Title" xml:space="preserve">
+		<value>Connection failed</value>
 	</data>
-	<data name="ContextMenuDeploy" xml:space="preserve">
-		<value>Context Menu Deploy</value>
+    <data name="ContextMenuDeploy" xml:space="preserve">
+		<value>Context menu deploy</value>
 	</data>
-	<data name="ContextMenuDeploy_Tooltip" xml:space="preserve">
+    <data name="ContextMenuDeploy_Tooltip" xml:space="preserve">
 		<value>Add a 'Deploy ReShade' option to the exe context (right-click) menu.</value>
 	</data>
-	<data name="Continue" xml:space="preserve">
+    <data name="Continue" xml:space="preserve">
 		<value>Continue</value>
 	</data>
-	<data name="D3D8_Info" xml:space="preserve">
+    <data name="D3D8_Info" xml:space="preserve">
 		<value>It looks like the target application uses DirectX 8.
 
 In order to use ReShade you'll have to download an additional wrapper from d3d8to9 which converts all API calls to DirectX 9.
 
 https://github.com/crosire/d3d8to9/releases</value>
 	</data>
-	<data name="DeployButton" xml:space="preserve">
-		<value>Deploy to Game</value>
+    <data name="DeployButton" xml:space="preserve">
+		<value>Deploy to game</value>
 	</data>
-	<data name="DeployButton_Targeted" xml:space="preserve">
+    <data name="DeployButton_Targeted" xml:space="preserve">
 		<value>Deploy to {0}</value>
 	</data>
-	<data name="DeployButton_Tooltip" xml:space="preserve">
-		<value>Make sure you have picked the correct Target API above first.
+    <data name="DeployButton_Tooltip" xml:space="preserve">
+		<value>Make sure you have picked the correct target API above first.
 
 If you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
-	<data name="DeploySuccess" xml:space="preserve">
+    <data name="DeploySuccess" xml:space="preserve">
 		<value>ReShade was successfully deployed!</value>
 	</data>
-	<data name="Success" xml:space="preserve">
+    <data name="Success" xml:space="preserve">
 		<value>Success</value>
 	</data>
-	<data name="DirectX10" xml:space="preserve">
+    <data name="DirectX10" xml:space="preserve">
 		<value>DirectX 10 or later</value>
 	</data>
-	<data name="DirectX10_Tooltip" xml:space="preserve">
+    <data name="DirectX10_Tooltip" xml:space="preserve">
 		<value>dxgi.dll</value>
 	</data>
-	<data name="DirectX9" xml:space="preserve">
+    <data name="DirectX9" xml:space="preserve">
 		<value>DirectX 9</value>
 	</data>
-	<data name="DirectX9_Tooltip" xml:space="preserve">
+    <data name="DirectX9_Tooltip" xml:space="preserve">
 		<value>d3d9.dll</value>
 	</data>
     <data name="UpdateReShade_Title" xml:space="preserve">
 		<value>Update ReShade</value>
 	</data>
     <data name="DownloadLatestVersion_Title" xml:space="preserve">
-		<value>Check for ReShade Updates</value>
+		<value>Check for ReShade updates</value>
 	</data>
-	<data name="DownloadSpecificVersion_Title" xml:space="preserve">
-		<value>Download Specific ReShade Version</value>
+    <data name="DownloadSpecificVersion_Title" xml:space="preserve">
+		<value>Download specific ReShade version</value>
 	</data>
-	<data name="DownloadError" xml:space="preserve">
+    <data name="DownloadError" xml:space="preserve">
 		<value>Failed to access URL: {0}
 
 The server is down, the connection was blocked, or the URL is invalid. Try again later, or report to the developer.</value>
 	</data>
-	<data name="DownloadError_Title" xml:space="preserve">
-		<value>Download Failed</value>
+    <data name="DownloadError_Title" xml:space="preserve">
+		<value>Download failed</value>
 	</data>
-	<data name="Exit" xml:space="preserve">
+    <data name="Exit" xml:space="preserve">
 		<value>Exit</value>
 	</data>
-	<data name="Copy" xml:space="preserve">
+    <data name="Copy" xml:space="preserve">
 		<value>Copy</value>
 	</data>
-	<data name="FirstTimeSetup" xml:space="preserve">
+    <data name="FirstTimeSetup" xml:space="preserve">
 		<value>ReShade Deployer will now download ReShade and set up the required folder structure into the current folder.
 
 This includes the Shaders and Textures folders, where you will place your shader and texture files.
 
 If you wish to keep these files elsewhere, press 'Exit' and move the program first.</value>
 	</data>
-	<data name="FirstTimeSetup_Title" xml:space="preserve">
-		<value>First-Time Setup</value>
+    <data name="FirstTimeSetup_Title" xml:space="preserve">
+		<value>First-time setup</value>
 	</data>
-	<data name="Notice" xml:space="preserve">
+    <data name="Notice" xml:space="preserve">
 		<value>Notice</value>
 	</data>
-	<data name="OK" xml:space="preserve">
+    <data name="OK" xml:space="preserve">
 		<value>OK</value>
 	</data>
-	<data name="OpenFileDialog_Title" xml:space="preserve">
-		<value>Select the game's runtime executable.</value>
+    <data name="OpenFileDialog_Title" xml:space="preserve">
+		<value>Select the game's runtime executable</value>
 	</data>
-	<data name="OpenGL" xml:space="preserve">
+    <data name="OpenGL" xml:space="preserve">
 		<value>OpenGL</value>
 	</data>
-	<data name="OpenGL_Tooltip" xml:space="preserve">
+    <data name="OpenGL_Tooltip" xml:space="preserve">
 		<value>opengl32.dll</value>
 	</data>
-	<data name="PresetOverwrite" xml:space="preserve">
+    <data name="PresetOverwrite" xml:space="preserve">
 		<value>ReShadePreset.ini already exists.
 
 Would you like to overwrite it?</value>
 	</data>
-	<data name="PresetOverwrite_No" xml:space="preserve">
+    <data name="PresetOverwrite_No" xml:space="preserve">
 		<value>No, keep old file</value>
 	</data>
-	<data name="PresetOverwrite_Title" xml:space="preserve">
-		<value>Overwrite Preset</value>
+    <data name="PresetOverwrite_Title" xml:space="preserve">
+		<value>Overwrite preset</value>
 	</data>
-	<data name="PresetOverwrite_Yes" xml:space="preserve">
+    <data name="PresetOverwrite_Yes" xml:space="preserve">
 		<value>Yes, overwrite file</value>
 	</data>
-	<data name="SelectGameButton" xml:space="preserve">
-		<value>Select Game</value>
+    <data name="SelectGameButton" xml:space="preserve">
+		<value>Select game</value>
 	</data>
-	<data name="Settings_Tooltip" xml:space="preserve">
+    <data name="Settings_Tooltip" xml:space="preserve">
 		<value>Settings</value>
 	</data>
-	<data name="Skip" xml:space="preserve">
+    <data name="Skip" xml:space="preserve">
 		<value>Skip</value>
 	</data>
-	<data name="TargetAPI" xml:space="preserve">
+    <data name="TargetAPI" xml:space="preserve">
 		<value>Target API</value>
 	</data>
-	<data name="TargetAPI_Tooltip" xml:space="preserve">
+    <data name="TargetAPI_Tooltip" xml:space="preserve">
 		<value>Select the rendering API that the game uses.
 
 When selecting a game, the executable will be scanned to try to automatically select the correct API.
 
 Otherwise, if you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
-	<data name="UninstallDeployer" xml:space="preserve">
+    <data name="UninstallDeployer" xml:space="preserve">
 		<value>Uninstall</value>
 	</data>
-	<data name="UninstallDeployer_Content" xml:space="preserve">
+    <data name="UninstallDeployer_Content" xml:space="preserve">
 		<value>This will remove all registry entries of ReShade Deployer and delete the system-wide Vulkan ReShade layer.
 
 This is recommended if you want to stop using ReShade Deployer and go back to the official installer.</value>
 	</data>
-	<data name="UninstallDeployer_Success" xml:space="preserve">
+    <data name="UninstallDeployer_Success" xml:space="preserve">
 		<value>ReShade Deployer was successfully uninstalled!
 		
-The Vulkan ReShade layer have been removed system-wide. Games using Vulkan will no longer use ReShade.</value>
+The Vulkan ReShade layer has been removed system-wide. Games using Vulkan will no longer use ReShade.</value>
 	</data>
-	<data name="Update" xml:space="preserve">
+    <data name="Update" xml:space="preserve">
 		<value>Update</value>
 	</data>
-	<data name="UpdateAvailable" xml:space="preserve">
+    <data name="UpdateAvailable" xml:space="preserve">
 		<value>A new update of ReShade Deployer is available!
 
 New version: {0}
@@ -206,8 +206,8 @@ Would you like to install it?
 Changelog is available at:
 https://github.com/Jobus0/ReShade-Deployer/releases</value>
 	</data>
-	<data name="UpdateAvailable_Title" xml:space="preserve">
-		<value>Update Available</value>
+    <data name="UpdateAvailable_Title" xml:space="preserve">
+		<value>Update available</value>
 	</data>
     <data name="UpdateUnavailable" xml:space="preserve">
 		<value>No new update of ReShade Deployer is available.
@@ -216,60 +216,60 @@ Latest version: {0}
 Current version: {1}</value>
 	</data>
     <data name="UpdateUnavailable_Title" xml:space="preserve">
-		<value>No Update Available</value>
+		<value>No update available</value>
 	</data>
-	<data name="UpdateDeployer" xml:space="preserve">
-		<value>Check for Deployer Updates</value>
+    <data name="UpdateDeployer" xml:space="preserve">
+		<value>Check for deployer updates</value>
 	</data>
-	<data name="UpdateError" xml:space="preserve">
+    <data name="UpdateError" xml:space="preserve">
 		<value>You are already on the latest version.</value>
 	</data>
-	<data name="UpdateReShade_Tooltip" xml:space="preserve">
+    <data name="UpdateReShade_Tooltip" xml:space="preserve">
 		<value>Globally update your ReShade DLL files to the latest version.</value>
 	</data>
-	<data name="VersionPrefix" xml:space="preserve">
+    <data name="VersionPrefix" xml:space="preserve">
 		<value>ReShade version:</value>
 	</data>
-	<data name="Vulkan" xml:space="preserve">
+    <data name="Vulkan" xml:space="preserve">
 		<value>Vulkan</value>
 	</data>
-	<data name="Vulkan_Addon_Warning" xml:space="preserve">
-		<value>You are about to install ReShade with Add-on Support for Vulkan globally.
+    <data name="Vulkan_Addon_Warning" xml:space="preserve">
+		<value>You are about to install ReShade with add-on support for Vulkan globally.
 
 Be aware of ban risks if you play an online game using Vulkan that you have deployed ReShade to before.
 
-To be safe, press Cancel and uncheck Add-on Support before deploying again.</value>
+To be safe, press Cancel and uncheck add-on support before deploying again.</value>
 	</data>
-	<data name="Vulkan_Tooltip" xml:space="preserve">
+    <data name="Vulkan_Tooltip" xml:space="preserve">
 		<value>Creates no DLL in the game directory, but installs ReShade to Vulkan system-wide instead.</value>
 	</data>
-	<data name="Warning" xml:space="preserve">
+    <data name="Warning" xml:space="preserve">
 		<value>Warning</value>
 	</data>
-	<data name="CriticalError_Title" xml:space="preserve">
-		<value>Critical Error</value>
+    <data name="CriticalError_Title" xml:space="preserve">
+		<value>Critical error</value>
 	</data>
-	<data name="DeployError_Title" xml:space="preserve">
-		<value>Deployment Failed</value>
+    <data name="DeployError_Title" xml:space="preserve">
+		<value>Deployment failed</value>
 	</data>
-	<data name="AddonSummaryPlaceholder" xml:space="preserve">
-		<value>Select Add-ons...</value>
+    <data name="AddonSummaryPlaceholder" xml:space="preserve">
+		<value>Select add-ons...</value>
 	</data>
-	<data name="Undeploy" xml:space="preserve">
+    <data name="Undeploy" xml:space="preserve">
 		<value>Undeploy</value>
 	</data>
-	<data name="Undeploy_Confirm" xml:space="preserve">
+    <data name="Undeploy_Confirm" xml:space="preserve">
 		<value>Are you sure you want to remove ReShade from this game?
 
 The following files will be deleted:</value>
 	</data>
-	<data name="Undeploy_Confirm_Title" xml:space="preserve">
-		<value>Confirm Undeploy</value>
+    <data name="Undeploy_Confirm_Title" xml:space="preserve">
+		<value>Confirm undeploy</value>
 	</data>
-	<data name="Undeploy_Success" xml:space="preserve">
+    <data name="Undeploy_Success" xml:space="preserve">
 		<value>ReShade was successfully removed!</value>
 	</data>
-	<data name="UndeployButton_Tooltip" xml:space="preserve">
+    <data name="UndeployButton_Tooltip" xml:space="preserve">
 		<value>Remove existing ReShade deployment from the selected game.</value>
 	</data>
     <data name="DownloadSpecificVersion_Content" xml:space="preserve">
