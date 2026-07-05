@@ -222,20 +222,11 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy to game.
+        ///   Looks up a localized string similar to Deploy ReShade.
         /// </summary>
         public static string DeployButton {
             get {
                 return ResourceManager.GetString("DeployButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Deploy to {0}.
-        /// </summary>
-        public static string DeployButton_Targeted {
-            get {
-                return ResourceManager.GetString("DeployButton_Targeted", resourceCulture);
             }
         }
         

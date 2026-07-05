@@ -34,9 +34,6 @@ public partial class MainViewModel : ObservableObject
     private ControlAppearance _selectGameButtonAppearance = ControlAppearance.Primary;
 
     [ObservableProperty]
-    private string _deployButtonContent = UIStrings.DeployButton;
-
-    [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DeployCommand))]
     private bool _isDeployEnabled;
 
@@ -195,7 +192,6 @@ public partial class MainViewModel : ObservableObject
         SelectGameButtonText = executablePath;
         SelectGameButtonAppearance = ControlAppearance.Secondary;
 
-        DeployButtonContent = string.Format(UIStrings.DeployButton_Targeted, SelectedExecutableContext.FileName);
         IsDeployEnabled = true;
         IsExecutableInfoEnabled = true;
 

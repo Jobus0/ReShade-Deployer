@@ -139,8 +139,13 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <ui:Button Grid.Column="0" Height="50" HorizontalAlignment="Stretch" IsEnabled="{Binding IsDeployEnabled}" Appearance="Primary"
-                           Content="{Binding DeployButtonContent}" ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}"
-                           Command="{Binding DeployCommand}"/>
+                           ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}"
+                           Command="{Binding DeployCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="Rocket24" FontSize="20" Margin="0,0,8,0" />
+                        <TextBlock Text="{x:Static rd:UIStrings.DeployButton}" />
+                    </StackPanel>
+                </ui:Button>
                 <ui:Button Grid.Column="1" Padding="12" Margin="5,0,0,0" Appearance="Danger"
                            Visibility="{Binding IsUndeployVisible, Converter={StaticResource BoolToVisibility}}"
                            ToolTip="{x:Static rd:UIStrings.UndeployButton_Tooltip}" 
