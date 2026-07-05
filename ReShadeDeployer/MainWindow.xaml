@@ -146,7 +146,7 @@
                         <TextBlock Text="{x:Static rd:UIStrings.DeployButton}" />
                     </StackPanel>
                 </ui:Button>
-                <ui:Button Grid.Column="1" Padding="12" Margin="5,0,0,0" Appearance="Danger"
+                <ui:Button Grid.Column="1" Height="50" Padding="12" Margin="5,0,0,0" Appearance="Danger"
                            Visibility="{Binding IsUndeployVisible, Converter={StaticResource BoolToVisibility}}"
                            ToolTip="{x:Static rd:UIStrings.UndeployButton_Tooltip}" 
                            Command="{Binding UndeployCommand}">
