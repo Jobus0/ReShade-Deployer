@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +30,10 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string _selectGameButtonText = UIStrings.SelectGameButton;
+    private string _selectedGameText = UIStrings.SelectedGame;
+    
+    [ObservableProperty]
+    private string _selectedGameTooltip = string.Empty;
 
     [ObservableProperty]
     private ControlAppearance _selectGameButtonAppearance = ControlAppearance.Primary;
@@ -189,7 +194,8 @@ public partial class MainViewModel : ObservableObject
 
         SelectedExecutableContext = _executableContextFactory.Create(executablePath);
 
-        SelectGameButtonText = executablePath;
+        SelectedGameText = Path.GetFileNameWithoutExtension(executablePath);
+        SelectedGameTooltip = executablePath;
         SelectGameButtonAppearance = ControlAppearance.Secondary;
 
         IsDeployEnabled = true;

@@ -137,6 +137,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse....
+        /// </summary>
+        public static string Browse {
+            get {
+                return ResourceManager.GetString("Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -475,11 +484,11 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select game.
+        ///   Looks up a localized string similar to No game selected.
         /// </summary>
-        public static string SelectGameButton {
+        public static string SelectedGame {
             get {
-                return ResourceManager.GetString("SelectGameButton", resourceCulture);
+                return ResourceManager.GetString("SelectedGame", resourceCulture);
             }
         }
         
@@ -646,7 +655,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check for deployer updates.
+        ///   Looks up a localized string similar to Check for Deployer updates.
         /// </summary>
         public static string UpdateDeployer {
             get {

@@ -108,7 +108,7 @@ public class MainViewModelTests
         Assert.Equal("game.exe", mainVm.SelectedExecutableContext.FileName);
         Assert.True(mainVm.IsDeployEnabled);
         Assert.True(mainVm.IsExecutableInfoEnabled);
-        Assert.Equal(gamePath, mainVm.SelectGameButtonText);
+        Assert.Equal(gamePath, mainVm.SelectedGameText);
     }
 
     [Fact]

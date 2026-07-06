@@ -157,9 +157,9 @@ Would you like to overwrite it?</value>
     <data name="PresetOverwrite_Yes" xml:space="preserve">
 		<value>Yes, overwrite file</value>
 	</data>
-    <data name="SelectGameButton" xml:space="preserve">
-		<value>Select game</value>
-	</data>
+    <data name="Browse" xml:space="preserve">
+        <value>Browse...</value>
+    </data>
     <data name="Settings_Tooltip" xml:space="preserve">
 		<value>Settings</value>
 	</data>
@@ -216,7 +216,7 @@ Current version: {1}</value>
 		<value>No update available</value>
 	</data>
     <data name="UpdateDeployer" xml:space="preserve">
-		<value>Check for deployer updates</value>
+		<value>Check for Deployer updates</value>
 	</data>
     <data name="UpdateError" xml:space="preserve">
 		<value>You are already on the latest version.</value>
@@ -277,5 +277,8 @@ The following files will be deleted:</value>
     </data>
     <data name="Addons" xml:space="preserve">
         <value>Add-ons</value>
+    </data>
+    <data name="SelectedGame" xml:space="preserve">
+        <value>No game selected</value>
     </data>
 </root>
