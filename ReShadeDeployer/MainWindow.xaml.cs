@@ -54,10 +54,10 @@ namespace ReShadeDeployer
                 Activate();
             };
 
-            Dispatcher.UnhandledException += DispatcherOnUnhandledException;
-
 #if DEBUG
             ExecutableInfoButton.Visibility = Visibility.Visible;
+#else
+            Dispatcher.UnhandledException += DispatcherOnUnhandledException;
 #endif
         }
 
