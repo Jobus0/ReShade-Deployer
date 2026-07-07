@@ -9,6 +9,7 @@ public class MainViewModelTests
     private readonly MockFileSystem _fileSystem;
     private readonly MockRegistry _registry;
     private readonly MockMessageBox _messageBox;
+    private readonly MockIconExtractor _iconExtractor;
     private readonly MockConfig _config;
 
     private readonly AppUpdater _appUpdater;
@@ -32,6 +33,7 @@ public class MainViewModelTests
         _fileSystem = new MockFileSystem();
         _registry = new MockRegistry();
         _messageBox = new MockMessageBox();
+        _iconExtractor = new MockIconExtractor();
         _config = new MockConfig();
         
         var fileHelper = new FileHelper(_fileSystem);
@@ -80,7 +82,7 @@ public class MainViewModelTests
     public void TargetExecutable_WhenFileDoesNotExist_ReturnsEarlyWithoutTargeting()
     {
         // Arrange
-        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox);
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor);
         string nonExistentPath = @"C:\Games\DoesNotExist.exe";
 
         // Act
@@ -95,7 +97,7 @@ public class MainViewModelTests
     public void TargetExecutable_WhenFileExists_SetsContextAndEnablesDeploy()
     {
         // Arrange
-        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox);
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor);
         string gamePath = @"C:\Games\TargetGame\game.exe";
         _fileSystem.Directory.CreateDirectory(_fileSystem.Path.GetDirectoryName(gamePath)!);
         _fileSystem.File.WriteAllText(gamePath, "game binary");
@@ -115,7 +117,7 @@ public class MainViewModelTests
     public void Initialize_WithStartupArgs_TargetsExecutable()
     {
         // Arrange
-        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox);
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor);
         string gamePath = @"C:\Games\TargetGame\game.exe";
         _fileSystem.Directory.CreateDirectory(_fileSystem.Path.GetDirectoryName(gamePath)!);
         _fileSystem.File.WriteAllText(gamePath, "game binary");
@@ -132,7 +134,7 @@ public class MainViewModelTests
     public void DeployCommand_CallsOrchestratorAndFiresEvents()
     {
         // Arrange
-        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox);
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor);
         string gamePath = @"C:\Games\TargetGame\game.exe";
         _fileSystem.Directory.CreateDirectory(_fileSystem.Path.GetDirectoryName(gamePath)!);
         _fileSystem.File.WriteAllText(gamePath, "game binary");
@@ -164,7 +166,7 @@ public class MainViewModelTests
     public void UndeployCommand_NoFilesFound_HidesUndeployButton()
     {
         // Arrange
-        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox);
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor);
         string gamePath = @"C:\Games\TargetGame\game.exe";
         _fileSystem.Directory.CreateDirectory(_fileSystem.Path.GetDirectoryName(gamePath)!);
         _fileSystem.File.WriteAllText(gamePath, "game binary");
@@ -184,7 +186,7 @@ public class MainViewModelTests
     public void UndeployCommand_FilesFound_UserConfirms_DeletesFiles()
     {
         // Arrange
-        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox);
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor);
         string gamePath = @"C:\Games\TargetGame\game.exe";
         _fileSystem.Directory.CreateDirectory(_fileSystem.Path.GetDirectoryName(gamePath)!);
         _fileSystem.File.WriteAllText(gamePath, "game binary");
@@ -216,7 +218,7 @@ public class MainViewModelTests
     public void UpdaterDownloadCompletedEvent_SetsIsDeployEnabled_IfGameTargeted()
     {
         // Arrange
-        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox);
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor);
         string gamePath = @"C:\Games\TargetGame\game.exe";
         _fileSystem.Directory.CreateDirectory(_fileSystem.Path.GetDirectoryName(gamePath)!);
         _fileSystem.File.WriteAllText(gamePath, "game binary");

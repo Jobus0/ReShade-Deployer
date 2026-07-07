@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Wpf.Ui.Controls;
@@ -16,6 +17,7 @@ public partial class MainViewModel : ObservableObject
     private readonly ReShadeUndeployer _reShadeUndeployer;
     private readonly ExecutableContextFactory _executableContextFactory;
     private readonly IMessageBox _messageBox;
+    private readonly IIconExtractor _iconExtractor;
 
     // Child ViewModels
     public UpdaterViewModel Updater { get; }
@@ -29,7 +31,9 @@ public partial class MainViewModel : ObservableObject
     private ExecutableContext? _selectedExecutableContext;
 
     [ObservableProperty]
-    private string _selectGameButtonText = UIStrings.SelectGameButton;
+    private ImageSource? _selectedGameIcon;
+    
+    [ObservableProperty]
     private string _selectedGameText = UIStrings.SelectedGame;
     
     [ObservableProperty]
@@ -64,13 +68,15 @@ public partial class MainViewModel : ObservableObject
         UpdaterViewModel updater,
         SettingsViewModel settings,
         AddonsViewModel addons,
-        IMessageBox messageBox)
+        IMessageBox messageBox,
+        IIconExtractor iconExtractor)
     {
         _fileSystem = fileSystem;
         _deploymentOrchestrator = deploymentOrchestrator;
         _reShadeUndeployer = reShadeUndeployer;
         _executableContextFactory = executableContextFactory;
         _messageBox = messageBox;
+        _iconExtractor = iconExtractor;
 
         Updater = updater;
         Settings = settings;
@@ -194,7 +200,8 @@ public partial class MainViewModel : ObservableObject
 
         SelectedExecutableContext = _executableContextFactory.Create(executablePath);
 
-        SelectedGameText = Path.GetFileNameWithoutExtension(executablePath);
+        SelectedGameIcon = _iconExtractor.Extract(executablePath);
+        SelectedGameText = Path.GetFileName(executablePath);
         SelectedGameTooltip = executablePath;
         SelectGameButtonAppearance = ControlAppearance.Secondary;
 

@@ -50,6 +50,7 @@ public partial class App : Application
         services.AddSingleton<IPeInfoReader, PeInfoReader>();
         services.AddSingleton<ExecutableContextFactory>();
         services.AddSingleton<IMessageBox, WpfMessageBox>();
+        services.AddSingleton<IIconExtractor, IconExtractor>();
         
         ServiceProvider = services.BuildServiceProvider();
         ServiceProvider.GetRequiredService<MainWindow>().Show();
