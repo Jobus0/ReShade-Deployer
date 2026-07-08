@@ -54,7 +54,7 @@
             
             <ui:DropDownButton Name="SettingsButton" VerticalAlignment="Center" DockPanel.Dock="Right" Padding="7, 3, 8, 2" FontSize="16"
                                Icon="{ui:SymbolIcon Settings16}" Appearance="Transparent" Background="Transparent" BorderThickness="0"
-                       ToolTip="{x:Static rd:UIStrings.Settings_Tooltip}" Click="SettingsButton_OnClick">
+                       ToolTip="{x:Static rd:UIStrings.Settings_Tooltip}">
                 <ui:DropDownButton.Flyout>
                     <ContextMenu>
                         <ContextMenu.Resources>

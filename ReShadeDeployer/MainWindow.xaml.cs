@@ -4,7 +4,6 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 using ReShadeDeployer.ViewModels;
 using Wpf.Ui.Controls;
-using Button = System.Windows.Controls.Button;
 using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
 namespace ReShadeDeployer
@@ -114,12 +113,6 @@ namespace ReShadeDeployer
                 _viewModel.Updater.AcceptFirstTimeSetup();
             else
                 Application.Current.Shutdown();
-        }
-
-        private void SettingsButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var button = (Button)sender;
-            button.ContextMenu!.IsOpen = true;
         }
 
         private void AddonItem_OnUserClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
