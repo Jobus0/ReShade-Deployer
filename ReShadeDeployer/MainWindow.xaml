@@ -102,7 +102,7 @@
                                    Visibility="Collapsed" Margin="3 0 0 0" Padding="4" Command="{Binding ShowExecutableInfoCommand}"/>
                     </Grid>
                 </ui:Card>
-                <TextBlock Text="{x:Static rd:UIStrings.TargetAPI}" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}" FontWeight="SemiBold" Margin="8 0" />
+                <TextBlock Text="{x:Static rd:UIStrings.TargetAPI}" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}" FontWeight="SemiBold" Margin="10 0" />
                 <ui:Card Margin="0, 0, 0, 10">
                     <StackPanel>
                         <RadioButton FontSize="13" Content="{x:Static rd:UIStrings.DirectX10}" ToolTip="{x:Static rd:UIStrings.DirectX10_Tooltip}"
@@ -123,7 +123,7 @@
                                      Style="{StaticResource ApiBoldStyle}" />
                     </StackPanel>
                 </ui:Card>
-                <TextBlock Text="{x:Static rd:UIStrings.Addons}" FontWeight="SemiBold" Margin="8 0" />
+                <TextBlock Text="{x:Static rd:UIStrings.Addons}" FontWeight="SemiBold" Margin="10 0" />
                 <ui:Card Margin="0, 0, 0, 14">
                     <StackPanel>
                         <CheckBox Margin="0 0 0 0" Padding="0" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}"
@@ -151,12 +151,12 @@
                         </Grid>
                     </StackPanel>
                 </ui:Card>
-                <Grid>
+                <Grid Height="42">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <ui:Button Grid.Column="0" Height="50" HorizontalAlignment="Stretch" IsEnabled="{Binding IsDeployEnabled}" Appearance="Primary"
+                    <ui:Button Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsEnabled="{Binding IsDeployEnabled}" Appearance="Primary"
                                ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}"
                                Command="{Binding DeployCommand}">
                         <StackPanel Orientation="Horizontal">
@@ -164,7 +164,7 @@
                             <TextBlock Text="{x:Static rd:UIStrings.DeployButton}" />
                         </StackPanel>
                     </ui:Button>
-                    <ui:Button Grid.Column="1" Height="50" Padding="12" Margin="5,0,0,0" Appearance="Danger"
+                    <ui:Button Grid.Column="1" VerticalAlignment="Stretch" Padding="12" Margin="5,0,0,0" Appearance="Danger"
                                Visibility="{Binding IsUndeployVisible, Converter={StaticResource BoolToVisibility}}"
                                ToolTip="{x:Static rd:UIStrings.UndeployButton_Tooltip}" 
                                Command="{Binding UndeployCommand}">
