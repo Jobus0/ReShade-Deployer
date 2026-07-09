@@ -102,12 +102,6 @@ public partial class MainViewModel : ObservableObject
         Addons.Refresh(Addons.IsAddonSupportChecked, SelectedExecutableContext);
     }
 
-    /// <summary>Raised when the window should hide itself (e.g. during deploy).</summary>
-    public event System.Action? RequestHide;
-
-    /// <summary>Raised when the window should show itself again.</summary>
-    public event System.Action? RequestShow;
-
     [RelayCommand]
     private void SelectGame(string? executablePath)
     {
@@ -127,8 +121,6 @@ public partial class MainViewModel : ObservableObject
         if (SelectedExecutableContext == null)
             return;
 
-        RequestHide?.Invoke();
-
         var api = SelectedApi;
         var addonSupport = Addons.IsAddonSupportChecked;
 
@@ -139,12 +131,10 @@ public partial class MainViewModel : ObservableObject
         catch (DeploymentException ex)
         {
             await _messageBox.ShowException(UIStrings.DeployError_Title, ex, UIStrings.OK);
-            RequestShow?.Invoke();
             return;
         }
 
         UpdateUndeployVisibility();
-        RequestShow?.Invoke();
     }
 
     private bool CanDeploy() => SelectedExecutableContext != null && IsDeployEnabled;

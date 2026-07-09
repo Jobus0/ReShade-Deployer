@@ -26,8 +26,6 @@ namespace ReShadeDeployer
             InitializeComponent();
 
             // Wire up View-level events from the ViewModel
-            _viewModel.RequestHide += Hide;
-            _viewModel.RequestShow += Show;
             _viewModel.Updater.RequestFirstTimeSetup += FirstTimeSetup;
             _viewModel.Updater.RequestPromptForUpdate += () => _ = _viewModel.Updater.PromptForUpdate();
 
