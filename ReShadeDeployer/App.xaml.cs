@@ -3,6 +3,7 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using ReShadeDeployer.ViewModels;
 using Testably.Abstractions;
+using Wpf.Ui;
 
 namespace ReShadeDeployer;
 
@@ -51,6 +52,7 @@ public partial class App : Application
         services.AddSingleton<ExecutableContextFactory>();
         services.AddSingleton<IMessageBox, WpfMessageBox>();
         services.AddSingleton<IIconExtractor, IconExtractor>();
+        services.AddSingleton<ISnackbarService, SnackbarService>();
         
         ServiceProvider = services.BuildServiceProvider();
         ServiceProvider.GetRequiredService<MainWindow>().Show();

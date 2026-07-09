@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using ReShadeDeployer.ViewModels;
+using Wpf.Ui;
 using Wpf.Ui.Controls;
 using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
@@ -16,7 +17,7 @@ namespace ReShadeDeployer
         private readonly MainViewModel _viewModel;
         private readonly IMessageBox _messageBox;
 
-        public MainWindow(MainViewModel viewModel, IMessageBox messageBox)
+        public MainWindow(MainViewModel viewModel, IMessageBox messageBox, ISnackbarService snackbarService)
         {
             _viewModel = viewModel;
             _messageBox = messageBox;
@@ -30,6 +31,8 @@ namespace ReShadeDeployer
             _viewModel.Updater.RequestPromptForUpdate += () => _ = _viewModel.Updater.PromptForUpdate();
 
             Loaded += OnLoaded;
+            
+            snackbarService.SetSnackbarPresenter(SnackbarPresenter);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)

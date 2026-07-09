@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Wpf.Ui;
 using Wpf.Ui.Controls;
 
 namespace ReShadeDeployer.ViewModels;
@@ -18,6 +19,7 @@ public partial class MainViewModel : ObservableObject
     private readonly ExecutableContextFactory _executableContextFactory;
     private readonly IMessageBox _messageBox;
     private readonly IIconExtractor _iconExtractor;
+    private readonly ISnackbarService _snackbarService;
 
     // Child ViewModels
     public UpdaterViewModel Updater { get; }
@@ -69,7 +71,8 @@ public partial class MainViewModel : ObservableObject
         SettingsViewModel settings,
         AddonsViewModel addons,
         IMessageBox messageBox,
-        IIconExtractor iconExtractor)
+        IIconExtractor iconExtractor,
+        ISnackbarService snackbarService)
     {
         _fileSystem = fileSystem;
         _deploymentOrchestrator = deploymentOrchestrator;
@@ -77,6 +80,7 @@ public partial class MainViewModel : ObservableObject
         _executableContextFactory = executableContextFactory;
         _messageBox = messageBox;
         _iconExtractor = iconExtractor;
+        _snackbarService = snackbarService;
 
         Updater = updater;
         Settings = settings;
@@ -165,7 +169,7 @@ public partial class MainViewModel : ObservableObject
         if (result == MessageBoxResult.Primary)
         {
             _reShadeUndeployer.Undeploy(SelectedExecutableContext.DirectoryPath);
-            await _messageBox.Show(UIStrings.Success, UIStrings.Undeploy_Success);
+            _snackbarService.Show(UIStrings.Success, UIStrings.Undeploy_Success, ControlAppearance.Success, null, TimeSpan.FromSeconds(2.5));
 
             // Re-scan to update button visibility
             UpdateUndeployVisibility();

@@ -79,7 +79,7 @@
             </ui:DropDownButton>
         </DockPanel>
         <Separator/>
-        <Border Background="#30000000">
+        <Grid Background="#30000000">
             <StackPanel Margin="15" IsEnabled="{Binding Updater.IsPanelEnabled}">
                 <ui:Card Margin="0, 0, 0, 10" Padding="14 5 5 5">
                     <Grid>
@@ -172,6 +172,7 @@
                     </ui:Button>
                 </Grid>
             </StackPanel>
-        </Border>
+            <ui:SnackbarPresenter x:Name="SnackbarPresenter" Panel.ZIndex="1000" />
+        </Grid>
     </StackPanel>
 </ui:FluentWindow>

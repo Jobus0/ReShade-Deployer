@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 using System.Windows;
+using Wpf.Ui;
 using Wpf.Ui.Controls;
 using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
@@ -11,7 +12,9 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer, IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer, IMessageBox messageBox, IConfig config)
+public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer,
+    IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer,
+    IMessageBox messageBox, IConfig config, ISnackbarService snackbarService)
 {
     /// <summary>
     /// Deploys ReShade for a specified executable.
@@ -68,14 +71,7 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
         }
         else
         {
-            var result = await messageBox.Show(UIStrings.Success,
-                UIStrings.DeploySuccess,
-                primaryButtonText: UIStrings.Continue,
-                secondaryButtonText: UIStrings.Exit,
-                closeButtonText: string.Empty);
-            
-            if (result == MessageBoxResult.Secondary)
-                Application.Current.Shutdown();
+            snackbarService.Show(UIStrings.Success, UIStrings.DeploySuccess, ControlAppearance.Success, null, TimeSpan.FromSeconds(2.5));
         }
     }
 }
