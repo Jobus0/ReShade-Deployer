@@ -9,6 +9,7 @@ public class UpdaterViewModelTests
     private readonly MockFileSystem _fileSystem;
     private readonly MockDownloadService _downloadService;
     private readonly MockMessageBox _messageBox;
+    private readonly MockSnackbarService _snackbarService;
     private readonly MockConfig _config;
 
     private readonly AppUpdater _appUpdater;
@@ -19,6 +20,7 @@ public class UpdaterViewModelTests
         _fileSystem = new MockFileSystem();
         _downloadService = new MockDownloadService(_fileSystem);
         _messageBox = new MockMessageBox();
+        _snackbarService = new MockSnackbarService();
         _config = new MockConfig();
 
         var fileHelper = new FileHelper(_fileSystem);
@@ -36,7 +38,7 @@ public class UpdaterViewModelTests
     public void Initialize_WhenNoLocalReShade_FiresRequestFirstTimeSetup()
     {
         // Arrange
-        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox);
+        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox, _snackbarService);
         bool firstTimeSetupFired = false;
         viewModel.RequestFirstTimeSetup += () => firstTimeSetupFired = true;
 
@@ -60,7 +62,7 @@ public class UpdaterViewModelTests
         _config.LatestReShadeVersionNumber = "5.8.0";
         _config.LatestReShadeVersionNumberCheckDate = DateTime.Now; // skip online check
 
-        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox);
+        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox, _snackbarService);
 
         // Act
         viewModel.Initialize();
@@ -81,7 +83,7 @@ public class UpdaterViewModelTests
         _config.LatestReShadeVersionNumber = "5.9.2";
         _config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
 
-        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox);
+        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox, _snackbarService);
 
         // Act
         viewModel.Initialize();
@@ -98,7 +100,7 @@ public class UpdaterViewModelTests
         _messageBox.NextResult = MessageBoxResult.Secondary; // Cancel/Skip
         _config.LatestDeployerVersionNumber = "2.0.0";
         
-        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox);
+        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox, _snackbarService);
 
         // Act
         viewModel.PromptForUpdate();

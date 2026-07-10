@@ -9,6 +9,7 @@ public class DeploymentOrchestratorTests
     private readonly MockFileSystem _fileSystem;
     private readonly MockRegistry _registry;
     private readonly MockMessageBox _messageBox;
+    private readonly MockSnackbarService _snackbarService;
     private readonly MockConfig _config;
     
     private readonly VulkanSystemWideDeployer _vulkanDeployer;
@@ -26,6 +27,7 @@ public class DeploymentOrchestratorTests
         _fileSystem = CreateMockFileSystem(_executableContext.DirectoryPath);
         _registry = new MockRegistry();
         _messageBox = new MockMessageBox();
+        _snackbarService = new MockSnackbarService();
         _config = new MockConfig();
         
         var fileHelper = new FileHelper(_fileSystem);
@@ -43,7 +45,8 @@ public class DeploymentOrchestratorTests
             _presetDeployer,
             _addonsDeployer,
             _messageBox,
-            _config
+            _config,
+            _snackbarService
         );
 
         // Set up Paths directories and dummy files
@@ -154,7 +157,8 @@ public class DeploymentOrchestratorTests
         }
 
         // Assert
-        Assert.Equal(2, _messageBox.ShowCalls.Count);
+        Assert.Single(_messageBox.ShowCalls);
+        Assert.Single(_snackbarService.ShowCalls);
         Assert.Contains(UIStrings.PresetOverwrite, _messageBox.ShowCalls[0].ContentText);
         // Original content is preserved
         Assert.Equal("original preset content", _fileSystem.File.ReadAllText(targetPresetPath));
