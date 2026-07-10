@@ -119,24 +119,6 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Always exit on deploy.
-        /// </summary>
-        public static string AlwaysExitOnDeploy {
-            get {
-                return ResourceManager.GetString("AlwaysExitOnDeploy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Always exit the program after deploying ReShade without asking..
-        /// </summary>
-        public static string AlwaysExitOnDeploy_Tooltip {
-            get {
-                return ResourceManager.GetString("AlwaysExitOnDeploy_Tooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Browse....
         /// </summary>
         public static string Browse {
@@ -366,6 +348,24 @@ namespace ReShadeDeployer {
         public static string Exit {
             get {
                 return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit on deploy.
+        /// </summary>
+        public static string ExitOnDeploy {
+            get {
+                return ResourceManager.GetString("ExitOnDeploy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Immediately exit the program after deploying ReShade..
+        /// </summary>
+        public static string ExitOnDeploy_Tooltip {
+            get {
+                return ResourceManager.GetString("ExitOnDeploy_Tooltip", resourceCulture);
             }
         }
         

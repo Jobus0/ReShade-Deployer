@@ -64,8 +64,8 @@
                         </ContextMenu.Resources>
                         <MenuItem Header="{x:Static rd:UIStrings.ContextMenuDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsContextMenuRegistered}"
                                   ToolTip="{x:Static rd:UIStrings.ContextMenuDeploy_Tooltip}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.AlwaysExitOnDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsAlwaysExitOnDeploy}"
-                                  ToolTip="{x:Static rd:UIStrings.AlwaysExitOnDeploy_Tooltip}" />
+                        <MenuItem Header="{x:Static rd:UIStrings.ExitOnDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsAlwaysExitOnDeploy}"
+                                  ToolTip="{x:Static rd:UIStrings.ExitOnDeploy_Tooltip}" />
                         <Separator/>
                         <MenuItem Header="{x:Static rd:UIStrings.DownloadLatestVersion_Title}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.UpdateReShadeCommand}" />
                         <MenuItem Header="{x:Static rd:UIStrings.DownloadSpecificVersion_Title}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.DownloadSpecificVersionCommand}" />
