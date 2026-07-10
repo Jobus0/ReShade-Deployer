@@ -83,6 +83,9 @@ If you are unsure, check the API section of the game's PCGamingWiki page.</value
     <data name="Success" xml:space="preserve">
 		<value>Success</value>
 	</data>
+    <data name="ReShadeUpdate_Success" xml:space="preserve">
+        <value>ReShade was updated!</value>
+    </data>
     <data name="DirectX10" xml:space="preserve">
 		<value>DirectX 10 or later</value>
 	</data>

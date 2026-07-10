@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Wpf.Ui;
+using Wpf.Ui.Controls;
 using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
 namespace ReShadeDeployer.ViewModels;
@@ -14,6 +16,7 @@ public partial class UpdaterViewModel : ObservableObject
     private readonly ReShadeUpdater _reShadeUpdater;
     private readonly IConfig _config;
     private readonly IMessageBox _messageBox;
+    private readonly ISnackbarService _snackbarService;
 
     public string? AssemblyVersion { get; }
 
@@ -42,12 +45,14 @@ public partial class UpdaterViewModel : ObservableObject
         AppUpdater appUpdater,
         ReShadeUpdater reShadeUpdater,
         IConfig config,
-        IMessageBox messageBox)
+        IMessageBox messageBox,
+        ISnackbarService snackbarService)
     {
         _appUpdater = appUpdater;
         _reShadeUpdater = reShadeUpdater;
         _config = config;
         _messageBox = messageBox;
+        _snackbarService = snackbarService;
 
         AssemblyVersion = Assembly.GetEntryAssembly()?.GetName().Version?.ToString(3);
     }
@@ -217,6 +222,7 @@ public partial class UpdaterViewModel : ObservableObject
             }
 
             ReShadeDownloadCompleted?.Invoke();
+            _snackbarService.Show(UIStrings.Success, UIStrings.ReShadeUpdate_Success, ControlAppearance.Success, null, TimeSpan.FromSeconds(2.5));
         }
 
         IsUpdateEnabled = true;

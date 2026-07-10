@@ -484,6 +484,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ReShade was updated!.
+        /// </summary>
+        public static string ReShadeUpdate_Success {
+            get {
+                return ResourceManager.GetString("ReShadeUpdate_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No game selected.
         /// </summary>
         public static string SelectedGame {
