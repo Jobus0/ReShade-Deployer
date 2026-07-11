@@ -77,14 +77,14 @@ https://github.com/crosire/d3d8to9/releases</value>
 
 If you are unsure, check the API section of the game's PCGamingWiki page.</value>
 	</data>
-    <data name="DeploySuccess" xml:space="preserve">
-		<value>ReShade was successfully deployed!</value>
+    <data name="Deploy_Success" xml:space="preserve">
+		<value>ReShade deployed!</value>
 	</data>
     <data name="Success" xml:space="preserve">
 		<value>Success</value>
 	</data>
     <data name="ReShadeUpdate_Success" xml:space="preserve">
-        <value>ReShade was updated!</value>
+        <value>ReShade updated!</value>
     </data>
     <data name="DirectX10" xml:space="preserve">
 		<value>DirectX 10 or later</value>
@@ -267,7 +267,7 @@ The following files will be deleted:</value>
 		<value>Confirm undeploy</value>
 	</data>
     <data name="Undeploy_Success" xml:space="preserve">
-		<value>ReShade was successfully removed!</value>
+		<value>ReShade removed!</value>
 	</data>
     <data name="UndeployButton_Tooltip" xml:space="preserve">
 		<value>Remove existing ReShade deployment from the selected game.</value>

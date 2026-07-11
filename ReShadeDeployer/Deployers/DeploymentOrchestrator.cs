@@ -71,7 +71,7 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
         }
         else
         {
-            snackbarService.Show(UIStrings.Success, UIStrings.DeploySuccess, ControlAppearance.Success, null, TimeSpan.FromSeconds(2.5));
+            snackbarService.Show(UIStrings.Deploy_Success, ControlAppearance.Success, SymbolRegular.Rocket20);
         }
     }
 }

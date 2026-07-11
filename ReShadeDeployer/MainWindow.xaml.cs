@@ -33,6 +33,7 @@ namespace ReShadeDeployer
             Loaded += OnLoaded;
             
             snackbarService.SetSnackbarPresenter(SnackbarPresenter);
+            snackbarService.DefaultTimeOut = TimeSpan.FromSeconds(2);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)

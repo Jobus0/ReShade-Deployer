@@ -213,6 +213,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ReShade deployed!.
+        /// </summary>
+        public static string Deploy_Success {
+            get {
+                return ResourceManager.GetString("Deploy_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deploy ReShade.
         /// </summary>
         public static string DeployButton {
@@ -238,15 +247,6 @@ namespace ReShadeDeployer {
         public static string DeployError_Title {
             get {
                 return ResourceManager.GetString("DeployError_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ReShade was successfully deployed!.
-        /// </summary>
-        public static string DeploySuccess {
-            get {
-                return ResourceManager.GetString("DeploySuccess", resourceCulture);
             }
         }
         
@@ -484,7 +484,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ReShade was updated!.
+        ///   Looks up a localized string similar to ReShade updated!.
         /// </summary>
         public static string ReShadeUpdate_Success {
             get {
@@ -580,7 +580,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ReShade was successfully removed!.
+        ///   Looks up a localized string similar to ReShade removed!.
         /// </summary>
         public static string Undeploy_Success {
             get {

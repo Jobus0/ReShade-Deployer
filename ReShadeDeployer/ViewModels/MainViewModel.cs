@@ -169,7 +169,7 @@ public partial class MainViewModel : ObservableObject
         if (result == MessageBoxResult.Primary)
         {
             _reShadeUndeployer.Undeploy(SelectedExecutableContext.DirectoryPath);
-            _snackbarService.Show(UIStrings.Success, UIStrings.Undeploy_Success, ControlAppearance.Success, null, TimeSpan.FromSeconds(2.5));
+            _snackbarService.Show(UIStrings.Undeploy_Success, ControlAppearance.Success, SymbolRegular.Delete20);
 
             // Re-scan to update button visibility
             UpdateUndeployVisibility();
