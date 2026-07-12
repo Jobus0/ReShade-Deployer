@@ -63,7 +63,7 @@ public class DeploymentOrchestratorTests
     }
 
     [Fact]
-    public void DeployReShadeForExecutable_VulkanWithAddonSupportWarning_CancelsDeployment()
+    public async Task DeployReShadeForExecutable_VulkanWithAddonSupportWarning_CancelsDeployment()
     {
         // Arrange
         // We set NextResult to Close (or Cancel/Secondary) so the user cancels
@@ -72,7 +72,7 @@ public class DeploymentOrchestratorTests
         var addons = new List<AddonItem>();
 
         // Act
-        _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.Vulkan, addonSupport: true, addons);
+        await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.Vulkan, addonSupport: true, addons);
 
         // Assert
         // MessageBox was shown
@@ -84,7 +84,7 @@ public class DeploymentOrchestratorTests
     }
 
     [Fact]
-    public void DeployReShadeForExecutable_D3D9WithD3D8Exe_ShowsNoticeAndDeploys()
+    public async Task DeployReShadeForExecutable_D3D9WithD3D8Exe_ShowsNoticeAndDeploys()
     {
         // Arrange
         var context = CreateExecutableContext(isD3D8: true);
@@ -94,7 +94,7 @@ public class DeploymentOrchestratorTests
         // This will attempt to deploy DXGI/D3D9 but we wrap it in try-catch to avoid Application.Current.Shutdown() crash
         try
         {
-            _orchestrator.DeployReShadeForExecutable(context, GraphicsApi.D3D9, addonSupport: false, new List<AddonItem>());
+            await _orchestrator.DeployReShadeForExecutable(context, GraphicsApi.D3D9, addonSupport: false, new List<AddonItem>());
         }
         catch (NullReferenceException)
         {
@@ -111,7 +111,7 @@ public class DeploymentOrchestratorTests
     }
 
     [Fact]
-    public void DeployReShadeForExecutable_SuccessfulDeployment_DeploysDllAndIni()
+    public async Task DeployReShadeForExecutable_SuccessfulDeployment_DeploysDllAndIni()
     {
         // Arrange
         var addons = new List<AddonItem>();
@@ -119,7 +119,7 @@ public class DeploymentOrchestratorTests
         // Act
         try
         {
-            _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, addons);
+            await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, addons);
         }
         catch (NullReferenceException)
         {
@@ -134,7 +134,7 @@ public class DeploymentOrchestratorTests
     }
 
     [Fact]
-    public void DeployReShadeForExecutable_PresetDeployment_UserDeclinesOverwrite_DoesNotCopyPreset()
+    public async Task DeployReShadeForExecutable_PresetDeployment_UserDeclinesOverwrite_DoesNotCopyPreset()
     {
         // Arrange
         // Create templates and target files
@@ -149,7 +149,7 @@ public class DeploymentOrchestratorTests
         // Act
         try
         {
-            _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>());
+            await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>());
         }
         catch (NullReferenceException)
         {
@@ -165,7 +165,7 @@ public class DeploymentOrchestratorTests
     }
 
     [Fact]
-    public void DeployReShadeForExecutable_PresetDeployment_UserAcceptsOverwrite_CopiesPreset()
+    public async Task DeployReShadeForExecutable_PresetDeployment_UserAcceptsOverwrite_CopiesPreset()
     {
         // Arrange
         _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "template preset content");
@@ -179,7 +179,7 @@ public class DeploymentOrchestratorTests
         // Act
         try
         {
-            _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>());
+            await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>());
         }
         catch (NullReferenceException)
         {
@@ -191,14 +191,14 @@ public class DeploymentOrchestratorTests
     }
 
     [Fact]
-    public async void DeployReShadeForExecutable_ThrowsDeploymentException_WhenUnderlyingDeployerFails()
+    public async Task DeployReShadeForExecutable_ThrowsDeploymentException_WhenUnderlyingDeployerFails()
     {
         // Arrange
         // Use an invalid directory path that will cause file operations to throw
         var invalidContext = CreateExecutableContext(directoryPath: "C:\\Invalid<|>?*Path");
 
         // Act & Assert
-        _ = await Assert.ThrowsAsync<DeploymentException>(() =>
+        await Assert.ThrowsAsync<DeploymentException>(() =>
             _orchestrator.DeployReShadeForExecutable(invalidContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>()));
     }
 }
