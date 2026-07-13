@@ -204,7 +204,7 @@ public class MainViewModelTests
         Assert.Single(_messageBox.ShowCalls);
         Assert.Single(_snackbarService.ShowCalls);
         Assert.Contains(UIStrings.Undeploy_Confirm, _messageBox.ShowCalls[0].ContentText);
-        Assert.Contains(UIStrings.Undeploy_Success, _snackbarService.ShowCalls[0].Message);
+        Assert.Contains(UIStrings.Undeploy_Success, _snackbarService.ShowCalls[0].Title);
         // File was deleted
         Assert.False(_fileSystem.File.Exists(iniPath));
         // Undeploy visibility updated

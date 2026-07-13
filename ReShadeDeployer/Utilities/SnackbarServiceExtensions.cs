@@ -7,7 +7,12 @@ public static class SnackbarServiceExtensions
 {
     public static void Show(this ISnackbarService snackbarService, string title, ControlAppearance appearance, SymbolRegular symbol)
     {
-        snackbarService.Show(title, string.Empty, appearance, new SymbolIcon(symbol, 20), snackbarService.DefaultTimeOut);
+        IconElement? iconElement = null;
+
+        if (snackbarService is SnackbarService)
+            iconElement = new SymbolIcon(symbol, 20);
+        
+        snackbarService.Show(title, string.Empty, appearance, iconElement, snackbarService.DefaultTimeOut);
     }
     
     public static void Show(this ISnackbarService snackbarService, string title, ControlAppearance appearance)
