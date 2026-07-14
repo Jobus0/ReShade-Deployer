@@ -54,7 +54,7 @@ public partial class WpfMessageBox : IMessageBox
         return messageBox.ShowDialogAsync();
     }
     
-    public async Task<(MessageBoxResult Result, string TextBoxText)> ShowWithTextBox(string title, string contentText, string primaryButtonText, string closeButtonText = "OK")
+    public async Task<(MessageBoxResult Result, string TextBoxText)> ShowWithTextBox(string title, string contentText, string primaryButtonText, string closeButtonText = "OK", string defaultTextBoxText = "")
     {
         TextBlock content = new TextBlock {Text = contentText, TextWrapping = TextWrapping.Wrap};
         ConvertStringLinksToHyperlinks(content);
@@ -63,7 +63,8 @@ public partial class WpfMessageBox : IMessageBox
         {
             Margin = new Thickness(0, 8, 0, 0),
             Padding = new Thickness(5),
-            FontSize = 14
+            FontSize = 14,
+            Text = defaultTextBoxText
         };
 
         StackPanel panel = new StackPanel();
@@ -72,7 +73,14 @@ public partial class WpfMessageBox : IMessageBox
         
         var messageBox = Build(title, panel, primaryButtonText, closeButtonText: closeButtonText);
         
-        inputTextBox.Loaded += (s, e) => inputTextBox.Focus();
+        inputTextBox.Loaded += (s, e) =>
+        {
+            inputTextBox.Focus();
+            if (!string.IsNullOrEmpty(defaultTextBoxText))
+            {
+                inputTextBox.SelectAll();
+            }
+        };
         inputTextBox.KeyUp += (s, e) =>
         {
             if (e.Key == Key.Return)

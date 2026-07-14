@@ -5,7 +5,7 @@ namespace ReShadeDeployer.Tests;
 public class MockMessageBox : IMessageBox
 {
     public List<(string Title, string ContentText, string PrimaryButtonTex, ControlAppearance PrimaryButtonAppearance, string SecondaryButtonText, ControlAppearance SecondaryButtonAppearance, string CloseButtonText)> ShowCalls { get; } = new();
-    public List<(string Title, string ContentText, string PrimaryButtonText, string SecondaryButtonText)> ShowWithTextBoxCalls { get; } = new();
+    public List<(string Title, string ContentText, string PrimaryButtonText, string SecondaryButtonText, string DefaultTextBoxText)> ShowWithTextBoxCalls { get; } = new();
     public List<(string Title, Exception Exception, string PrimaryButtonText, ControlAppearance PrimaryButtonAppearance)> ShowExceptionCalls { get; } = new();
 
     public MessageBoxResult NextResult { get; set; } = MessageBoxResult.None;
@@ -21,6 +21,7 @@ public class MockMessageBox : IMessageBox
     {
         ShowWithTextBoxCalls.Add((title, contentText, primaryButtonText, secondaryButtonText));
         return Task.FromResult((NextResult, NextTextBox));
+        ShowWithTextBoxCalls.Add((title, contentText, primaryButtonText, secondaryButtonText, defaultTextBoxText));
     }
 
     public Task<MessageBoxResult> ShowException(string title, Exception exception, string primaryButtonText, ControlAppearance primaryButtonAppearance = ControlAppearance.Secondary)
