@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using Wpf.Ui;
@@ -12,7 +13,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer,
+public partial class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer,
     IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer,
     IMessageBox messageBox, IConfig config, ISnackbarService snackbarService)
 {
@@ -48,12 +49,14 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
         {
             if (config.UseLocalPresets)
             {
+                string cleanName = StripBuildSuffixes().Replace(executableContext.FileName, "").TrimEnd('-', '_');
+                
                 var (result, textBoxText) = await messageBox.ShowWithTextBox(
                     UIStrings.PresetFolderNameDialog_Title,
                     UIStrings.PresetFolderNameDialog_Content,
                     primaryButtonText: UIStrings.Continue,
                     secondaryButtonText: UIStrings.Cancel,
-                    defaultTextBoxText: executableContext.FileName
+                    defaultTextBoxText: cleanName
                 );
 
                 if (result != MessageBoxResult.Primary)
@@ -100,4 +103,7 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
             snackbarService.Show(UIStrings.Deploy_Success, ControlAppearance.Success, SymbolRegular.Rocket20);
         }
     }
+
+    [GeneratedRegex(@"(?i)(?:[-_]?(?:Win64|Win32|x64|x86))?(?:[-_]?(?:Shipping|Release|Retail|DebugGame|Test))?(?:[-_]?(?:dx11|dx12|vulkan|vk))?(?:[-_]?(?:Steam|Epic|GOG|EGS))?(?:\.exe)?$")]
+    private static partial Regex StripBuildSuffixes();
 }

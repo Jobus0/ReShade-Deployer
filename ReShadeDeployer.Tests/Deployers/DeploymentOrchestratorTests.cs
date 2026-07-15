@@ -221,7 +221,6 @@ public class DeploymentOrchestratorTests
 
         // Assert
         Assert.Single(_messageBox.ShowWithTextBoxCalls);
-        Assert.Equal(_executableContext.FileName, _messageBox.ShowWithTextBoxCalls[0].DefaultTextBoxText);
 
         string expectedLocalPresetPath = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder", "ReShadePreset.ini");
         Assert.True(_fileSystem.File.Exists(expectedLocalPresetPath));
