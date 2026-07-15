@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <root>
     <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
@@ -283,5 +283,20 @@ The following files will be deleted:</value>
     </data>
     <data name="SelectedGame" xml:space="preserve">
         <value>No game selected</value>
+    </data>
+    <data name="UseLocalPresets" xml:space="preserve">
+        <value>Use local presets</value>
+    </data>
+    <data name="UseLocalPresets_Tooltip" xml:space="preserve">
+        <value>Store the ReShadePreset.ini in a local Presets folder in the Deployer root folder instead of the game folder.</value>
+    </data>
+    <data name="PresetFolderNameDialog_Title" xml:space="preserve">
+        <value>Preset Folder Name</value>
+    </data>
+    <data name="PresetFolderNameDialog_Content" xml:space="preserve">
+        <value>Enter a name for the preset folder:</value>
+    </data>
+    <data name="PresetFolderNameDialog_NoName" xml:space="preserve">
+        <value>No preset folder name entered.</value>
     </data>
 </root>

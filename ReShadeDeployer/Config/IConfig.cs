@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ReShadeDeployer;
 
@@ -28,6 +28,11 @@ public interface IConfig
     /// Whether the application should automatically exit after deployment.
     /// </summary>
     bool AlwaysExitOnDeploy { get; set; }
+
+    /// <summary>
+    /// Whether to store presets locally in the Presets folder.
+    /// </summary>
+    bool UseLocalPresets { get; set; }
     
     string[] LastSelectedAddons { get; set; }
 }

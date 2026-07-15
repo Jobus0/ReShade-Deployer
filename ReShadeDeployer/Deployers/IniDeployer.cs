@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 using IniParser.Model;
 using IniParser.Parser;
@@ -12,7 +12,8 @@ public class IniDeployer(IFileSystem fileSystem)
     /// </summary>
     /// <param name="executableContext">Context for the executable to deploy.</param>
     /// <param name="addons">List of addons being deployed. Used to update EffectSearchPaths and TextureSearchPaths.</param>
-    public void Deploy(ExecutableContext executableContext, IList<AddonItem> addons)
+    /// <param name="presetPath">Path to the local preset folder, if used at all. Deploys to game's folder if null.</param>
+    public void Deploy(ExecutableContext executableContext, IList<AddonItem> addons, string? presetPath = null)
     {
         string path = fileSystem.Path.Combine(executableContext.DirectoryPath, "ReShade.ini");
         
@@ -26,7 +27,7 @@ public class IniDeployer(IFileSystem fileSystem)
             ? iniParser.Parse(fileSystem.File.ReadAllText(Paths.ReShadeIni))
             : new IniData { Configuration = iniParser.Configuration.Clone() };
 
-        ApplyContextualDefaults(ini, executableContext);
+        ApplyContextualDefaults(ini, executableContext, presetPath);
 
         foreach (var addon in addons)
         {
@@ -40,11 +41,13 @@ public class IniDeployer(IFileSystem fileSystem)
         fileSystem.File.WriteAllText(path, ini.ToString());
     }
     
-    private void ApplyContextualDefaults(IniData ini, ExecutableContext executableContext)
+    private void ApplyContextualDefaults(IniData ini, ExecutableContext executableContext, string? presetPath = null)
     {
         ini["GENERAL"]["EffectSearchPaths"] = Paths.Shaders + "\\**";
         ini["GENERAL"]["TextureSearchPaths"] = Paths.Textures + "\\**";
         ini["GENERAL"]["IntermediateCachePath"] = Paths.Cache;
+        if (!string.IsNullOrEmpty(presetPath))
+            ini["GENERAL"]["PresetPath"] = presetPath;
         ini["GENERAL"]["PreprocessorDefinitions"] =
             $"RESHADE_DEPTH_LINEARIZATION_FAR_PLANE=1000.0," +
             $"RESHADE_DEPTH_INPUT_IS_UPSIDE_DOWN={executableContext.DepthUpsideDown}," +

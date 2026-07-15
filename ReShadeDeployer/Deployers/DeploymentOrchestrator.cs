@@ -40,25 +40,51 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
             await messageBox.Show(UIStrings.Notice, UIStrings.D3D8_Info);
         }
 
+        string? presetName = null;
+        string? presetPath = null;
+        bool doDeployPreset = false;
+
+        if (fileSystem.File.Exists(Paths.ReShadePresetIni))
+        {
+            if (config.UseLocalPresets)
+            {
+                var (result, textBoxText) = await messageBox.ShowWithTextBox(
+                    UIStrings.PresetFolderNameDialog_Title,
+                    UIStrings.PresetFolderNameDialog_Content,
+                    primaryButtonText: UIStrings.Continue,
+                    secondaryButtonText: UIStrings.Cancel,
+                    defaultTextBoxText: executableContext.FileName
+                );
+
+                if (result != MessageBoxResult.Primary)
+                    return;
+
+                presetName = textBoxText.Trim();
+                
+                if (string.IsNullOrEmpty(presetName))
+                {
+                    snackbarService.Show(UIStrings.PresetFolderNameDialog_NoName, ControlAppearance.Danger, SymbolRegular.ErrorCircle20);
+                    return;
+                }
+            }
+            
+            presetPath = presetDeployer.GetPath(executableContext, presetName);
+            bool deployedPresetExists = fileSystem.File.Exists(presetPath);
+                
+            doDeployPreset = !deployedPresetExists || await messageBox.Show(UIStrings.PresetOverwrite_Title,
+                UIStrings.PresetOverwrite,
+                primaryButtonText: UIStrings.PresetOverwrite_Yes, ControlAppearance.Danger,
+                closeButtonText: UIStrings.PresetOverwrite_No) == MessageBoxResult.Primary;
+        }
+
         try
         {
             dllDeployer.Deploy(executableContext, api, addonSupport, addons);
-            iniDeployer.Deploy(executableContext, addons);
+            iniDeployer.Deploy(executableContext, addons, presetPath);
             addonsDeployer.Deploy(executableContext, addons);
 
-            // Only deploy preset if a template preset exists in the ReShade Deployer folder
-            if (fileSystem.File.Exists(Paths.ReShadePresetIni))
-            {
-                // If the preset already exists in the target executable directory, ask to overwrite
-                bool deployedPresetExists = fileSystem.File.Exists(presetDeployer.GetPath(executableContext));
-                bool doDeploy = !deployedPresetExists || await messageBox.Show(UIStrings.PresetOverwrite_Title,
-                    UIStrings.PresetOverwrite,
-                    primaryButtonText: UIStrings.PresetOverwrite_Yes, ControlAppearance.Danger,
-                    closeButtonText: UIStrings.PresetOverwrite_No) == MessageBoxResult.Primary;
-
-                if (doDeploy)
-                    presetDeployer.Deploy(executableContext);
-            }
+            if (doDeployPreset)
+                presetDeployer.Deploy(executableContext, presetName);
         }
         catch (Exception ex) when (ex is not DeploymentException)
         {

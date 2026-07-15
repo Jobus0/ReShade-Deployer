@@ -72,4 +72,22 @@ public class IniDeployerTests
         string content = _fileSystem.File.ReadAllText(existingIniPath);
         Assert.DoesNotContain("Old content", content);
     }
+
+    [Fact]
+    public void Deploy_WithPresetPath_AddsPresetPathToIni()
+    {
+        // Arrange
+        var addons = new List<AddonItem>();
+        string presetPath = @"C:\ReShade Deployer\Presets\MyGame\ReShadePreset.ini";
+
+        // Act
+        _deployer.Deploy(_executableContext, addons, presetPath);
+
+        // Assert
+        string expectedPath = @"C:\Games\MyGame\ReShade.ini";
+        Assert.True(_fileSystem.File.Exists(expectedPath));
+        
+        string content = _fileSystem.File.ReadAllText(expectedPath);
+        Assert.Contains($@"PresetPath={presetPath}", content);
+    }
 }

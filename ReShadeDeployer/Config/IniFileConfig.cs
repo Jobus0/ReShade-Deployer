@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 using IniParser.Model;
@@ -62,6 +62,15 @@ public class IniFileConfig(IFileSystem fileSystem) : IConfig
     {
         get => bool.TryParse(Read(nameof(AlwaysExitOnDeploy)), out bool value) && value;
         set => Write(nameof(AlwaysExitOnDeploy), value.ToString());
+    }
+
+    /// <summary>
+    /// Whether to store presets locally in the Presets folder.
+    /// </summary>
+    public bool UseLocalPresets
+    {
+        get => bool.TryParse(Read(nameof(UseLocalPresets)), out bool value) && value;
+        set => Write(nameof(UseLocalPresets), value.ToString());
     }
 
     public string[] LastSelectedAddons

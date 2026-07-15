@@ -195,7 +195,7 @@ public class MainViewModelTests
         Assert.True(mainVm.IsUndeployVisible);
 
         // Setup user to click Confirm/Uninstall
-        _messageBox.NextResult = MessageBoxResult.Primary;
+        _messageBox.NextResults.Enqueue(MessageBoxResult.Primary);
 
         // Act
         mainVm.UndeployCommand.Execute(null);

@@ -446,6 +446,33 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter a name for the preset folder:.
+        /// </summary>
+        public static string PresetFolderNameDialog_Content {
+            get {
+                return ResourceManager.GetString("PresetFolderNameDialog_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No preset folder name entered..
+        /// </summary>
+        public static string PresetFolderNameDialog_NoName {
+            get {
+                return ResourceManager.GetString("PresetFolderNameDialog_NoName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preset Folder Name.
+        /// </summary>
+        public static string PresetFolderNameDialog_Title {
+            get {
+                return ResourceManager.GetString("PresetFolderNameDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ReShadePreset.ini already exists.
         ///
         ///Would you like to overwrite it?.
@@ -717,6 +744,24 @@ namespace ReShadeDeployer {
         public static string UpdateUnavailable_Title {
             get {
                 return ResourceManager.GetString("UpdateUnavailable_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use local presets.
+        /// </summary>
+        public static string UseLocalPresets {
+            get {
+                return ResourceManager.GetString("UseLocalPresets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store the ReShadePreset.ini in a local Presets folder in the Deployer root folder instead of the game folder..
+        /// </summary>
+        public static string UseLocalPresets_Tooltip {
+            get {
+                return ResourceManager.GetString("UseLocalPresets_Tooltip", resourceCulture);
             }
         }
         

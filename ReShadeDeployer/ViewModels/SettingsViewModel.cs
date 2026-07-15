@@ -22,6 +22,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isAlwaysExitOnDeploy;
 
+    [ObservableProperty]
+    private bool _useLocalPresets;
+
     public SettingsViewModel(IConfig config, RegistryHelper registryHelper, IMessageBox messageBox, VulkanSystemWideDeployer vulkanSystemWideDeployer)
     {
         _config = config;
@@ -31,6 +34,7 @@ public partial class SettingsViewModel : ObservableObject
 
         IsAlwaysExitOnDeploy = _config.AlwaysExitOnDeploy;
         IsContextMenuRegistered = _registryHelper.IsContextMenuActionRegistered("Deploy ReShade");
+        UseLocalPresets = _config.UseLocalPresets;
         AssemblyVersion = Assembly.GetEntryAssembly()?.GetName().Version?.ToString(3);
     }
 
@@ -47,6 +51,11 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnIsAlwaysExitOnDeployChanged(bool value)
     {
         _config.AlwaysExitOnDeploy = value;
+    }
+
+    partial void OnUseLocalPresetsChanged(bool value)
+    {
+        _config.UseLocalPresets = value;
     }
 
     [RelayCommand]

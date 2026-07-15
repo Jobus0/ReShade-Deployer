@@ -66,6 +66,8 @@
                                   ToolTip="{x:Static rd:UIStrings.ContextMenuDeploy_Tooltip}" />
                         <MenuItem Header="{x:Static rd:UIStrings.ExitOnDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsAlwaysExitOnDeploy}"
                                   ToolTip="{x:Static rd:UIStrings.ExitOnDeploy_Tooltip}" />
+                        <MenuItem Header="{x:Static rd:UIStrings.UseLocalPresets}" IsCheckable="True" IsChecked="{Binding Settings.UseLocalPresets}"
+                                  ToolTip="{x:Static rd:UIStrings.UseLocalPresets_Tooltip}" />
                         <Separator />
                         <MenuItem Header="{x:Static rd:UIStrings.DownloadLatestVersion_Title}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.UpdateReShadeCommand}" />
                         <MenuItem Header="{x:Static rd:UIStrings.DownloadSpecificVersion_Title}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.DownloadSpecificVersionCommand}" />

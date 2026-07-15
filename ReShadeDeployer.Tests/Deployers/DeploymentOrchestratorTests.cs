@@ -67,7 +67,7 @@ public class DeploymentOrchestratorTests
     {
         // Arrange
         // We set NextResult to Close (or Cancel/Secondary) so the user cancels
-        _messageBox.NextResult = MessageBoxResult.Secondary;
+        _messageBox.NextResults.Enqueue(MessageBoxResult.Secondary);
         
         var addons = new List<AddonItem>();
 
@@ -144,7 +144,7 @@ public class DeploymentOrchestratorTests
         _fileSystem.File.WriteAllText(targetPresetPath, "original preset content");
 
         // User chooses NOT to overwrite
-        _messageBox.NextResult = MessageBoxResult.Secondary;
+        _messageBox.NextResults.Enqueue(MessageBoxResult.Secondary);
 
         // Act
         try
@@ -174,7 +174,7 @@ public class DeploymentOrchestratorTests
         _fileSystem.File.WriteAllText(targetPresetPath, "original preset content");
 
         // User chooses TO overwrite (Primary button)
-        _messageBox.NextResult = MessageBoxResult.Primary;
+        _messageBox.NextResults.Enqueue(MessageBoxResult.Primary);
 
         // Act
         try
@@ -200,5 +200,93 @@ public class DeploymentOrchestratorTests
         // Act & Assert
         await Assert.ThrowsAsync<DeploymentException>(() =>
             _orchestrator.DeployReShadeForExecutable(invalidContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>()));
+    }
+
+    [Fact]
+    public async Task DeployReShadeForExecutable_LocalPresetsEnabled_DeploysToLocalPresetsFolder()
+    {
+        // Arrange
+        _config.UseLocalPresets = true;
+        _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "template preset content");
+        
+        _messageBox.NextResults.Enqueue(MessageBoxResult.Primary);
+        _messageBox.NextTextBox = "TestPresetFolder";
+
+        // Act
+        try
+        {
+            await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>());
+        }
+        catch (NullReferenceException) { }
+
+        // Assert
+        Assert.Single(_messageBox.ShowWithTextBoxCalls);
+        Assert.Equal(_executableContext.FileName, _messageBox.ShowWithTextBoxCalls[0].DefaultTextBoxText);
+
+        string expectedLocalPresetPath = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder", "ReShadePreset.ini");
+        Assert.True(_fileSystem.File.Exists(expectedLocalPresetPath));
+        Assert.Equal("template preset content", _fileSystem.File.ReadAllText(expectedLocalPresetPath));
+
+        string reshadeIniPath = _fileSystem.Path.Combine(_executableContext.DirectoryPath, "ReShade.ini");
+        Assert.True(_fileSystem.File.Exists(reshadeIniPath));
+        string reshadeIniContent = _fileSystem.File.ReadAllText(reshadeIniPath);
+        Assert.Contains($"PresetPath={expectedLocalPresetPath}", reshadeIniContent);
+    }
+
+    [Fact]
+    public async Task DeployReShadeForExecutable_LocalPresetsEnabled_UserCancels_AbortsDeployment()
+    {
+        // Arrange
+        _config.UseLocalPresets = true;
+        _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "template preset content");
+        
+        _messageBox.NextResults.Enqueue(MessageBoxResult.Secondary);
+
+        // Act
+        await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>());
+
+        // Assert
+        Assert.Single(_messageBox.ShowWithTextBoxCalls);
+        Assert.False(_fileSystem.File.Exists(_fileSystem.Path.Combine(_executableContext.DirectoryPath, "dxgi.dll")));
+        Assert.False(_fileSystem.File.Exists(_fileSystem.Path.Combine(_executableContext.DirectoryPath, "ReShade.ini")));
+    }
+
+    [Fact]
+    public async Task DeployReShadeForExecutable_LocalPresetsEnabled_OverwritePromptDeclined_DoesNotCopyPresetButDeploysOthers()
+    {
+        // Arrange
+        _config.UseLocalPresets = true;
+        _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "template preset content");
+        
+        string localPresetDir = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder");
+        _fileSystem.Directory.CreateDirectory(localPresetDir);
+        string localPresetPath = _fileSystem.Path.Combine(localPresetDir, "ReShadePreset.ini");
+        _fileSystem.File.WriteAllText(localPresetPath, "original preset content");
+
+        // First dialog (textbox prompt) returns Primary. Second dialog (overwrite prompt) returns Secondary/Cancel
+        _messageBox.NextResults.Enqueue(MessageBoxResult.Primary);
+        _messageBox.NextResults.Enqueue(MessageBoxResult.Secondary);
+        _messageBox.NextTextBox = "TestPresetFolder";
+
+        // Act
+        try
+        {
+            await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>());
+        }
+        catch (NullReferenceException) { }
+
+        // Assert
+        Assert.Single(_messageBox.ShowWithTextBoxCalls);
+        Assert.Single(_messageBox.ShowCalls);
+        Assert.Contains(UIStrings.PresetOverwrite, _messageBox.ShowCalls[0].ContentText);
+
+        // Original content is preserved
+        Assert.Equal("original preset content", _fileSystem.File.ReadAllText(localPresetPath));
+
+        // ReShade.ini still points to it
+        string reshadeIniPath = _fileSystem.Path.Combine(_executableContext.DirectoryPath, "ReShade.ini");
+        Assert.True(_fileSystem.File.Exists(reshadeIniPath));
+        string reshadeIniContent = _fileSystem.File.ReadAllText(reshadeIniPath);
+        Assert.Contains($"PresetPath={localPresetPath}", reshadeIniContent);
     }
 }
