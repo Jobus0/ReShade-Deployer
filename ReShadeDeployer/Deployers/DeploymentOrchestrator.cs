@@ -49,14 +49,12 @@ public partial class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer 
         {
             if (config.UseLocalPresets)
             {
-                string cleanName = StripBuildSuffixes().Replace(executableContext.FileName, "").TrimEnd('-', '_');
-                
                 var (result, textBoxText) = await messageBox.ShowWithTextBox(
                     UIStrings.PresetFolderNameDialog_Title,
                     UIStrings.PresetFolderNameDialog_Content,
                     primaryButtonText: UIStrings.Continue,
                     secondaryButtonText: UIStrings.Cancel,
-                    defaultTextBoxText: cleanName
+                    defaultTextBoxText: await GetDefaultPresetFolderName(executableContext)
                 );
 
                 if (result != MessageBoxResult.Primary)
@@ -104,6 +102,46 @@ public partial class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer 
         }
     }
 
+    private async Task<string> GetDefaultPresetFolderName(ExecutableContext executableContext)
+    {
+        string defaultTextBoxText = StripBuildSuffixes().Replace(executableContext.FileName, "").TrimEnd('-', '_');
+
+        try
+        {
+            // Check if ReShade.ini already exists and contains PresetPath with Presets folder
+            string currentReShadeIni = fileSystem.Path.Combine(executableContext.DirectoryPath, "ReShade.ini");
+            if (fileSystem.File.Exists(currentReShadeIni))
+            {
+                var reshadeIniContent = await fileSystem.File.ReadAllTextAsync(currentReShadeIni);
+                var presetPathMatch = GetPresetPathValue().Match(reshadeIniContent);
+                    
+                if (presetPathMatch.Success)
+                {
+                    string currentPresetPath = presetPathMatch.Groups[1].Value.Trim();
+                    if (currentPresetPath.StartsWith(Paths.Presets, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Extract the inner folder name from the path
+                        // Expected format: Presets\SomeFolder\ReShadePreset.ini or Presets/SomeFolder/ReShadePreset.ini
+                        var relativePath = currentPresetPath.Substring(Paths.Presets.Length).TrimStart('\\', '/');
+                        var pathParts = relativePath.Split(['\\', '/'], StringSplitOptions.RemoveEmptyEntries);
+                            
+                        if (pathParts.Length > 0)
+                        {
+                            // Use the first folder name as the default
+                            defaultTextBoxText = pathParts[0];
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception) { /* ignore */ }
+
+        return defaultTextBoxText;
+    }
+
     [GeneratedRegex(@"(?i)(?:[-_]?(?:Win64|Win32|x64|x86))?(?:[-_]?(?:Shipping|Release|Retail|DebugGame|Test))?(?:[-_]?(?:dx11|dx12|vulkan|vk))?(?:[-_]?(?:Steam|Epic|GOG|EGS))?(?:\.exe)?$")]
     private static partial Regex StripBuildSuffixes();
+    
+    [GeneratedRegex(@"^PresetPath\s?=\s?(.*)$", RegexOptions.Multiline)]
+    private static partial Regex GetPresetPathValue();
 }
