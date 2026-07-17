@@ -39,8 +39,8 @@ public class AppUpdater(IFileSystem fileSystem, IDownloadService downloadService
         fileSystem.File.Move(currentExe, oldExe, overwrite: true);
         
         // Extract the new version of ReShade Deployer
-        using (IZipArchive zip = fileSystem.ZipArchive().New(fileSystem.File.OpenRead(downloadPath), ZipArchiveMode.Read, false))
-            zip.ExtractToDirectory(Paths.Root);
+        await using (IZipArchive zip = fileSystem.ZipArchive().New(fileSystem.File.OpenRead(downloadPath), ZipArchiveMode.Read, false))
+            await zip.ExtractToDirectoryAsync(Paths.Root);
         
         // Delete the downloaded archive
         fileSystem.File.Delete(downloadPath);
