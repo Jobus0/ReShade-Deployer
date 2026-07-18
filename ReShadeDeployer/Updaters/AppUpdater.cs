@@ -76,11 +76,31 @@ public class AppUpdater(IFileSystem fileSystem, IDownloadService downloadService
     }
 
     /// <summary>
-    /// Delete the old version of ReShade Deployer if it exists.
+    /// Delete old versions of ReShade Deployer and ReShade dlls if any exist.
     /// </summary>
     public async Task CleanUpOldVersion()
     {
         string oldExe = Process.GetCurrentProcess().MainModule!.FileName + ".oldver";
+        if (fileSystem.File.Exists(oldExe))
+        {
+            try
+            {
+                fileSystem.File.Delete(oldExe);
+            }
+            catch
+            {
+                // If the old version could not be deleted, we need to wait a bit and try again
+                try
+                {
+                    await Task.Delay(200);
+                    fileSystem.File.Delete(oldExe);
+                }
+                catch { /* Ignored */ }
+            }
+        }
+        
+        // Delete old pre-2.0.0 versions
+        oldExe = Process.GetCurrentProcess().MainModule!.FileName.Replace("ReShadeDeployer.exe", "ReShade Deployer.exe") + ".oldver";
         if (fileSystem.File.Exists(oldExe))
         {
             try
