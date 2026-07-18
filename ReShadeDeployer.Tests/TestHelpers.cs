@@ -19,7 +19,8 @@ public static class TestHelpers
         string depthCopyBeforeClears = "0",
         string depthCopyAtClearIndex = "0",
         string drawStatsHeuristic = "0",
-        string useAspectRatioHeuristics = "1")
+        string useAspectRatioHeuristics = "1",
+        bool banned = false)
     {
         return new ExecutableContext(
             FileName: fileName,
@@ -36,7 +37,8 @@ public static class TestHelpers
             DepthCopyBeforeClears: depthCopyBeforeClears,
             DepthCopyAtClearIndex: depthCopyAtClearIndex,
             DrawStatsHeuristic: drawStatsHeuristic,
-            UseAspectRatioHeuristics: useAspectRatioHeuristics
+            UseAspectRatioHeuristics: useAspectRatioHeuristics,
+            Banned: banned
         );
     }
 

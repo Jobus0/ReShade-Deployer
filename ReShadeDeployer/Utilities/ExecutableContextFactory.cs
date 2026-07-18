@@ -109,6 +109,10 @@ public class ExecutableContextFactory(IFileSystem fileSystem, IPeInfoReader peIn
         string? renderApi = ini[sectionKey]["RenderApi"];
         if (renderApi != null)
             ApplyRenderApiOverride(renderApi, builder);
+        
+        string? banned = ini[sectionKey]["Banned"];
+        if (banned != null)
+            builder.Banned = banned == "1";
 
         builder.DepthReversed = ini[sectionKey]["DepthReversed"] ?? DetermineDepthReversedFallback(executablePath);
         builder.DepthUpsideDown = ini[sectionKey]["DepthUpsideDown"] ?? "0";
@@ -180,6 +184,7 @@ public class ExecutableContextFactory(IFileSystem fileSystem, IPeInfoReader peIn
         public string DepthCopyAtClearIndex { get; set; } = "0";
         public string DrawStatsHeuristic { get; set; } = "0";
         public string UseAspectRatioHeuristics { get; set; } = "1";
+        public bool Banned { get; set; } = false;
 
         public ExecutableContext Build() => new(
             FileName,
@@ -196,6 +201,7 @@ public class ExecutableContextFactory(IFileSystem fileSystem, IPeInfoReader peIn
             DepthCopyBeforeClears,
             DepthCopyAtClearIndex,
             DrawStatsHeuristic,
-            UseAspectRatioHeuristics);
+            UseAspectRatioHeuristics,
+            Banned);
     }
 }

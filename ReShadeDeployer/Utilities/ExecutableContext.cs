@@ -20,7 +20,8 @@ public record ExecutableContext(
     string DepthCopyBeforeClears,
     string DepthCopyAtClearIndex,
     string DrawStatsHeuristic,
-    string UseAspectRatioHeuristics
+    string UseAspectRatioHeuristics,
+    bool Banned
 )
 {
     public override string ToString()
@@ -30,6 +31,8 @@ public record ExecutableContext(
         sb.Append("    ");
         sb.Append(FileName);
         sb.AppendLine(IsX64 ? " (x64)" : " (x86)");
+        if (Banned)
+            sb.AppendLine("    Banned");
         sb.AppendLine();
 
         sb.AppendLine("Deployment Path");
