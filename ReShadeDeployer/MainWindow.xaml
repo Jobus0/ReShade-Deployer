@@ -92,9 +92,9 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <ui:SymbolIcon Symbol="Document16" Margin="0,0,5,0"
-                                           Visibility="{Binding SelectedGameIcon, Converter={StaticResource NullToVisibility}}" />
+                                           Visibility="{Binding SelectedGameIcon, Converter={StaticResource NullToVisibility}, ConverterParameter=Invert}" />
                             <ui:ImageIcon Source="{Binding SelectedGameIcon}" Margin="0,0,5,0" Width="16" Height="16"
-                                          Visibility="{Binding SelectedGameIcon, Converter={StaticResource NullToVisibility}, ConverterParameter=Invert}" />
+                                          Visibility="{Binding SelectedGameIcon, Converter={StaticResource NullToVisibility}}" />
                             <ui:TextBlock Text="{Binding SelectedGameText}" ToolTip="{Binding SelectedGameTooltip}"
                                           VerticalAlignment="Center" FontSize="13" />
                         </StackPanel>

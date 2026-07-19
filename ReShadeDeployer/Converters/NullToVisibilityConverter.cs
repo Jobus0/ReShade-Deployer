@@ -7,7 +7,7 @@ namespace ReShadeDeployer.Converters;
 
 /// <summary>
 /// Converter for binding control visibility based on whether a value is null.
-/// Set ConverterParameter to "Invert" to make the control visible when the value is NOT null (default is visible when null).
+/// Set ConverterParameter to "Invert" to make the control visible when the value is null (default is invisible when null).
 /// </summary>
 [ValueConversion(typeof(object), typeof(Visibility))]
 public class NullToVisibilityConverter : IValueConverter
@@ -17,7 +17,7 @@ public class NullToVisibilityConverter : IValueConverter
         bool invert = parameter?.ToString()?.Equals("Invert", StringComparison.OrdinalIgnoreCase) == true;
         
         bool isNull = value == null;
-        bool shouldBeVisible = invert ? !isNull : isNull;
+        bool shouldBeVisible = invert ? isNull : !isNull;
         
         return shouldBeVisible ? Visibility.Visible : Visibility.Collapsed;
     }
