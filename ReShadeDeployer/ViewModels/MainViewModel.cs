@@ -43,6 +43,9 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private ControlAppearance _selectGameButtonAppearance = ControlAppearance.Primary;
+    
+    [ObservableProperty]
+    private ControlAppearance _deployButtonAppearance = ControlAppearance.Primary;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DeployCommand))]
@@ -61,6 +64,9 @@ public partial class MainViewModel : ObservableObject
     // Undeploy button visibility
     [ObservableProperty]
     private bool _isUndeployVisible;
+    
+    [ObservableProperty]
+    private string? _warningText;
 
     public MainViewModel(
         IFileSystem fileSystem,
@@ -200,6 +206,13 @@ public partial class MainViewModel : ObservableObject
         SelectGameButtonAppearance = ControlAppearance.Secondary;
 
         IsDeployEnabled = true;
+        DeployButtonAppearance = SelectedExecutableContext.Banned ? ControlAppearance.Caution : ControlAppearance.Primary;
+
+        WarningText = null;
+        
+        if (SelectedExecutableContext.Banned)
+            WarningText = UIStrings.BannedGameWarning;
+        
         IsExecutableInfoEnabled = true;
 
         // A game might include multiple APIs, so prioritize: Vulkan > DXGI > D3D9 > OpenGL

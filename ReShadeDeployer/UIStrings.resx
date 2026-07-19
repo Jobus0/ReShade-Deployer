@@ -299,4 +299,7 @@ The following files will be deleted:</value>
     <data name="PresetFolderNameDialog_NoName" xml:space="preserve">
         <value>No preset folder name entered.</value>
     </data>
+    <data name="BannedGameWarning" xml:space="preserve">
+        <value>The target application is known to have blocked or banned the usage of ReShade.</value>
+    </data>
 </root>

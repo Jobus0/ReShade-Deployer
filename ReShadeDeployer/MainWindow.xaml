@@ -153,12 +153,16 @@
                         </Grid>
                     </StackPanel>
                 </ui:Card>
+                <ui:Card Background="#33E98C03" Margin="0 0 0 5" Padding="10 8 10 10"
+                         Visibility="{Binding WarningText, Converter={StaticResource NullToVisibility}}">
+                    <TextBlock Text="{Binding WarningText}" FontSize="13" TextWrapping="Wrap"/>
+                </ui:Card>
                 <Grid Height="42">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <ui:Button Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsEnabled="{Binding IsDeployEnabled}" Appearance="Primary"
+                    <ui:Button Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsEnabled="{Binding IsDeployEnabled}" Appearance="{Binding DeployButtonAppearance}"
                                ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}"
                                Command="{Binding DeployCommand}">
                         <StackPanel Orientation="Horizontal">
