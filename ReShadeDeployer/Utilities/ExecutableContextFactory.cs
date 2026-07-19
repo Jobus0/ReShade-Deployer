@@ -106,6 +106,10 @@ public class ExecutableContextFactory(IFileSystem fileSystem, IPeInfoReader peIn
         if (installTarget != null)
             builder.DirectoryPath = fileSystem.Path.Combine(builder.DirectoryPath, installTarget);
         
+        string? is64Bit = ini[sectionKey]["Is64Bit"];
+        if (is64Bit != null)
+            builder.IsX64 = is64Bit == "1";
+        
         string? renderApi = ini[sectionKey]["RenderApi"];
         if (renderApi != null)
             ApplyRenderApiOverride(renderApi, builder);
