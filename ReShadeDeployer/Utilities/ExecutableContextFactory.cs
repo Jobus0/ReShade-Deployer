@@ -26,9 +26,10 @@ public class ExecutableContextFactory(IFileSystem fileSystem, IPeInfoReader peIn
         ContextBuilder builder;
         try
         {
-            var pe = peInfoReader.Read(executablePath);
             executablePath = ResolveUnrealEngineExecutablePath(executablePath);
             
+            var pe = peInfoReader.Read(executablePath);
+
             string fileName = fileSystem.Path.GetFileName(executablePath);
             string directoryPath = fileSystem.Path.GetDirectoryName(executablePath)!;
             
