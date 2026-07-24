@@ -119,8 +119,8 @@ The server is down, the connection was blocked, or the URL is invalid. Try again
 		<value>Exit</value>
 	</data>
     <data name="Copy" xml:space="preserve">
-		<value>Copy</value>
-	</data>
+        <value>Copy</value>
+    </data>
     <data name="FirstTimeSetup" xml:space="preserve">
 		<value>ReShade Deployer will now download ReShade and set up the required folder structure into the current folder.
 

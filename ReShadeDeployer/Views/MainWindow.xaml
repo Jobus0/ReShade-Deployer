@@ -8,7 +8,7 @@
                  xmlns:conv="clr-namespace:ReShadeDeployer.Converters"
                  mc:Ignorable="d"
                  ResizeMode="NoResize"
-                 Icon="ReShade.ico"
+                 Icon="/Resources/ReShade.ico"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="Mica"
                  Background="#222"
@@ -37,7 +37,7 @@
                 <Setter Property="Border.CornerRadius" Value="8" />
             </Style>
         </StackPanel.Resources>
-        <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="{ui:ImageIcon ReShade.ico}" ShowMaximize="False" CanMaximize="False" Padding="14 0" />
+        <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="{ui:ImageIcon /Resources/ReShade.ico}" ShowMaximize="False" CanMaximize="False" Padding="14 0" />
         <DockPanel Height="28" Margin="25 0 25 3" LastChildFill="False">
             <Label VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0 0 3 0" Content="{x:Static rd:UIStrings.VersionPrefix}" />
             <Label VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0" FontWeight="SemiBold" Content="{Binding Updater.VersionLabelContent}" />
@@ -219,15 +219,7 @@
                     </ui:Button>
                 </Grid>
             </StackPanel>
-            <ui:SnackbarPresenter x:Name="SnackbarPresenter" Panel.ZIndex="1000">
-                <ui:SnackbarPresenter.Resources>
-                    <ResourceDictionary>
-                        <ResourceDictionary.MergedDictionaries>
-                            <ResourceDictionary Source="Themes/SnackbarStyle.xaml" />
-                        </ResourceDictionary.MergedDictionaries>
-                    </ResourceDictionary>
-                </ui:SnackbarPresenter.Resources>
-            </ui:SnackbarPresenter>
+            <ui:SnackbarPresenter x:Name="SnackbarPresenter" Panel.ZIndex="1000"/>
         </Grid>
     </StackPanel>
 </ui:FluentWindow>

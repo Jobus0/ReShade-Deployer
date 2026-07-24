@@ -6,7 +6,7 @@
         <RootNamespace>ReShadeDeployer</RootNamespace>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
-        <ApplicationIcon>ReShade.ico</ApplicationIcon>
+        <ApplicationIcon>Resources\ReShade.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AssemblyVersion>1.5.0</AssemblyVersion>
         <Version>1.5.0</Version>
@@ -35,25 +35,32 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="ReShade.ico" />
-        <Resource Include="ReShade.ico">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Resource>
+      <Page Update="Views\MainWindow.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Update="UIStrings.resx">
-            <Generator>PublicResXFileCodeGenerator</Generator>
-            <LastGenOutput>UIStrings.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
+      <Resource Include="Resources\ReShade.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="UIStrings.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>UIStrings.resx</DependentUpon>
-        </Compile>
+      <EmbeddedResource Update="Resources\UIStrings.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>UIStrings.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\UIStrings.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>UIStrings.resx</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
