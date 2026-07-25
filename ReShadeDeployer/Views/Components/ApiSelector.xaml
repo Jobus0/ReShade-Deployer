@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="ReShadeDeployer.Views.Components.ApiSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ReShadeDeployer.Views.Components"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:rd="clr-namespace:ReShadeDeployer"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    </UserControl.Resources>
+    <ItemsControl ItemsSource="{Binding AvailableApis}">
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <RadioButton FontSize="13" 
+                             ToolTip="{Binding Tooltip}"
+                             IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                        <Border Margin="6,0,0,0"
+                                Padding="6,2"
+                                Background="#20000000" CornerRadius="5"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding IsDetected, Converter={StaticResource BoolToVisibility}}">
+                            <ui:TextBlock Text="{x:Static rd:UIStrings.Detected}" FontSize="11" FontWeight="Medium" Appearance="Tertiary" />
+                        </Border>
+                    </StackPanel>
+                </RadioButton>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

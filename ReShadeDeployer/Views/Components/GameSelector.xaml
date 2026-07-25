@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="ReShadeDeployer.Views.Components.GameSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ReShadeDeployer.Views.Components"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:rd="clr-namespace:ReShadeDeployer"
+             xmlns:converters="clr-namespace:ReShadeDeployer.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibility" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <ui:SymbolIcon Symbol="Document16" Margin="0,0,5,0"
+                           Visibility="{Binding SelectedGameIcon, Converter={StaticResource NullToVisibility}, ConverterParameter=Invert}" />
+            <ui:ImageIcon Source="{Binding SelectedGameIcon}" Margin="0,0,5,0" Width="16" Height="16"
+                          Visibility="{Binding SelectedGameIcon, Converter={StaticResource NullToVisibility}}" />
+            <ui:TextBlock Text="{Binding SelectedGameText}" ToolTip="{Binding SelectedGameTooltip}"
+                          VerticalAlignment="Center" FontSize="13" />
+        </StackPanel>
+        <ui:Button Grid.Column="1" Appearance="{Binding SelectGameButtonAppearance}" Margin="5 0 0 0"
+                   Content="{x:Static rd:UIStrings.Browse}" Click="SelectGameButton_OnClick" />
+        <ui:Button Grid.Column="2" Icon="{ui:SymbolIcon Info16}" Visibility="{Binding IsExecutableInfoEnabled, Converter={StaticResource BoolToVisibility}}"
+                   Margin="3 0 0 0" Padding="4" Command="{Binding ShowExecutableInfoCommand}" />
+    </Grid>
+</UserControl>

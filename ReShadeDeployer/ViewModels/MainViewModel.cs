@@ -35,16 +35,16 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private ImageSource? _selectedGameIcon;
-    
+
     [ObservableProperty]
     private string _selectedGameText = UIStrings.SelectedGame;
-    
+
     [ObservableProperty]
     private string _selectedGameTooltip = string.Empty;
 
     [ObservableProperty]
     private ControlAppearance _selectGameButtonAppearance = ControlAppearance.Primary;
-    
+
     [ObservableProperty]
     private ControlAppearance _deployButtonAppearance = ControlAppearance.Primary;
 
@@ -61,7 +61,7 @@ public partial class MainViewModel : ObservableObject
     // Undeploy button visibility
     [ObservableProperty]
     private bool _isUndeployVisible;
-    
+
     [ObservableProperty]
     private string? _warningText;
 
@@ -109,8 +109,12 @@ public partial class MainViewModel : ObservableObject
         Updater.Initialize();
 
         Addons.Refresh(Addons.IsAddonSupportChecked, SelectedExecutableContext);
+
+#if DEBUG
+        IsExecutableInfoEnabled = true;
+#endif
     }
-    
+
     private void InitializeAvailableApis()
     {
         AvailableApis.Add(new GraphicsApiOption(UIStrings.DirectX10, UIStrings.DirectX10_Tooltip, GraphicsApi.DXGI, isSelected: true));
@@ -219,10 +223,10 @@ public partial class MainViewModel : ObservableObject
         DeployButtonAppearance = SelectedExecutableContext.Banned ? ControlAppearance.Caution : ControlAppearance.Primary;
 
         WarningText = null;
-        
+
         if (SelectedExecutableContext.Banned)
             WarningText = UIStrings.BannedGameWarning;
-        
+
         IsExecutableInfoEnabled = true;
 
         // A game might include multiple APIs, so prioritize: Vulkan > DXGI > D3D9 > OpenGL

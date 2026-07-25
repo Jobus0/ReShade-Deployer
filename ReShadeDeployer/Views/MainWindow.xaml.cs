@@ -38,7 +38,7 @@ namespace ReShadeDeployer
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            SettingsButton.DataContext = _viewModel;
+            //SettingsButton.DataContext = _viewModel;
 
             var startupArgs = ((App)Application.Current).StartupArgs;
 
@@ -54,10 +54,8 @@ namespace ReShadeDeployer
 
                 Activate();
             };
-
-#if DEBUG
-            ExecutableInfoButton.Visibility = Visibility.Visible;
-#else
+            
+#if !DEBUG
             Dispatcher.UnhandledException += DispatcherOnUnhandledException;
 #endif
         }
@@ -72,29 +70,6 @@ namespace ReShadeDeployer
                 e.Handled = true;
                 Application.Current.Shutdown();
             }
-        }
-
-        private void SelectGameButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (TrySelectExecutable(out string executablePath))
-                _viewModel.SelectGameCommand.Execute(executablePath);
-        }
-
-        /// <summary>
-        /// Opens a file dialog for selecting an executable.
-        /// </summary>
-        /// <param name="executablePath">Path of the selected game executable.</param>
-        /// <returns>True if a file was selected, false if cancelled.</returns>
-        public bool TrySelectExecutable(out string executablePath)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = UIStrings.OpenFileDialog_Title;
-            openFileDialog.Filter = "Select EXE|*.exe";
-
-            bool result = openFileDialog.ShowDialog() ?? false;
-
-            executablePath = openFileDialog.FileName;
-            return result;
         }
 
         /// <summary>
@@ -115,16 +90,6 @@ namespace ReShadeDeployer
                 _viewModel.Updater.AcceptFirstTimeSetup();
             else
                 Application.Current.Shutdown();
-        }
-
-        private void AddonItem_OnUserClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (sender is FrameworkElement { DataContext: AddonItem item })
-            {
-                _viewModel.Addons.OnAddonItemClicked(item);
-            }
-
-            e.Handled = true;
         }
     }
 }

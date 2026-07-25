@@ -6,6 +6,7 @@
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  xmlns:rd="clr-namespace:ReShadeDeployer"
                  xmlns:conv="clr-namespace:ReShadeDeployer.Converters"
+                 xmlns:components="clr-namespace:ReShadeDeployer.Views.Components"
                  mc:Ignorable="d"
                  ResizeMode="NoResize"
                  Icon="/Resources/ReShade.ico"
@@ -20,15 +21,6 @@
     <ui:FluentWindow.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <conv:NullToVisibilityConverter x:Key="NullToVisibility" />
-        <conv:EnumToVisibilityConverter x:Key="EnumToVisibility" />
-        <conv:EnumToBoolConverter x:Key="EnumToBool" />
-        <Style x:Key="ApiBoldStyle" TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="True">
-                    <Setter Property="FontWeight" Value="Bold" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
     </ui:FluentWindow.Resources>
     <StackPanel>
         <StackPanel.Resources>
@@ -52,108 +44,24 @@
                     <TextBlock Text="{Binding Updater.UpdateButtonContent}" />
                 </StackPanel>
             </ui:Button>
-
-            <ui:DropDownButton Name="SettingsButton" VerticalAlignment="Center" DockPanel.Dock="Right" Padding="7, 3, 8, 2" FontSize="16"
-                               Icon="{ui:SymbolIcon Settings16}" Appearance="Transparent" Background="Transparent" BorderThickness="0"
-                               ToolTip="{x:Static rd:UIStrings.Settings_Tooltip}">
-                <ui:DropDownButton.Flyout>
-                    <ContextMenu>
-                        <ContextMenu.Resources>
-                            <Style TargetType="MenuItem">
-                                <Setter Property="FontSize" Value="13" />
-                            </Style>
-                        </ContextMenu.Resources>
-                        <MenuItem Header="{x:Static rd:UIStrings.ContextMenuDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsContextMenuRegistered}"
-                                  ToolTip="{x:Static rd:UIStrings.ContextMenuDeploy_Tooltip}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.ExitOnDeploy}" IsCheckable="True" IsChecked="{Binding Settings.IsAlwaysExitOnDeploy}"
-                                  ToolTip="{x:Static rd:UIStrings.ExitOnDeploy_Tooltip}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.UseLocalPresets}" IsCheckable="True" IsChecked="{Binding Settings.UseLocalPresets}"
-                                  ToolTip="{x:Static rd:UIStrings.UseLocalPresets_Tooltip}" />
-                        <Separator />
-                        <MenuItem Header="{x:Static rd:UIStrings.DownloadLatestVersion_Title}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.UpdateReShadeCommand}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.DownloadSpecificVersion_Title}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.DownloadSpecificVersionCommand}" />
-                        <Separator />
-                        <MenuItem Header="{x:Static rd:UIStrings.UpdateDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding Updater.CheckForDeployerUpdateCommand}" />
-                        <Separator />
-                        <MenuItem Header="{x:Static rd:UIStrings.UninstallDeployer}" HeaderStringFormat="{}{0}..." Command="{Binding Settings.UninstallCommand}" />
-                        <MenuItem Header="{x:Static rd:UIStrings.About}" HeaderStringFormat="{}{0}..." Command="{Binding Settings.ShowAboutCommand}" />
-                    </ContextMenu>
-                </ui:DropDownButton.Flyout>
-            </ui:DropDownButton>
+            <components:SettingsDropDownButton DockPanel.Dock="Right" />
         </DockPanel>
         <Separator />
         <Grid Background="#30000000">
             <StackPanel Margin="15" IsEnabled="{Binding Updater.IsPanelEnabled}">
                 <ui:Card Margin="0, 0, 0, 10" Padding="14 5 5 5">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal">
-                            <ui:SymbolIcon Symbol="Document16" Margin="0,0,5,0"
-                                           Visibility="{Binding SelectedGameIcon, Converter={StaticResource NullToVisibility}, ConverterParameter=Invert}" />
-                            <ui:ImageIcon Source="{Binding SelectedGameIcon}" Margin="0,0,5,0" Width="16" Height="16"
-                                          Visibility="{Binding SelectedGameIcon, Converter={StaticResource NullToVisibility}}" />
-                            <ui:TextBlock Text="{Binding SelectedGameText}" ToolTip="{Binding SelectedGameTooltip}"
-                                          VerticalAlignment="Center" FontSize="13" />
-                        </StackPanel>
-                        <ui:Button Grid.Column="1" Appearance="{Binding SelectGameButtonAppearance}" Margin="5 0 0 0"
-                                   Content="{x:Static rd:UIStrings.Browse}" Click="SelectGameButton_OnClick" />
-                        <ui:Button Name="ExecutableInfoButton" Grid.Column="2" Icon="{ui:SymbolIcon Info16}" IsEnabled="{Binding IsExecutableInfoEnabled}"
-                                   Visibility="Collapsed" Margin="3 0 0 0" Padding="4" Command="{Binding ShowExecutableInfoCommand}" />
-                    </Grid>
+                    <components:GameSelector/>
                 </ui:Card>
                 <TextBlock Text="{x:Static rd:UIStrings.TargetAPI}" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}" FontWeight="SemiBold" Margin="10 0" />
                 <ui:Card Margin="0, 0, 0, 10">
-                    <ItemsControl ItemsSource="{Binding AvailableApis}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <RadioButton FontSize="13" 
-                                             ToolTip="{Binding Tooltip}"
-                                             IsChecked="{Binding IsSelected, Mode=TwoWay}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-                                        <Border Margin="6,0,0,0"
-                                                Padding="6,2"
-                                                Background="#20000000" CornerRadius="5"
-                                                VerticalAlignment="Center"
-                                                Visibility="{Binding IsDetected, Converter={StaticResource BoolToVisibility}}">
-                                            <ui:TextBlock Text="{x:Static rd:UIStrings.Detected}" FontSize="11" FontWeight="Medium" Appearance="Tertiary" />
-                                        </Border>
-                                    </StackPanel>
-                                </RadioButton>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <components:ApiSelector />
                 </ui:Card>
                 <TextBlock Text="{x:Static rd:UIStrings.Addons}" FontWeight="SemiBold" Margin="10 0" />
                 <ui:Card Margin="0, 0, 0, 14">
                     <StackPanel>
                         <CheckBox Margin="0 0 0 0" Padding="0" FontSize="13" Content="{x:Static rd:UIStrings.Addon}" ToolTip="{x:Static rd:UIStrings.Addon_Tooltip}"
                                   IsChecked="{Binding Addons.IsAddonSupportChecked}" Command="{Binding ToggleAddonSupportCommand}" />
-                        <Grid Margin="0 6 0 6" Visibility="{Binding Addons.IsAddonsComboVisible, Converter={StaticResource BoolToVisibility}}">
-                            <ComboBox FontSize="13" HorizontalAlignment="Stretch" ItemsSource="{Binding Addons.Addons}">
-                                <ComboBox.ItemContainerStyle>
-                                    <Style TargetType="ComboBoxItem">
-                                        <Setter Property="Padding" Value="0" />
-                                        <Setter Property="MinHeight" Value="0" />
-                                        <EventSetter Event="PreviewMouseLeftButtonUp" Handler="AddonItem_OnUserClick" />
-                                    </Style>
-                                </ComboBox.ItemContainerStyle>
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Background="Transparent">
-                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" IsEnabled="{Binding IsSupported}"
-                                                      IsHitTestVisible="False" Margin="5,2" FontSize="13" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                            <TextBlock Text="{Binding Addons.AddonsSummaryText}" Margin="12,0,25,0" VerticalAlignment="Center"
-                                       IsHitTestVisible="False" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        </Grid>
+                        <components:AddonsComboBox/>
                     </StackPanel>
                 </ui:Card>
                 <ui:Card Background="#33E98C03" Margin="0 0 0 5" Padding="10 8 10 10"
