@@ -260,6 +260,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Detected.
+        /// </summary>
+        public static string Detected {
+            get {
+                return ResourceManager.GetString("Detected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DirectX 10 or later.
         /// </summary>
         public static string DirectX10 {

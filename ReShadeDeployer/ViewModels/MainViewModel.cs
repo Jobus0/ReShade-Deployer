@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
@@ -54,12 +55,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isExecutableInfoEnabled;
 
-    // Selected and highlighted graphics API
-    [ObservableProperty]
-    private GraphicsApi _selectedApi = GraphicsApi.DXGI;
-
-    [ObservableProperty]
-    private GraphicsApi? _highlightedApi;
+    // Available graphics APIs for the UI
+    public ObservableCollection<GraphicsApiOption> AvailableApis { get; } = new();
 
     // Undeploy button visibility
     [ObservableProperty]
@@ -92,6 +89,8 @@ public partial class MainViewModel : ObservableObject
         Settings = settings;
         Addons = addons;
 
+        InitializeAvailableApis();
+
         // When a ReShade download finishes, re-enable deploy if a game is already targeted
         Updater.ReShadeDownloadCompleted += () =>
         {
@@ -110,6 +109,17 @@ public partial class MainViewModel : ObservableObject
         Updater.Initialize();
 
         Addons.Refresh(Addons.IsAddonSupportChecked, SelectedExecutableContext);
+    }
+    
+    private void InitializeAvailableApis()
+    {
+        AvailableApis.Add(new GraphicsApiOption(UIStrings.DirectX10, UIStrings.DirectX10_Tooltip, GraphicsApi.DXGI, isSelected: true));
+        AvailableApis.Add(new GraphicsApiOption(UIStrings.DirectX9, UIStrings.DirectX9_Tooltip, GraphicsApi.D3D9));
+        AvailableApis.Add(new GraphicsApiOption(UIStrings.OpenGL, UIStrings.OpenGL_Tooltip, GraphicsApi.OpenGL));
+        AvailableApis.Add(new GraphicsApiOption(UIStrings.Vulkan, UIStrings.Vulkan_Tooltip, GraphicsApi.Vulkan));
+
+        foreach (var availableApi in AvailableApis)
+            availableApi.SelectionChanged += OnApiSelectionChanged;
     }
 
     [RelayCommand]
@@ -131,7 +141,7 @@ public partial class MainViewModel : ObservableObject
         if (SelectedExecutableContext == null)
             return;
 
-        var api = SelectedApi;
+        var api = AvailableApis.FirstOrDefault(a => a.IsSelected)?.Api ?? GraphicsApi.DXGI;
         var addonSupport = Addons.IsAddonSupportChecked;
 
         try
@@ -216,30 +226,21 @@ public partial class MainViewModel : ObservableObject
         IsExecutableInfoEnabled = true;
 
         // A game might include multiple APIs, so prioritize: Vulkan > DXGI > D3D9 > OpenGL
-        if (SelectedExecutableContext.IsVulkan)
+        // or leave unchanged if none are found
+        GraphicsApi? recommendedApi = SelectedExecutableContext switch
         {
-            SelectedApi = GraphicsApi.Vulkan;
-            HighlightedApi = GraphicsApi.Vulkan;
-        }
-        else if (SelectedExecutableContext.IsDXGI)
-        {
-            SelectedApi = GraphicsApi.DXGI;
-            HighlightedApi = GraphicsApi.DXGI;
-        }
-        else if (SelectedExecutableContext.IsD3D9)
-        {
-            SelectedApi = GraphicsApi.D3D9;
-            HighlightedApi = GraphicsApi.D3D9;
-        }
-        else if (SelectedExecutableContext.IsOpenGL)
-        {
-            SelectedApi = GraphicsApi.OpenGL;
-            HighlightedApi = GraphicsApi.OpenGL;
-        }
-        else
-        {
-            HighlightedApi = null;
-        }
+            {IsVulkan: true} => GraphicsApi.Vulkan,
+            {IsDXGI: true} => GraphicsApi.DXGI,
+            {IsD3D9: true} => GraphicsApi.D3D9,
+            {IsOpenGL: true} => GraphicsApi.OpenGL,
+            _ => null
+        };
+
+        if (recommendedApi != null)
+            SetApiSelection(recommendedApi.Value);
+
+        foreach (var availableApi in AvailableApis)
+            availableApi.IsDetected = availableApi.Api == recommendedApi;
 
         Addons.Refresh(Addons.IsAddonSupportChecked, SelectedExecutableContext);
         UpdateUndeployVisibility();
@@ -255,5 +256,16 @@ public partial class MainViewModel : ObservableObject
 
         var files = _reShadeUndeployer.FindReShadeFiles(SelectedExecutableContext.DirectoryPath);
         IsUndeployVisible = files.Count > 0;
+    }
+
+    private void SetApiSelection(GraphicsApi api)
+    {
+        foreach (var availableApi in AvailableApis)
+            availableApi.IsSelected = (availableApi.Api == api);
+    }
+
+    private void OnApiSelectionChanged(GraphicsApiOption selectedOption)
+    {
+        SetApiSelection(selectedOption.Api);
     }
 }

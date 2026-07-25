@@ -107,64 +107,26 @@
                 </ui:Card>
                 <TextBlock Text="{x:Static rd:UIStrings.TargetAPI}" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}" FontWeight="SemiBold" Margin="10 0" />
                 <ui:Card Margin="0, 0, 0, 10">
-                    <StackPanel>
-                        <RadioButton FontSize="13" ToolTip="{x:Static rd:UIStrings.DirectX10_Tooltip}"
-                                     IsChecked="{Binding SelectedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.DXGI}}"
-                                     Tag="{Binding HighlightedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.DXGI}}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{x:Static rd:UIStrings.DirectX10}" VerticalAlignment="Center"/>
-                                <Border Margin="6,0,0,0"
-                                        Padding="6,2"
-                                        Background="#20000000" CornerRadius="5"
-                                        VerticalAlignment="Center"
-                                        Visibility="{Binding HighlightedApi, Converter={StaticResource EnumToVisibility}, ConverterParameter={x:Static rd:GraphicsApi.DXGI}}">
-                                    <ui:TextBlock Text="Detected" FontSize="11" FontWeight="Medium" Appearance="Tertiary" />
-                                </Border>
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton FontSize="13" ToolTip="{x:Static rd:UIStrings.DirectX9_Tooltip}"
-                                     IsChecked="{Binding SelectedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.D3D9}}"
-                                     Tag="{Binding HighlightedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.D3D9}}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{x:Static rd:UIStrings.DirectX9}" VerticalAlignment="Center"/>
-                                <Border Margin="6,0,0,0"
-                                        Padding="6,2"
-                                        Background="#20000000" CornerRadius="5"
-                                        VerticalAlignment="Center"
-                                        Visibility="{Binding HighlightedApi, Converter={StaticResource EnumToVisibility}, ConverterParameter={x:Static rd:GraphicsApi.D3D9}}">
-                                    <ui:TextBlock Text="Detected" FontSize="11" FontWeight="Medium" Appearance="Tertiary" />
-                                </Border>
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton FontSize="13" ToolTip="{x:Static rd:UIStrings.OpenGL_Tooltip}"
-                                     IsChecked="{Binding SelectedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.OpenGL}}"
-                                     Tag="{Binding HighlightedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.OpenGL}}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{x:Static rd:UIStrings.OpenGL}" VerticalAlignment="Center"/>
-                                <Border Margin="6,0,0,0"
-                                        Padding="6,2"
-                                        Background="#20000000" CornerRadius="5"
-                                        VerticalAlignment="Center"
-                                        Visibility="{Binding HighlightedApi, Converter={StaticResource EnumToVisibility}, ConverterParameter={x:Static rd:GraphicsApi.OpenGL}}">
-                                    <ui:TextBlock Text="Detected" FontSize="11" FontWeight="Medium" Appearance="Tertiary" />
-                                </Border>
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton FontSize="13" ToolTip="{x:Static rd:UIStrings.Vulkan_Tooltip}"
-                                     IsChecked="{Binding SelectedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.Vulkan}}"
-                                     Tag="{Binding HighlightedApi, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static rd:GraphicsApi.Vulkan}}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{x:Static rd:UIStrings.Vulkan}" VerticalAlignment="Center"/>
-                                <Border Margin="6,0,0,0"
-                                        Padding="6,2"
-                                        Background="#20000000" CornerRadius="5"
-                                        VerticalAlignment="Center"
-                                        Visibility="{Binding HighlightedApi, Converter={StaticResource EnumToVisibility}, ConverterParameter={x:Static rd:GraphicsApi.Vulkan}}">
-                                    <ui:TextBlock Text="Detected" FontSize="11" FontWeight="Medium" Appearance="Tertiary" />
-                                </Border>
-                            </StackPanel>
-                        </RadioButton>
-                    </StackPanel>
+                    <ItemsControl ItemsSource="{Binding AvailableApis}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <RadioButton FontSize="13" 
+                                             ToolTip="{Binding Tooltip}"
+                                             IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                        <Border Margin="6,0,0,0"
+                                                Padding="6,2"
+                                                Background="#20000000" CornerRadius="5"
+                                                VerticalAlignment="Center"
+                                                Visibility="{Binding IsDetected, Converter={StaticResource BoolToVisibility}}">
+                                            <ui:TextBlock Text="{x:Static rd:UIStrings.Detected}" FontSize="11" FontWeight="Medium" Appearance="Tertiary" />
+                                        </Border>
+                                    </StackPanel>
+                                </RadioButton>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </ui:Card>
                 <TextBlock Text="{x:Static rd:UIStrings.Addons}" FontWeight="SemiBold" Margin="10 0" />
                 <ui:Card Margin="0, 0, 0, 14">
