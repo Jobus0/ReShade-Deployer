@@ -52,10 +52,12 @@
                 <ui:Card Margin="0, 0, 0, 10" Padding="14 5 5 5">
                     <components:GameSelector/>
                 </ui:Card>
+                
                 <TextBlock Text="{x:Static rd:UIStrings.TargetAPI}" ToolTip="{x:Static rd:UIStrings.TargetAPI_Tooltip}" FontWeight="SemiBold" Margin="10 0" />
                 <ui:Card Margin="0, 0, 0, 10">
                     <components:ApiSelector />
                 </ui:Card>
+                
                 <TextBlock Text="{x:Static rd:UIStrings.Addons}" FontWeight="SemiBold" Margin="10 0" />
                 <ui:Card Margin="0, 0, 0, 14">
                     <StackPanel>
@@ -64,15 +66,18 @@
                         <components:AddonsComboBox/>
                     </StackPanel>
                 </ui:Card>
+                
                 <ui:Card Background="#33E98C03" Margin="0 0 0 5" Padding="10 8 10 10"
                          Visibility="{Binding WarningText, Converter={StaticResource NullToVisibility}}">
                     <TextBlock Text="{Binding WarningText}" FontSize="13" TextWrapping="Wrap"/>
                 </ui:Card>
+                
                 <Grid Height="42">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
+                    
                     <ui:Button Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsEnabled="{Binding IsDeployEnabled}" Appearance="{Binding DeployButtonAppearance}"
                                ToolTip="{x:Static rd:UIStrings.DeployButton_Tooltip}"
                                Command="{Binding DeployCommand}">
@@ -81,6 +86,7 @@
                             <TextBlock Text="{x:Static rd:UIStrings.DeployButton}" />
                         </StackPanel>
                     </ui:Button>
+                    
                     <ui:Button Grid.Column="1" VerticalAlignment="Stretch" Padding="12" Margin="5,0,0,0" Appearance="Danger"
                                Visibility="{Binding IsUndeployVisible, Converter={StaticResource BoolToVisibility}}"
                                ToolTip="{x:Static rd:UIStrings.UndeployButton_Tooltip}"
@@ -89,6 +95,7 @@
                     </ui:Button>
                 </Grid>
             </StackPanel>
+            
             <ui:SnackbarPresenter x:Name="SnackbarPresenter" Panel.ZIndex="1000"/>
         </Grid>
     </StackPanel>
