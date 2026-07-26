@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,6 +13,8 @@ public partial class AddonsViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isAddonSupportChecked;
+
+    public event Action<bool>? AddonSupportCheckedChanged;
 
     [ObservableProperty]
     private bool _isAddonsComboVisible;
@@ -76,5 +79,10 @@ public partial class AddonsViewModel : ObservableObject
         AddonsSummaryText = selected.Count == 0
             ? UIStrings.AddonSummaryPlaceholder
             : string.Join(", ", selected.Select(addon => addon.Name));
+    }
+    
+    partial void OnIsAddonSupportCheckedChanged(bool value)
+    {
+        AddonSupportCheckedChanged?.Invoke(value);
     }
 }

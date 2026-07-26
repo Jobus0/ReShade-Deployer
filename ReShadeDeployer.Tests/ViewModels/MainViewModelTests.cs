@@ -52,7 +52,6 @@ public class MainViewModelTests
         _orchestrator = new DeploymentOrchestrator(
             _fileSystem,
             _dllDeployer,
-            _vulkanDeployer,
             _iniDeployer,
             _presetDeployer,
             _addonsDeployer,

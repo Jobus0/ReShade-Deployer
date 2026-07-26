@@ -802,11 +802,9 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are about to install ReShade with add-on support for Vulkan globally.
+        ///   Looks up a localized string similar to This will install ReShade with add-on support for Vulkan globally.
         ///
-        ///Be aware of ban risks if you play an online game using Vulkan that you have deployed ReShade to before.
-        ///
-        ///To be safe, press Cancel and uncheck add-on support before deploying again..
+        ///Be aware of ban risks if you play an online game using Vulkan that you have deployed ReShade to before..
         /// </summary>
         public static string Vulkan_Addon_Warning {
             get {

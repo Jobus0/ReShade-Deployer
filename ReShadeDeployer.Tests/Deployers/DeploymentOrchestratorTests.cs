@@ -40,7 +40,6 @@ public class DeploymentOrchestratorTests
         _orchestrator = new DeploymentOrchestrator(
             _fileSystem,
             _dllDeployer,
-            _vulkanDeployer,
             _iniDeployer,
             _presetDeployer,
             _addonsDeployer,
@@ -60,27 +59,6 @@ public class DeploymentOrchestratorTests
         _fileSystem.File.WriteAllText(_fileSystem.Path.Combine(Paths.Dlls, "ReShade32.dll"), "dll32");
         _fileSystem.File.WriteAllText(_fileSystem.Path.Combine(Paths.AddonDlls, "ReShade64.dll"), "addondll64");
         _fileSystem.File.WriteAllText(_fileSystem.Path.Combine(Paths.AddonDlls, "ReShade32.dll"), "addondll32");
-    }
-
-    [Fact]
-    public async Task DeployReShadeForExecutable_VulkanWithAddonSupportWarning_CancelsDeployment()
-    {
-        // Arrange
-        // We set NextResult to Close (or Cancel/Secondary) so the user cancels
-        _messageBox.NextResults.Enqueue(MessageBoxResult.Secondary);
-        
-        var addons = new List<AddonItem>();
-
-        // Act
-        await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.Vulkan, addonSupport: true, addons);
-
-        // Assert
-        // MessageBox was shown
-        Assert.Single(_messageBox.ShowCalls);
-        Assert.Contains(UIStrings.Vulkan_Addon_Warning, _messageBox.ShowCalls[0].ContentText);
-
-        // Since user cancelled, DLL deployer wasn't called (no files in CommonPathLocal or target dir)
-        Assert.False(_fileSystem.File.Exists(_fileSystem.Path.Combine(Paths.CommonPathLocal, "ReShade64.dll")));
     }
 
     [Fact]

@@ -234,11 +234,9 @@ Current version: {1}</value>
 		<value>Vulkan</value>
 	</data>
     <data name="Vulkan_Addon_Warning" xml:space="preserve">
-		<value>You are about to install ReShade with add-on support for Vulkan globally.
+		<value>This will install ReShade with add-on support for Vulkan globally.
 
-Be aware of ban risks if you play an online game using Vulkan that you have deployed ReShade to before.
-
-To be safe, press Cancel and uncheck add-on support before deploying again.</value>
+Be aware of ban risks if you play an online game using Vulkan that you have deployed ReShade to before.</value>
 	</data>
     <data name="Vulkan_Tooltip" xml:space="preserve">
 		<value>Creates no DLL in the game directory, but installs ReShade to Vulkan system-wide instead.</value>

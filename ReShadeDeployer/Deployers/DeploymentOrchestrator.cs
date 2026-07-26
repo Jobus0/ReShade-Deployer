@@ -13,7 +13,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public partial class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer, VulkanSystemWideDeployer vulkanSystemWideDeployer,
+public partial class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer,
     IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer,
     IMessageBox messageBox, IConfig config, ISnackbarService snackbarService)
 {
@@ -26,20 +26,8 @@ public partial class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer 
     /// <param name="addons">List of addons to deploy.</param>
     public async Task DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, IList<AddonItem> addons)
     {
-        if (api == GraphicsApi.Vulkan && addonSupport && !vulkanSystemWideDeployer.IsVulkanDeployedWithAddonSupport())
-        {
-            var result = await messageBox.Show(UIStrings.Warning,
-                UIStrings.Vulkan_Addon_Warning,
-                primaryButtonText: UIStrings.Continue, ControlAppearance.Caution,
-                closeButtonText: UIStrings.Cancel);
-            
-            if (result != MessageBoxResult.Primary)
-                return;
-        }
-        else if (api == GraphicsApi.D3D9 && executableContext.IsD3D8)
-        {
+        if (api == GraphicsApi.D3D9 && executableContext.IsD3D8)
             await messageBox.Show(UIStrings.Notice, UIStrings.D3D8_Info);
-        }
 
         string? presetName = null;
         string? presetPath = null;

@@ -98,6 +98,7 @@ public partial class MainViewModel : ObservableObject
         };
         
         WarningTexts.CollectionChanged += (sender, args) => OnWarningTextsChanged();
+        Addons.AddonSupportCheckedChanged += (isChecked) => UpdateVulkanWithAddonSupportWarning();
     }
 
     public void Initialize(string[] startupArgs)
@@ -264,6 +265,21 @@ public partial class MainViewModel : ObservableObject
     {
         foreach (var availableApi in AvailableApis)
             availableApi.IsSelected = (availableApi.Api == api);
+
+        UpdateVulkanWithAddonSupportWarning();
+    }
+
+    private void UpdateVulkanWithAddonSupportWarning()
+    {
+        GraphicsApi api = AvailableApis.FirstOrDefault(a => a.IsSelected)?.Api ?? GraphicsApi.DXGI;
+        
+        if (api == GraphicsApi.Vulkan && Addons.IsAddonSupportChecked)
+        {
+            if (!WarningTexts.Contains(UIStrings.Vulkan_Addon_Warning))
+                WarningTexts.Add(UIStrings.Vulkan_Addon_Warning);
+        }
+        else
+            WarningTexts.Remove(UIStrings.Vulkan_Addon_Warning);
     }
 
     private void OnApiSelectionChanged(GraphicsApiOption selectedOption)
