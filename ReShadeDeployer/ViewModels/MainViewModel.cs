@@ -62,8 +62,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isUndeployVisible;
 
-    [ObservableProperty]
-    private string? _warningText;
+    public ObservableCollection<string> WarningTexts { get; } = new();
 
     public MainViewModel(
         IFileSystem fileSystem,
@@ -97,6 +96,8 @@ public partial class MainViewModel : ObservableObject
             if (SelectedExecutableContext != null)
                 IsDeployEnabled = true;
         };
+        
+        WarningTexts.CollectionChanged += (sender, args) => OnWarningTextsChanged();
     }
 
     public void Initialize(string[] startupArgs)
@@ -220,15 +221,12 @@ public partial class MainViewModel : ObservableObject
         SelectGameButtonAppearance = ControlAppearance.Secondary;
 
         IsDeployEnabled = true;
-        DeployButtonAppearance = SelectedExecutableContext.Banned ? ControlAppearance.Caution : ControlAppearance.Primary;
 
-        WarningText = null;
+        WarningTexts.Clear();
 
         if (SelectedExecutableContext.Banned)
-            WarningText = UIStrings.BannedGameWarning;
-
-        IsExecutableInfoEnabled = true;
-
+            WarningTexts.Add(UIStrings.BannedGameWarning);
+        
         // A game might include multiple APIs, so prioritize: Vulkan > DXGI > D3D9 > OpenGL
         // or leave unchanged if none are found
         GraphicsApi? recommendedApi = SelectedExecutableContext switch
@@ -271,5 +269,10 @@ public partial class MainViewModel : ObservableObject
     private void OnApiSelectionChanged(GraphicsApiOption selectedOption)
     {
         SetApiSelection(selectedOption.Api);
+    }
+    
+    private void OnWarningTextsChanged()
+    {
+        DeployButtonAppearance = WarningTexts.Count > 0 ? ControlAppearance.Caution : ControlAppearance.Primary;
     }
 }

@@ -67,10 +67,15 @@
                     </StackPanel>
                 </ui:Card>
                 
-                <ui:Card Background="#33E98C03" Margin="0 0 0 5" Padding="10 8 10 10"
-                         Visibility="{Binding WarningText, Converter={StaticResource NullToVisibility}}">
-                    <TextBlock Text="{Binding WarningText}" FontSize="13" TextWrapping="Wrap"/>
-                </ui:Card>
+                <ItemsControl ItemsSource="{Binding WarningTexts}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ui:Card Background="#33E98C03" Padding="10 8 10 10" Margin="0 0 0 5">
+                                <TextBlock Text="{Binding}" FontSize="13" TextWrapping="Wrap"/>
+                            </ui:Card>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 
                 <Grid Height="42">
                     <Grid.ColumnDefinitions>
