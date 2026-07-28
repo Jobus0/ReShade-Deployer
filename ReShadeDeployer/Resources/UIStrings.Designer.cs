@@ -775,7 +775,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Store the ReShadePreset.ini in a local Presets folder in the Deployer root folder instead of the game folder..
+        ///   Looks up a localized string similar to Store the ReShadePreset.ini in the Deployer&apos;s local Presets folder instead of the game folder..
         /// </summary>
         public static string UseLocalPresets_Tooltip {
             get {
