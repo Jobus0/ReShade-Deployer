@@ -303,4 +303,13 @@ The following files will be deleted:</value>
     <data name="Detected" xml:space="preserve">
         <value>Detected</value>
     </data>
+    <data name="SelectExecutableFirst" xml:space="preserve">
+        <value>Select a game executable first.</value>
+    </data>
+    <data name="LocalPresetName_Tooltip" xml:space="preserve">
+        <value>The name to use for the local preset folder.</value>
+    </data>
+    <data name="LocalPresetName_Placeholder" xml:space="preserve">
+        <value>Enter name...</value>
+    </data>
 </root>

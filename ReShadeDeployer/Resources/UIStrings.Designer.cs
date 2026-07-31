@@ -419,6 +419,24 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter name....
+        /// </summary>
+        public static string LocalPresetName_Placeholder {
+            get {
+                return ResourceManager.GetString("LocalPresetName_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name to use for the local preset folder..
+        /// </summary>
+        public static string LocalPresetName_Tooltip {
+            get {
+                return ResourceManager.GetString("LocalPresetName_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notice.
         /// </summary>
         public static string Notice {
@@ -543,6 +561,15 @@ namespace ReShadeDeployer {
         public static string SelectedGame {
             get {
                 return ResourceManager.GetString("SelectedGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a game executable first..
+        /// </summary>
+        public static string SelectExecutableFirst {
+            get {
+                return ResourceManager.GetString("SelectExecutableFirst", resourceCulture);
             }
         }
         
