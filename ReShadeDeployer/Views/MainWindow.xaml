@@ -70,7 +70,7 @@
                 <StackPanel Visibility="{Binding Settings.UseLocalPresets, Converter={StaticResource BoolToVisibility}}">
                     <TextBlock Text="Preset Name" FontWeight="SemiBold" Margin="10 0" />
                     <ui:Card Margin="0, 0, 0, 14" Padding="14 10">
-                        <ui:TextBox Text="{Binding LocalPresetName}" 
+                        <ui:TextBox Text="{Binding LocalPresetName, UpdateSourceTrigger=PropertyChanged}" 
                                  FontSize="13" PlaceholderText="{x:Static rd:UIStrings.LocalPresetName_Placeholder}"
                                  Padding="8 6"
                                  ToolTipService.ShowOnDisabled="True"

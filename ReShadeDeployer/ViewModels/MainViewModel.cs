@@ -65,8 +65,11 @@ public partial class MainViewModel : ObservableObject
 
     public ObservableCollection<string> WarningTexts { get; } = new();
 
-    [ObservableProperty]
-    private string _localPresetName = string.Empty;
+    public string LocalPresetName
+    {
+        get;
+        set => SetProperty(ref field, RemoveInvalidPathCharacters(value));
+    } = string.Empty;
 
     public MainViewModel(
         IFileSystem fileSystem,
@@ -297,6 +300,14 @@ public partial class MainViewModel : ObservableObject
     private void OnWarningTextsChanged()
     {
         DeployButtonAppearance = WarningTexts.Count > 0 ? ControlAppearance.Caution : ControlAppearance.Primary;
+    }
+
+    private string RemoveInvalidPathCharacters(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return string.Empty;
+
+        return string.Concat(value.Where(c => !_fileSystem.Path.GetInvalidFileNameChars().Contains(c)));
     }
 
     private string GetDefaultPresetFolderName(string executablePath)

@@ -132,6 +132,37 @@ public class MainViewModelTests
     }
 
     [Fact]
+    public void LocalPresetName_WhenSet_RemovesInvalidPathCharacters()
+    {
+        // Arrange
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService);
+
+        // Act
+        mainVm.LocalPresetName = "Bad<Folder>:\"/\\|?*Name";
+
+        // Assert
+        Assert.Equal("BadFolderName", mainVm.LocalPresetName);
+    }
+
+    [Fact]
+    public void TargetExecutable_WhenExistingPresetPathContainsInvalidPathCharacters_SanitizesLocalPresetName()
+    {
+        // Arrange
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService);
+        string gamePath = @"C:\Games\TargetGame\game.exe";
+        string gameDirectory = _fileSystem.Path.GetDirectoryName(gamePath)!;
+        _fileSystem.Directory.CreateDirectory(gameDirectory);
+        _fileSystem.File.WriteAllText(gamePath, "game binary");
+        _fileSystem.File.WriteAllText(_fileSystem.Path.Combine(gameDirectory, "ReShade.ini"), $"PresetPath={Paths.Presets}\\Bad<Folder>:\"|?*Name\\ReShadePreset.ini");
+
+        // Act
+        mainVm.TargetExecutable(gamePath);
+
+        // Assert
+        Assert.Equal("BadFolderName", mainVm.LocalPresetName);
+    }
+
+    [Fact]
     public void DeployCommand_CallsOrchestrator()
     {
         // Arrange
