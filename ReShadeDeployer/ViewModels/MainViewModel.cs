@@ -68,7 +68,13 @@ public partial class MainViewModel : ObservableObject
     public string LocalPresetName
     {
         get;
-        set => SetProperty(ref field, RemoveInvalidPathCharacters(value));
+        set
+        {
+            if (SetProperty(ref field, RemoveInvalidPathCharacters(value)))
+            {
+                DeployCommand.NotifyCanExecuteChanged();
+            }
+        }
     } = string.Empty;
 
     public MainViewModel(
@@ -106,6 +112,13 @@ public partial class MainViewModel : ObservableObject
         
         WarningTexts.CollectionChanged += (sender, args) => OnWarningTextsChanged();
         Addons.AddonSupportCheckedChanged += (isChecked) => UpdateVulkanWithAddonSupportWarning();
+        Settings.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(Settings.UseLocalPresets))
+            {
+                DeployCommand.NotifyCanExecuteChanged();
+            }
+        };
     }
 
     public void Initialize(string[] startupArgs)
@@ -171,7 +184,16 @@ public partial class MainViewModel : ObservableObject
         UpdateUndeployVisibility();
     }
 
-    private bool CanDeploy() => SelectedExecutableContext != null && IsDeployEnabled;
+    private bool CanDeploy()
+    {
+        if (SelectedExecutableContext == null || !IsDeployEnabled)
+            return false;
+
+        if (Settings.UseLocalPresets && string.IsNullOrWhiteSpace(LocalPresetName))
+            return false;
+
+        return true;
+    }
 
     [RelayCommand(CanExecute = nameof(CanUndeploy))]
     private async Task Undeploy()

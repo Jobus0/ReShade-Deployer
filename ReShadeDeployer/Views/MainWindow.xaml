@@ -108,14 +108,21 @@
                     </Grid.ColumnDefinitions>
                     
                     <ui:Button Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                               IsEnabled="{Binding IsDeployEnabled}"
                                ToolTipService.ShowOnDisabled="True"
                                Appearance="{Binding DeployButtonAppearance}"
                                Command="{Binding DeployCommand}">
                         <ui:Button.Style>
                             <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                <Setter Property="IsEnabled" Value="{Binding IsDeployEnabled}" />
                                 <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.DeployButton_Tooltip}" />
                                 <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Settings.UseLocalPresets}" Value="True" />
+                                            <Condition Binding="{Binding LocalPresetName}" Value="" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </MultiDataTrigger>
                                     <Trigger Property="IsEnabled" Value="False">
                                         <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.SelectExecutableFirst}" />
                                     </Trigger>
