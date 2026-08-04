@@ -92,7 +92,8 @@ public partial class UpdaterViewModel : ObservableObject
     {
         var (result, version) = await _messageBox.ShowWithTextBox(UIStrings.DownloadSpecificVersion_Title,
             UIStrings.DownloadSpecificVersion_Content,
-            UIStrings.Download, UIStrings.Cancel);
+            UIStrings.Download, UIStrings.Cancel,
+            inputValidationConditional: VersionParser.IsValidSemanticVersion);
 
         version = VersionParser.Parse(version);
 
@@ -211,7 +212,6 @@ public partial class UpdaterViewModel : ObservableObject
                 _config.LatestReShadeVersionNumber = version;
                 _config.LatestReShadeVersionNumberCheckDate = DateTime.Now;
                 
-                // Remove version label from the update button, keeping only the icon
                 UpdateButtonContent = string.Empty;
                 UpdateButtonVisibility = Visibility.Collapsed;
             }
