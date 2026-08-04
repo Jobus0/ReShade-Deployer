@@ -74,6 +74,7 @@
                                  FontSize="13" PlaceholderText="{x:Static rd:UIStrings.LocalPresetName_Placeholder}"
                                  Padding="8 6"
                                  ToolTipService.ShowOnDisabled="True"
+                                 rd:TextBoxValidation.HighlightEmpty="True"
                                  IsEnabled="{Binding SelectedExecutableContext, Converter={StaticResource NullToBool}}">
                             <ui:TextBox.Style>
                                 <Style TargetType="ui:TextBox" BasedOn="{StaticResource {x:Type ui:TextBox}}">
