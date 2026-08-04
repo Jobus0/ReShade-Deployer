@@ -20,6 +20,9 @@ public static partial class VersionParser
 
     [GeneratedRegex("\\d+(\\.\\d+)*")]
     private static partial Regex VersionNumberPattern();
+
+    [GeneratedRegex("^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$")]
+    private static partial Regex SemanticVersionPattern();
     
     /// <summary>
     /// Gets the version number from a string like a download URL.
@@ -73,5 +76,18 @@ public static partial class VersionParser
     public static bool IsNewerThan(string version1, string version2)
     {
         return Compare(version1, version2) == VersionComparisonResult.Newer;
+    }
+
+    /// <summary>
+    /// Validates if a string is a valid semantic version.
+    /// </summary>
+    /// <param name="version">The version string to validate.</param>
+    /// <returns>True if the string is a valid semantic version, false otherwise.</returns>
+    public static bool IsValidSemanticVersion(string version)
+    {
+        if (string.IsNullOrEmpty(version))
+            return false;
+
+        return SemanticVersionPattern().IsMatch(version);
     }
 }
