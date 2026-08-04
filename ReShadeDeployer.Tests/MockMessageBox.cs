@@ -25,7 +25,7 @@ public class MockMessageBox : IMessageBox
         return Task.FromResult(GetNextResult());
     }
 
-    public Task<(MessageBoxResult Result, string TextBoxText)> ShowWithTextBox(string title, string contentText, string primaryButtonText, string secondaryButtonText, string defaultTextBoxText = "")
+    public Task<(MessageBoxResult Result, string TextBoxText)> ShowWithTextBox(string title, string contentText, string primaryButtonText, string secondaryButtonText, string defaultTextBoxText = "", Func<string, bool>? inputValidationConditional = null)
     {
         ShowWithTextBoxCalls.Add((title, contentText, primaryButtonText, secondaryButtonText, defaultTextBoxText));
         return Task.FromResult((GetNextResult(), NextTextBox));

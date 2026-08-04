@@ -54,7 +54,7 @@ public partial class WpfMessageBox : IMessageBox
         return messageBox.ShowDialogAsync();
     }
     
-    public async Task<(MessageBoxResult Result, string TextBoxText)> ShowWithTextBox(string title, string contentText, string primaryButtonText, string closeButtonText = "OK", string defaultTextBoxText = "")
+    public async Task<(MessageBoxResult Result, string TextBoxText)> ShowWithTextBox(string title, string contentText, string primaryButtonText, string closeButtonText = "OK", string defaultTextBoxText = "", Func<string, bool>? inputValidationConditional = null)
     {
         TextBlock content = new TextBlock {Text = contentText, TextWrapping = TextWrapping.Wrap};
         ConvertStringLinksToHyperlinks(content);
@@ -66,6 +66,10 @@ public partial class WpfMessageBox : IMessageBox
             FontSize = 14,
             Text = defaultTextBoxText
         };
+        TextBoxValidation.SetHighlightEmpty(inputTextBox, true);
+        
+        if (inputValidationConditional != null)
+            TextBoxValidation.SetCustomCondition(inputTextBox, () => inputValidationConditional(inputTextBox.Text));
 
         StackPanel panel = new StackPanel();
         panel.Children.Add(content);
@@ -80,12 +84,19 @@ public partial class WpfMessageBox : IMessageBox
             {
                 inputTextBox.SelectAll();
             }
+
+            messageBox.IsPrimaryButtonEnabled = !string.IsNullOrEmpty(inputTextBox.Text);
         };
         inputTextBox.KeyUp += (s, e) =>
         {
             if (e.Key == Key.Return)
                 if (messageBox.TemplateButtonCommand.CanExecute(MessageBoxButton.Primary))
                     messageBox.TemplateButtonCommand.Execute(MessageBoxButton.Primary);
+        };
+        inputTextBox.TextChanged += (_, _) =>
+        {
+            messageBox.IsPrimaryButtonEnabled = !string.IsNullOrEmpty(inputTextBox.Text)
+                                                && (inputValidationConditional == null || inputValidationConditional(inputTextBox.Text));
         };
 
         var result = await messageBox.ShowDialogAsync();
