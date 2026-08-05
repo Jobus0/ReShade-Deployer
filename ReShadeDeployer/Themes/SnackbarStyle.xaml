@@ -3,63 +3,120 @@
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
 
     <Style TargetType="ui:Snackbar" BasedOn="{StaticResource {x:Type ui:Snackbar}}">
-                        <Setter Property="MinHeight" Value="40" />
-                        <Setter Property="Padding" Value="16,0" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ui:Snackbar">
-                                    <Border Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            CornerRadius="{DynamicResource ControlCornerRadius}"
-                                            SnapsToDevicePixels="True">
-                                        <Border.Effect>
-                                            <DropShadowEffect BlurRadius="12" 
-                                                              ShadowDepth="4" 
-                                                              Direction="270" 
-                                                              Opacity="0.5" 
-                                                              Color="Black" 
-                                                              RenderingBias="Quality"/>
-                                        </Border.Effect>
-                                        <Grid Margin="{TemplateBinding Padding}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ui:Snackbar">
+                    
+                    <!-- Starts hidden (Opacity 0) and offset 50px higher than normal position -->
+                    <Border x:Name="RootBorder" 
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}"
+                            SnapsToDevicePixels="True"
+                            Opacity="0">
+                        
+                        <Border.RenderTransform>
+                            <TranslateTransform Y="-50" />
+                        </Border.RenderTransform>
 
-                                            <ContentPresenter
-                                                Grid.Column="0"
-                                                Content="{TemplateBinding Icon}"
-                                                Margin="0,0,12,0"
-                                                VerticalAlignment="Center" />
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="8" 
+                                              ShadowDepth="2" 
+                                              Direction="270" 
+                                              Opacity="0.4" 
+                                              Color="Black" 
+                                              RenderingBias="Quality"/>
+                        </Border.Effect>
+                        
+                        <Grid Margin="{TemplateBinding Padding}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                                            <ContentPresenter
-                                                Grid.Column="1"
-                                                Content="{TemplateBinding Title}"
-                                                TextElement.FontSize="13"
-                                                TextElement.FontWeight="SemiBold"
-                                                VerticalAlignment="Center" />
+                            <ContentPresenter
+                                Grid.Column="0"
+                                Content="{TemplateBinding Icon}"
+                                Margin="0,0,12,0"
+                                VerticalAlignment="Center" />
 
-                                            <Button Grid.Column="0" 
-                                                    Grid.ColumnSpan="2"
-                                                    Command="{TemplateBinding TemplateButtonCommand}"
-                                                    Focusable="False">
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="Button">
-                                                                    <Border Background="Transparent" />
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style>
-                                                </Button.Style>
-                                            </Button>
-                                        </Grid>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
+                            <ContentPresenter
+                                Grid.Column="1"
+                                Content="{TemplateBinding Title}"
+                                TextElement.FontSize="13"
+                                TextElement.FontWeight="SemiBold"
+                                VerticalAlignment="Center" />
+
+                            <Button Grid.Column="0" 
+                                    Grid.ColumnSpan="2"
+                                    Command="{TemplateBinding TemplateButtonCommand}"
+                                    Focusable="False">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="Transparent" />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- ControlTemplate.Triggers catches WPF-UI's property changes -->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsShown" Value="True">
+                            
+                            <!-- Slide IN when IsShown becomes True -->
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="RootBorder" 
+                                                         Storyboard.TargetProperty="Opacity" 
+                                                         From="0" To="1" Duration="0:0:0.25" />
+                                        
+                                        <DoubleAnimation Storyboard.TargetName="RootBorder" 
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" 
+                                                         From="-50" To="0" Duration="0:0:0.3">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+
+                            <!-- Slide OUT when IsShown becomes False -->
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="RootBorder" 
+                                                         Storyboard.TargetProperty="Opacity" 
+                                                         To="0" Duration="0:0:0.2" />
+                                        
+                                        <DoubleAnimation Storyboard.TargetName="RootBorder" 
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" 
+                                                         To="-50" Duration="0:0:0.25">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseIn" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

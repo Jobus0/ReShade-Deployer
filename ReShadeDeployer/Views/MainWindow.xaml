@@ -30,22 +30,25 @@
             </Style>
         </StackPanel.Resources>
         <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="{ui:ImageIcon /Resources/ReShade.ico}" ShowMaximize="False" CanMaximize="False" Padding="14 0" />
-        <DockPanel Height="28" Margin="25 0 25 3" LastChildFill="False">
-            <Label VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0 0 3 0" Content="{x:Static rd:UIStrings.VersionPrefix}" />
-            <Label VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0" FontWeight="SemiBold" Content="{Binding Updater.VersionLabelContent}" />
-            <ui:Button VerticalAlignment="Center" DockPanel.Dock="Left" Padding="3, 2, 5, 3" Margin="5 0"
-                       FontSize="12" FontWeight="Bold"
-                       Visibility="{Binding Updater.UpdateButtonVisibility}"
-                       ToolTip="{x:Static rd:UIStrings.UpdateReShade_Tooltip}"
-                       Command="{Binding Updater.UpdateReShadeCommand}"
-                       IsEnabled="{Binding Updater.IsUpdateEnabled}">
-                <StackPanel Orientation="Horizontal">
-                    <ui:SymbolIcon Symbol="ArrowDownload16" Margin="0,0,2,0" />
-                    <TextBlock Text="{Binding Updater.UpdateButtonContent}" />
-                </StackPanel>
-            </ui:Button>
-            <components:SettingsDropDownButton DockPanel.Dock="Right" />
-        </DockPanel>
+        <Grid>
+            <DockPanel Height="28" Margin="25 0 25 3" LastChildFill="False">
+                <Label VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0 0 3 0" Content="{x:Static rd:UIStrings.VersionPrefix}" />
+                <Label VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0" FontWeight="SemiBold" Content="{Binding Updater.VersionLabelContent}" />
+                <ui:Button VerticalAlignment="Center" DockPanel.Dock="Left" Padding="3, 2, 5, 3" Margin="5 0"
+                           FontSize="12" FontWeight="Bold"
+                           Visibility="{Binding Updater.UpdateButtonVisibility}"
+                           ToolTip="{x:Static rd:UIStrings.UpdateReShade_Tooltip}"
+                           Command="{Binding Updater.UpdateReShadeCommand}"
+                           IsEnabled="{Binding Updater.IsUpdateEnabled}">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="ArrowDownload16" Margin="0,0,2,0" />
+                        <TextBlock Text="{Binding Updater.UpdateButtonContent}" />
+                    </StackPanel>
+                </ui:Button>
+                <components:SettingsDropDownButton DockPanel.Dock="Right" />
+            </DockPanel>
+            <ui:SnackbarPresenter x:Name="SnackbarPresenter" Panel.ZIndex="1000" VerticalAlignment="Top" Margin="12 -6 12 0"/>
+        </Grid>
         <Separator />
         <Grid Background="#30000000">
             <StackPanel Margin="15" IsEnabled="{Binding Updater.IsPanelEnabled}">
@@ -144,8 +147,6 @@
                     </ui:Button>
                 </Grid>
             </StackPanel>
-            
-            <ui:SnackbarPresenter x:Name="SnackbarPresenter" Panel.ZIndex="1000"/>
         </Grid>
     </StackPanel>
 </ui:FluentWindow>
