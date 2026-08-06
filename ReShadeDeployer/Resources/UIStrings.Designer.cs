@@ -419,6 +419,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A preset name is required..
+        /// </summary>
+        public static string LocalPresetName_Missing {
+            get {
+                return ResourceManager.GetString("LocalPresetName_Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter name....
         /// </summary>
         public static string LocalPresetName_Placeholder {

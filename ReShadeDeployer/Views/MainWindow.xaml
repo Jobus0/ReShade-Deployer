@@ -120,16 +120,18 @@
                                 <Setter Property="IsEnabled" Value="{Binding IsDeployEnabled}" />
                                 <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.DeployButton_Tooltip}" />
                                 <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDeployEnabled}" Value="False">
+                                        <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.SelectExecutableFirst}" />
+                                    </DataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsDeployEnabled}" Value="True" />
                                             <Condition Binding="{Binding Settings.UseLocalPresets}" Value="True" />
                                             <Condition Binding="{Binding LocalPresetName}" Value="" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="IsEnabled" Value="False" />
+                                        <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.LocalPresetName_Missing}" />
                                     </MultiDataTrigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.SelectExecutableFirst}" />
-                                    </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </ui:Button.Style>
