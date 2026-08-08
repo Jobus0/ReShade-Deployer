@@ -556,7 +556,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ReShade updated!.
+        ///   Looks up a localized string similar to ReShade updated to {0}!.
         /// </summary>
         public static string ReShadeUpdate_Success {
             get {

@@ -222,7 +222,7 @@ public partial class UpdaterViewModel : ObservableObject
             }
 
             ReShadeDownloadCompleted?.Invoke();
-            _snackbarService.Show(UIStrings.ReShadeUpdate_Success, ControlAppearance.Info, SymbolRegular.ArrowDownload20);
+            _snackbarService.Show(string.Format(UIStrings.ReShadeUpdate_Success, version), ControlAppearance.Info, SymbolRegular.ArrowDownload20);
         }
 
         IsUpdateEnabled = true;
