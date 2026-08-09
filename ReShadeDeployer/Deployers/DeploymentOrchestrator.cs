@@ -12,7 +12,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public partial class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer,
+public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer,
     IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer,
     IMessageBox messageBox, IConfig config, ISnackbarService snackbarService)
 {
@@ -31,10 +31,11 @@ public partial class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer 
 
         string? presetPath = null;
         bool doDeployPreset = false;
+        bool useLocalPresets = config.UseLocalPresets && !string.IsNullOrWhiteSpace(presetName);
 
-        if (fileSystem.File.Exists(Paths.ReShadePresetIni))
+        if (fileSystem.File.Exists(Paths.ReShadePresetIni) || useLocalPresets)
         {
-            if (config.UseLocalPresets)
+            if (useLocalPresets)
             {
                 presetName = presetName?.Trim();
                 

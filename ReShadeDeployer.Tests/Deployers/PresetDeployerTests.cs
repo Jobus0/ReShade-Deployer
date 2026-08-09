@@ -42,6 +42,35 @@ public class PresetDeployerTests
         string expectedPath = @"C:\Games\MyGame\ReShadePreset.ini";
         Assert.False(_fileSystem.File.Exists(expectedPath));
     }
+    
+    [Fact]
+    public void Deploy_CreatesEmptyReShadePresetIniWhenSourceExistsWithLocalPresetsEnabled()
+    {
+        // Arrange
+        _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "Preset content");
+        
+        // Act
+        _deployer.Deploy(_executableContext, "MyGame");
+
+        // Assert
+        string expectedPath = _fileSystem.Path.Combine(Paths.Presets, "MyGame", "ReShadePreset.ini");
+        Assert.True(_fileSystem.File.Exists(expectedPath));
+        string content = _fileSystem.File.ReadAllText(expectedPath);
+        Assert.Equal("Preset content", content);
+    }
+    
+    [Fact]
+    public void Deploy_CreatesEmptyReShadePresetIniWhenSourceDoesNotExistWithLocalPresetsEnabled()
+    {
+        // Act
+        _deployer.Deploy(_executableContext, "MyGame");
+
+        // Assert
+        string expectedPath = _fileSystem.Path.Combine(Paths.Presets, "MyGame", "ReShadePreset.ini");
+        Assert.True(_fileSystem.File.Exists(expectedPath));
+        string content = _fileSystem.File.ReadAllText(expectedPath);
+        Assert.Equal(string.Empty, content);
+    }
 
     [Fact]
     public void Deploy_OverwritesExistingFile()
@@ -65,7 +94,7 @@ public class PresetDeployerTests
     public void GetPath_ReturnsCorrectPath()
     {
         // Act
-        string result = _deployer.GetPath(_executableContext);
+        string result = _deployer.GetPath(_executableContext, "");
 
         // Assert
         Assert.Equal(@"C:\Games\MyGame\ReShadePreset.ini", result);

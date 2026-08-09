@@ -11,15 +11,15 @@ public class PresetDeployer(IFileSystem fileSystem)
     /// <param name="presetName">Optional name of the preset folder for local storage.</param>
     public void Deploy(ExecutableContext executableContext, string? presetName = null)
     {
+        string destPath = GetPath(executableContext, presetName);
+        string? destDir = fileSystem.Path.GetDirectoryName(destPath);
+        if (destDir != null && !fileSystem.Directory.Exists(destDir))
+            fileSystem.Directory.CreateDirectory(destDir);
+        
         if (fileSystem.File.Exists(Paths.ReShadePresetIni))
-        {
-            string destPath = GetPath(executableContext, presetName);
-            string? destDir = fileSystem.Path.GetDirectoryName(destPath);
-            if (destDir != null && !fileSystem.Directory.Exists(destDir))
-                fileSystem.Directory.CreateDirectory(destDir);
-            
             fileSystem.File.Copy(Paths.ReShadePresetIni, destPath, true);
-        }
+        else if (!string.IsNullOrEmpty(presetName))
+            fileSystem.File.WriteAllText(GetPath(executableContext, presetName), string.Empty);
     }
 
     /// <summary>
