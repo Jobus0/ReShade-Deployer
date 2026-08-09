@@ -315,4 +315,7 @@ The following files will be deleted:</value>
     <data name="LocalPresetName_Missing" xml:space="preserve">
         <value>A preset name is required.</value>
     </data>
+    <data name="LocalPresetName_Shared" xml:space="preserve">
+        <value>Another game uses this preset name. Deploying will make them share preset.</value>
+    </data>
 </root>

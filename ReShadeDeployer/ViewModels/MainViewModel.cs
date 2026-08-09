@@ -32,6 +32,7 @@ public partial class MainViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(DeployCommand))]
     [NotifyCanExecuteChangedFor(nameof(UndeployCommand))]
     [NotifyCanExecuteChangedFor(nameof(ShowExecutableInfoCommand))]
+    [NotifyPropertyChangedFor(nameof(IsPresetNameShared))]
     private ExecutableContext? _selectedExecutableContext;
 
     [ObservableProperty]
@@ -65,6 +66,9 @@ public partial class MainViewModel : ObservableObject
 
     public ObservableCollection<string> WarningTexts { get; } = new();
 
+    [ObservableProperty]
+    private bool _isPresetNameShared;
+
     public string LocalPresetName
     {
         get;
@@ -73,6 +77,7 @@ public partial class MainViewModel : ObservableObject
             if (SetProperty(ref field, RemoveInvalidPathCharacters(value)))
             {
                 DeployCommand.NotifyCanExecuteChanged();
+                UpdateIsPresetNameShared();
             }
         }
     } = string.Empty;
@@ -279,6 +284,7 @@ public partial class MainViewModel : ObservableObject
 
         Addons.Refresh(Addons.IsAddonSupportChecked, SelectedExecutableContext);
         UpdateUndeployVisibility();
+        UpdateIsPresetNameShared();
     }
 
     private void UpdateUndeployVisibility()
@@ -322,6 +328,50 @@ public partial class MainViewModel : ObservableObject
     private void OnWarningTextsChanged()
     {
         DeployButtonAppearance = WarningTexts.Count > 0 ? ControlAppearance.Caution : ControlAppearance.Primary;
+    }
+
+    private void UpdateIsPresetNameShared()
+    {
+        if (SelectedExecutableContext == null || string.IsNullOrWhiteSpace(LocalPresetName))
+        {
+            IsPresetNameShared = false;
+            return;
+        }
+
+        // Check if the named preset folder exists in the local Presets directory
+        string presetFolder = _fileSystem.Path.Combine(Paths.Presets, LocalPresetName);
+        if (!_fileSystem.Directory.Exists(presetFolder))
+        {
+            IsPresetNameShared = false;
+            return;
+        }
+
+        // The expected PresetPath value that a correctly configured game would have
+        string expectedPresetPath = _fileSystem.Path.Combine(Paths.Presets, LocalPresetName, "ReShadePreset.ini");
+
+        // Check whether the game's ReShade.ini already points to this preset
+        string reshadeIniPath = _fileSystem.Path.Combine(SelectedExecutableContext.DirectoryPath, "ReShade.ini");
+        try
+        {
+            if (_fileSystem.File.Exists(reshadeIniPath))
+            {
+                string content = _fileSystem.File.ReadAllText(reshadeIniPath);
+                var match = GetPresetPathValue().Match(content);
+                if (match.Success)
+                {
+                    string currentPresetPath = match.Groups[1].Value.Trim();
+                    if (string.Equals(currentPresetPath, expectedPresetPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        IsPresetNameShared = false;
+                        return;
+                    }
+                }
+            }
+        }
+        catch (Exception) { /* ignore */ }
+
+        // Preset folder exists but this game doesn't point to it yet — it will be shared
+        IsPresetNameShared = true;
     }
 
     private string RemoveInvalidPathCharacters(string? value)

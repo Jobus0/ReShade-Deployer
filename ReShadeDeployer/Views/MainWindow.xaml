@@ -73,23 +73,30 @@
                 <StackPanel Visibility="{Binding Settings.UseLocalPresets, Converter={StaticResource BoolToVisibility}}">
                     <TextBlock Text="Preset Name" FontWeight="SemiBold" Margin="10 0" />
                     <ui:Card Margin="0, 0, 0, 14" Padding="14 10">
-                        <ui:TextBox Text="{Binding LocalPresetName, UpdateSourceTrigger=PropertyChanged}" 
-                                 FontSize="13" PlaceholderText="{x:Static rd:UIStrings.LocalPresetName_Placeholder}"
-                                 Padding="8 6"
-                                 ToolTipService.ShowOnDisabled="True"
-                                 rd:TextBoxValidation.HighlightEmpty="True"
-                                 IsEnabled="{Binding SelectedExecutableContext, Converter={StaticResource NullToBool}}">
-                            <ui:TextBox.Style>
-                                <Style TargetType="ui:TextBox" BasedOn="{StaticResource {x:Type ui:TextBox}}">
-                                    <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.LocalPresetName_Tooltip}" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsEnabled" Value="False">
-                                            <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.SelectExecutableFirst}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ui:TextBox.Style>
-                        </ui:TextBox>
+                        <StackPanel>
+                            <ui:TextBox Text="{Binding LocalPresetName, UpdateSourceTrigger=PropertyChanged}" 
+                                        FontSize="13" PlaceholderText="{x:Static rd:UIStrings.LocalPresetName_Placeholder}"
+                                        Padding="8 6"
+                                        ToolTipService.ShowOnDisabled="True"
+                                        rd:TextBoxValidation.HighlightEmpty="True"
+                                        IsEnabled="{Binding SelectedExecutableContext, Converter={StaticResource NullToBool}}">
+                                <ui:TextBox.Style>
+                                    <Style TargetType="ui:TextBox" BasedOn="{StaticResource {x:Type ui:TextBox}}">
+                                        <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.LocalPresetName_Tooltip}" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.SelectExecutableFirst}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:TextBox.Style>
+                            </ui:TextBox>
+                            <DockPanel Margin="8 8 8 0"
+                                     Visibility="{Binding IsPresetNameShared, Converter={StaticResource BoolToVisibility}}">
+                                <ui:SymbolIcon Symbol="Info16" DockPanel.Dock="Left" Margin="0 0 8 0" VerticalAlignment="Center" Foreground="#CCCCCC" />
+                                <TextBlock Text="{x:Static rd:UIStrings.LocalPresetName_Shared}" FontSize="12" TextWrapping="Wrap" Foreground="#CCCCCC"/>
+                            </DockPanel>
+                        </StackPanel>
                     </ui:Card>
                 </StackPanel>
                 
@@ -98,7 +105,7 @@
                 <ItemsControl ItemsSource="{Binding WarningTexts}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <ui:Card Background="#33E98C03" Padding="10 8 10 10" Margin="0 0 0 5">
+                            <ui:Card Background="#33E98C03" Padding="10 6" Margin="0 0 0 5">
                                 <TextBlock Text="{Binding}" FontSize="13" TextWrapping="Wrap"/>
                             </ui:Card>
                         </DataTemplate>

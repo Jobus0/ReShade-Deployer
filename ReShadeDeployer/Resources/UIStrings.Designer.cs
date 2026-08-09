@@ -437,6 +437,15 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Another game uses this preset name. Deploying will make them share preset..
+        /// </summary>
+        public static string LocalPresetName_Shared {
+            get {
+                return ResourceManager.GetString("LocalPresetName_Shared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name to use for the local preset folder..
         /// </summary>
         public static string LocalPresetName_Tooltip {
