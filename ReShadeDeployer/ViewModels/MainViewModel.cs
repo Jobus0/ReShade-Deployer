@@ -5,11 +5,13 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
+using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
 namespace ReShadeDeployer.ViewModels;
 
@@ -22,6 +24,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IMessageBox _messageBox;
     private readonly IIconExtractor _iconExtractor;
     private readonly ISnackbarService _snackbarService;
+    private readonly IConfig _config;
 
     // Child ViewModels
     public UpdaterViewModel Updater { get; }
@@ -92,7 +95,8 @@ public partial class MainViewModel : ObservableObject
         AddonsViewModel addons,
         IMessageBox messageBox,
         IIconExtractor iconExtractor,
-        ISnackbarService snackbarService)
+        ISnackbarService snackbarService,
+        IConfig config)
     {
         _fileSystem = fileSystem;
         _deploymentOrchestrator = deploymentOrchestrator;
@@ -101,6 +105,7 @@ public partial class MainViewModel : ObservableObject
         _messageBox = messageBox;
         _iconExtractor = iconExtractor;
         _snackbarService = snackbarService;
+        _config = config;
 
         Updater = updater;
         Settings = settings;
@@ -179,6 +184,11 @@ public partial class MainViewModel : ObservableObject
         try
         {
             await _deploymentOrchestrator.DeployReShadeForExecutable(SelectedExecutableContext, api, addonSupport, Addons.GetSelectedAddons(), presetName);
+            
+            if (_config.AlwaysExitOnDeploy)
+                Application.Current.Shutdown();
+            else
+                _snackbarService.Show(UIStrings.Deploy_Success, ControlAppearance.Success, SymbolRegular.Rocket20);
         }
         catch (DeploymentException ex)
         {

@@ -43,9 +43,7 @@ public class DeploymentOrchestratorTests
             _iniDeployer,
             _presetDeployer,
             _addonsDeployer,
-            _messageBox,
-            _config,
-            _snackbarService
+            _messageBox
         );
 
         // Set up Paths directories and dummy files
@@ -136,7 +134,6 @@ public class DeploymentOrchestratorTests
 
         // Assert
         Assert.Single(_messageBox.ShowCalls);
-        Assert.Single(_snackbarService.ShowCalls);
         Assert.Contains(UIStrings.PresetOverwrite, _messageBox.ShowCalls[0].ContentText);
         // Original content is preserved
         Assert.Equal("original preset content", _fileSystem.File.ReadAllText(targetPresetPath));

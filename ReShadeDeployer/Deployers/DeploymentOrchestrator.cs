@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
-using System.Windows;
-using Wpf.Ui;
 using Wpf.Ui.Controls;
 using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
@@ -14,7 +12,7 @@ namespace ReShadeDeployer;
 /// </summary>
 public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer,
     IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer,
-    IMessageBox messageBox, IConfig config, ISnackbarService snackbarService)
+    IMessageBox messageBox)
 {
     /// <summary>
     /// Deploys ReShade for a specified executable.
@@ -28,28 +26,19 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
     {
         if (api == GraphicsApi.D3D9 && executableContext.IsD3D8)
             await messageBox.Show(UIStrings.Notice, UIStrings.D3D8_Info);
+        
+        presetName = presetName?.Trim();
 
         string? presetPath = null;
         bool doDeployPreset = false;
-        bool useLocalPresets = config.UseLocalPresets && !string.IsNullOrWhiteSpace(presetName);
+        bool useLocalPresets = !string.IsNullOrWhiteSpace(presetName);
 
         if (fileSystem.File.Exists(Paths.ReShadePresetIni) || useLocalPresets)
         {
-            if (useLocalPresets)
-            {
-                presetName = presetName?.Trim();
-                
-                if (string.IsNullOrEmpty(presetName))
-                {
-                    snackbarService.Show(UIStrings.PresetFolderNameDialog_NoName, ControlAppearance.Danger, SymbolRegular.ErrorCircle20);
-                    return;
-                }
-            }
-            
             presetPath = presetDeployer.GetPath(executableContext, presetName);
-            bool deployedPresetExists = fileSystem.File.Exists(presetPath);
-                
-            doDeployPreset = !deployedPresetExists || await messageBox.Show(UIStrings.PresetOverwrite_Title,
+            
+            bool presetAlreadyExists = fileSystem.File.Exists(presetPath);
+            doDeployPreset = !presetAlreadyExists || await messageBox.Show(UIStrings.PresetOverwrite_Title,
                 UIStrings.PresetOverwrite,
                 primaryButtonText: UIStrings.PresetOverwrite_Yes, ControlAppearance.Danger,
                 closeButtonText: UIStrings.PresetOverwrite_No) == MessageBoxResult.Primary;
@@ -67,15 +56,6 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
         catch (Exception ex) when (ex is not DeploymentException)
         {
             throw new DeploymentException(ex);
-        }
-
-        if (config.AlwaysExitOnDeploy)
-        {
-            Application.Current.Shutdown();
-        }
-        else
-        {
-            snackbarService.Show(UIStrings.Deploy_Success, ControlAppearance.Success, SymbolRegular.Rocket20);
         }
     }
 }
