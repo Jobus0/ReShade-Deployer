@@ -179,7 +179,7 @@ public partial class MainViewModel : ObservableObject
 
         var api = AvailableApis.FirstOrDefault(a => a.IsSelected)?.Api ?? GraphicsApi.DXGI;
         var addonSupport = Addons.IsAddonSupportChecked;
-        var presetName = string.IsNullOrEmpty(LocalPresetName) ? null : LocalPresetName;
+        var presetName = _config.UseLocalPresets && !string.IsNullOrWhiteSpace(LocalPresetName) ? LocalPresetName : null;
 
         try
         {
