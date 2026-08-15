@@ -1,9 +1,9 @@
 using System;
 using System.Windows;
 using System.Windows.Threading;
-using Microsoft.Win32;
 using ReShadeDeployer.ViewModels;
 using Wpf.Ui;
+using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
@@ -34,6 +34,13 @@ namespace ReShadeDeployer
             
             snackbarService.SetSnackbarPresenter(SnackbarPresenter);
             snackbarService.DefaultTimeOut = TimeSpan.FromSeconds(2);
+        }
+        
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            
+            SystemThemeWatcher.Watch(this);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)

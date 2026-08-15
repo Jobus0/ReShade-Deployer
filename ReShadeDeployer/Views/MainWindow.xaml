@@ -32,8 +32,8 @@
         <ui:TitleBar DockPanel.Dock="Top" Title="ReShade Deployer" Icon="{ui:ImageIcon /Resources/ReShade.ico}" ShowMaximize="False" CanMaximize="False" Padding="14 0" />
         <Grid>
             <DockPanel Height="28" Margin="25 0 25 3" LastChildFill="False">
-                <Label VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0 0 3 0" Content="{x:Static rd:UIStrings.VersionPrefix}" />
-                <Label VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0" FontWeight="SemiBold" Content="{Binding Updater.VersionLabelContent}" />
+                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0 0 3 0" Text="{x:Static rd:UIStrings.VersionPrefix}" />
+                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" Padding="0" FontWeight="SemiBold" Text="{Binding Updater.VersionLabelContent}" />
                 <ui:Button VerticalAlignment="Center" DockPanel.Dock="Left" Padding="3, 2, 5, 3" Margin="5 0"
                            FontSize="12" FontWeight="Bold"
                            Visibility="{Binding Updater.UpdateButtonVisibility}"
@@ -50,7 +50,7 @@
             <ui:SnackbarPresenter x:Name="SnackbarPresenter" Panel.ZIndex="1000" VerticalAlignment="Top" Margin="12 -6 12 0"/>
         </Grid>
         <Separator />
-        <Grid Background="#30000000">
+        <Grid Background="{DynamicResource ShadedBackgroundBrush}">
             <StackPanel Margin="15" IsEnabled="{Binding Updater.IsPanelEnabled}">
                 <ui:Card Margin="0, 0, 0, 10" Padding="14 5 5 5">
                     <components:GameSelector/>
@@ -93,8 +93,8 @@
                             </ui:TextBox>
                             <DockPanel Margin="8 8 8 0"
                                      Visibility="{Binding IsPresetNameShared, Converter={StaticResource BoolToVisibility}}">
-                                <ui:SymbolIcon Symbol="Info16" DockPanel.Dock="Left" Margin="0 0 8 0" VerticalAlignment="Center" Foreground="#CCCCCC" />
-                                <TextBlock Text="{x:Static rd:UIStrings.LocalPresetName_Shared}" FontSize="12" TextWrapping="Wrap" Foreground="#CCCCCC"/>
+                                <ui:SymbolIcon Symbol="Info16" DockPanel.Dock="Left" Margin="0 0 8 0" VerticalAlignment="Center" Foreground="{DynamicResource GrayForegroundBrush}" />
+                                <TextBlock Text="{x:Static rd:UIStrings.LocalPresetName_Shared}" FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource GrayForegroundBrush}"/>
                             </DockPanel>
                         </StackPanel>
                     </ui:Card>
@@ -105,7 +105,7 @@
                 <ItemsControl ItemsSource="{Binding WarningTexts}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <ui:Card Background="#33E98C03" Padding="10 6" Margin="0 0 0 5">
+                            <ui:Card Background="{DynamicResource AccentWarningBackgroundBrush}" Padding="10 6" Margin="0 0 0 5">
                                 <TextBlock Text="{Binding}" FontSize="13" TextWrapping="Wrap"/>
                             </ui:Card>
                         </DataTemplate>

@@ -1,9 +1,12 @@
+using System;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using ReShadeDeployer.ViewModels;
 using Testably.Abstractions;
 using Wpf.Ui;
+using Wpf.Ui.Appearance;
 
 namespace ReShadeDeployer;
 
@@ -54,10 +57,30 @@ public partial class App : Application
         services.AddSingleton<IIconExtractor, IconExtractor>();
         services.AddSingleton<ISnackbarService, SnackbarService>();
         
+        ApplicationThemeManager.Changed += OnThemeChanged;
+        ApplicationThemeManager.ApplySystemTheme();
+        
         ServiceProvider = services.BuildServiceProvider();
         ServiceProvider.GetRequiredService<MainWindow>().Show();
         
         base.OnStartup(e);
+    }
+    
+    private void OnThemeChanged(ApplicationTheme currentTheme, System.Windows.Media.Color accentColor)
+    {
+        // Select target dictionary based on current theme
+        var newSource = currentTheme switch
+        {
+            ApplicationTheme.Light => new Uri("Themes/LightBrushes.xaml", UriKind.Relative),
+            _ => new Uri("Themes/DarkBrushes.xaml", UriKind.Relative)
+        };
+
+        // Find the existing custom dictionary and swap its Source
+        var mergedDictionaries = Current.Resources.MergedDictionaries;
+        var customDict = mergedDictionaries.FirstOrDefault(d => d.Contains("ShadedBackgroundBrush"));
+
+        if (customDict != null)
+            customDict.Source = newSource;
     }
     
     protected override void OnExit(ExitEventArgs e)
