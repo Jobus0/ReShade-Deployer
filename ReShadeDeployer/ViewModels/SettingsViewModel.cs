@@ -40,12 +40,18 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnIsContextMenuRegisteredChanged(bool value)
     {
-        if (value)
-            _registryHelper.RegisterContextMenuAction("Deploy ReShade",
-                Environment.ProcessPath! + " \"%1\"",
-                Environment.ProcessPath! + ",0");
-        else
-            _registryHelper.UnregisterContextMenuAction("Deploy ReShade");
+        // Only register/unregister if the value is different from the current registry state
+        bool currentRegistryState = _registryHelper.IsContextMenuActionRegistered("Deploy ReShade");
+        
+        if (value != currentRegistryState)
+        {
+            if (value)
+                _registryHelper.RegisterContextMenuAction("Deploy ReShade",
+                    Environment.ProcessPath! + " \"%1\"",
+                    Environment.ProcessPath! + ",0");
+            else
+                _registryHelper.UnregisterContextMenuAction("Deploy ReShade");
+        }
     }
 
     partial void OnIsAlwaysExitOnDeployChanged(bool value)
