@@ -49,13 +49,16 @@ public partial class App : Application
         services.AddSingleton<ReShadeUndeployer>();
         services.AddSingleton<AppUpdater>();
         services.AddSingleton<ReShadeUpdater>();
-        services.AddSingleton<IDownloadService, DownloadService>();
         services.AddSingleton<IConfig, IniFileConfig>();
         services.AddSingleton<IPeInfoReader, PeInfoReader>();
         services.AddSingleton<ExecutableContextFactory>();
         services.AddSingleton<IMessageBox, WpfMessageBox>();
         services.AddSingleton<IIconExtractor, IconExtractor>();
         services.AddSingleton<ISnackbarService, SnackbarService>();
+        services.AddHttpClient<IDownloadService, DownloadService>(client =>
+        {
+            client.DefaultRequestHeaders.Add("User-Agent", "ReShade Deployer");
+        });
         
         ApplicationThemeManager.Changed += OnThemeChanged;
         ApplicationThemeManager.ApplySystemTheme();
