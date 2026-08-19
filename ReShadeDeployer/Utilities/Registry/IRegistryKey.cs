@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Win32;
 
-namespace ReShadeDeployer;
+namespace ReShadeDeployer.Registry;
 
 public interface IRegistryKey : IDisposable
 {

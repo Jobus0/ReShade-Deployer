@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO.Abstractions;
 using Microsoft.Win32;
+using ReShadeDeployer.Registry;
 
 namespace ReShadeDeployer;
 

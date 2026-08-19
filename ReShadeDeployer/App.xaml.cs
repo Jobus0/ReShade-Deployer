@@ -3,6 +3,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using ReShadeDeployer.Registry;
 using ReShadeDeployer.ViewModels;
 using Testably.Abstractions;
 using Wpf.Ui;

@@ -1,10 +1,8 @@
-﻿using Microsoft.Win32;
-
-namespace ReShadeDeployer;
+﻿namespace ReShadeDeployer.Registry;
 
 public class WindowsRegistry : IRegistry
 {
-    public IRegistryKey ClassesRoot => new WindowsRegistryKey(Registry.ClassesRoot);
-    public IRegistryKey LocalMachine => new WindowsRegistryKey(Registry.LocalMachine);
-    public IRegistryKey CurrentUser => new WindowsRegistryKey(Registry.CurrentUser);
+    public IRegistryKey ClassesRoot => new WindowsRegistryKey(Microsoft.Win32.Registry.ClassesRoot);
+    public IRegistryKey LocalMachine => new WindowsRegistryKey(Microsoft.Win32.Registry.LocalMachine);
+    public IRegistryKey CurrentUser => new WindowsRegistryKey(Microsoft.Win32.Registry.CurrentUser);
 }

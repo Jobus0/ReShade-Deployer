@@ -1,3 +1,4 @@
+using ReShadeDeployer.Registry;
 using Testably.Abstractions.Testing;
 using ReShadeDeployer.ViewModels;
 using Wpf.Ui.Controls;

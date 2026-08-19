@@ -1,4 +1,4 @@
-﻿namespace ReShadeDeployer;
+﻿namespace ReShadeDeployer.Registry;
 
 public interface IRegistry
 {

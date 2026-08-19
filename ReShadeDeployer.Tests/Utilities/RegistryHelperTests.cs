@@ -1,4 +1,6 @@
-﻿namespace ReShadeDeployer.Tests.Utilities;
+﻿using ReShadeDeployer.Registry;
+
+namespace ReShadeDeployer.Tests.Utilities;
 
 public class RegistryHelperTests
 {
