@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
@@ -11,6 +12,7 @@ using System.Windows;
 
 namespace ReShadeDeployer;
 
+[ExcludeFromCodeCoverage]
 public static class SingleInstanceManager
 {
     private static Mutex? _mutex;

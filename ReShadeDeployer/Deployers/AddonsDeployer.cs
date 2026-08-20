@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
@@ -216,6 +217,7 @@ public class AddonsDeployer(IFileSystem fileSystem, FileHelper fileHelper)
     /// <summary>
     /// Launches a setup script (.bat, .ps1, .exe) and waits for it to finish.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     private void RunSetupFile(string addonName, string setupFilePath)
     {
         if (!fileSystem.File.Exists(setupFilePath))

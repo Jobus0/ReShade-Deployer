@@ -15,9 +15,23 @@
                 <ModulePath>.*\.Tests?\.dll$</ModulePath>
               </Exclude>
             </ModulePaths>
+            <Functions>
+              <Exclude>
+                <!-- Excludes anything inside the .Views namespace -->
+                <Function>^ReShadeDeployer\.Views\..*</Function>
+                <!-- Excludes anything inside the .Views namespace -->
+                <Function>^ReShade\..*</Function>
+              </Exclude>
+            </Functions>
+            <Sources>
+              <Exclude>
+                <!-- Excludes any files living under a /Views/ directory -->
+                <Source>.*[\\/]Views[\\/].*</Source>
+              </Exclude>
+            </Sources>
             <Attributes>
               <Exclude>
-                <!-- Exclude code ith [GeneratedCode] or [CompilerGenerated] attributes -->
+                <!-- Exclude code with [GeneratedCode] or [CompilerGenerated] attributes -->
                 <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
                 <Attribute>^System\.Runtime\.CompilerServices\.CompilerGeneratedAttribute$</Attribute>
               </Exclude>

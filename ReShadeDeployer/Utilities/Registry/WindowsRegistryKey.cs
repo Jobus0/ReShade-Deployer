@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Win32;
 
 namespace ReShadeDeployer.Registry;
 
+[ExcludeFromCodeCoverage]
 public class WindowsRegistryKey(RegistryKey registryKey) : IRegistryKey
 {
     private readonly RegistryKey _registryKey = registryKey ?? throw new ArgumentNullException(nameof(registryKey));

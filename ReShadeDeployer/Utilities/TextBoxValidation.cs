@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace ReShadeDeployer;
 
+[ExcludeFromCodeCoverage]
 public static class TextBoxValidation
 {
     public static readonly DependencyProperty HighlightEmptyProperty =

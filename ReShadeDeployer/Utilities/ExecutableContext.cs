@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace ReShadeDeployer;
 
@@ -24,6 +25,7 @@ public record ExecutableContext(
     bool Banned
 )
 {
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         StringBuilder sb = new();

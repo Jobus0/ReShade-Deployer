@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ReShadeDeployer;
@@ -6,6 +7,7 @@ namespace ReShadeDeployer;
 using System;
 using Wpf.Ui.Controls;
 
+[ExcludeFromCodeCoverage]
 public class ExceptionMessageBox : MessageBox
 {
     private readonly string _exceptionDetails;

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +13,7 @@ using TextBox = System.Windows.Controls.TextBox;
 
 namespace ReShadeDeployer;
 
+[ExcludeFromCodeCoverage]
 public partial class WpfMessageBox : IMessageBox
 {
     private Wpf.Ui.Controls.MessageBox Build(string title, object content, string primaryButtonText = "", ControlAppearance primaryButtonAppearance = ControlAppearance.Primary, string secondaryButtonText = "", ControlAppearance secondaryButtonAppearance = ControlAppearance.Secondary, string closeButtonText = "OK")
