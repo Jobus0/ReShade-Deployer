@@ -261,4 +261,138 @@ public class MainViewModelTests
         // Assert
         Assert.True(mainVm.IsDeployEnabled);
     }
+
+    [Fact]
+    public void UpdateIsPresetNameShared_WhenReShadeIniDoesNotExist_SetsIsPresetNameSharedToTrue()
+    {
+        // Arrange
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService, _config);
+        string gamePath = @"C:\Games\TargetGame\game.exe";
+        string gameDirectory = _fileSystem.Path.GetDirectoryName(gamePath)!;
+        _fileSystem.Directory.CreateDirectory(gameDirectory);
+        _fileSystem.File.WriteAllText(gamePath, "game binary");
+
+        // Create preset folder
+        string presetFolder = _fileSystem.Path.Combine(Paths.Presets, "MyPreset");
+        _fileSystem.Directory.CreateDirectory(presetFolder);
+        _fileSystem.File.WriteAllText(_fileSystem.Path.Combine(presetFolder, "ReShadePreset.ini"), "preset content");
+
+        mainVm.TargetExecutable(gamePath);
+        mainVm.LocalPresetName = "MyPreset";
+
+        // Act
+        // UpdateIsPresetNameShared is called automatically when LocalPresetName is set
+
+        // Assert
+        Assert.True(mainVm.IsPresetNameShared);
+    }
+
+    [Fact]
+    public void UpdateIsPresetNameShared_WhenReShadeIniPresetPathMatchesExpected_SetsIsPresetNameSharedToFalse()
+    {
+        // Arrange
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService, _config);
+        string gamePath = @"C:\Games\TargetGame\game.exe";
+        string gameDirectory = _fileSystem.Path.GetDirectoryName(gamePath)!;
+        _fileSystem.Directory.CreateDirectory(gameDirectory);
+        _fileSystem.File.WriteAllText(gamePath, "game binary");
+
+        // Create preset folder
+        string presetFolder = _fileSystem.Path.Combine(Paths.Presets, "MyPreset");
+        _fileSystem.Directory.CreateDirectory(presetFolder);
+        string expectedPresetPath = _fileSystem.Path.Combine(Paths.Presets, "MyPreset", "ReShadePreset.ini");
+        _fileSystem.File.WriteAllText(expectedPresetPath, "preset content");
+
+        // Create ReShade.ini with matching PresetPath
+        string reshadeIniPath = _fileSystem.Path.Combine(gameDirectory, "ReShade.ini");
+        _fileSystem.File.WriteAllText(reshadeIniPath, $"PresetPath={expectedPresetPath}");
+
+        mainVm.TargetExecutable(gamePath);
+        mainVm.LocalPresetName = "MyPreset";
+
+        // Act
+        // UpdateIsPresetNameShared is called automatically when LocalPresetName is set
+
+        // Assert
+        Assert.False(mainVm.IsPresetNameShared);
+    }
+
+    [Fact]
+    public void UpdateIsPresetNameShared_WhenReShadeIniPresetPathDoesNotMatchExpected_SetsIsPresetNameSharedToTrue()
+    {
+        // Arrange
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService, _config);
+        string gamePath = @"C:\Games\TargetGame\game.exe";
+        string gameDirectory = _fileSystem.Path.GetDirectoryName(gamePath)!;
+        _fileSystem.Directory.CreateDirectory(gameDirectory);
+        _fileSystem.File.WriteAllText(gamePath, "game binary");
+
+        // Create preset folder
+        string presetFolder = _fileSystem.Path.Combine(Paths.Presets, "MyPreset");
+        _fileSystem.Directory.CreateDirectory(presetFolder);
+        _fileSystem.File.WriteAllText(_fileSystem.Path.Combine(presetFolder, "ReShadePreset.ini"), "preset content");
+
+        // Create ReShade.ini with different PresetPath
+        string reshadeIniPath = _fileSystem.Path.Combine(gameDirectory, "ReShade.ini");
+        string differentPresetPath = _fileSystem.Path.Combine(Paths.Presets, "DifferentPreset", "ReShadePreset.ini");
+        _fileSystem.File.WriteAllText(reshadeIniPath, $"PresetPath={differentPresetPath}");
+
+        mainVm.TargetExecutable(gamePath);
+        mainVm.LocalPresetName = "MyPreset";
+
+        // Act
+        // UpdateIsPresetNameShared is called automatically when LocalPresetName is set
+
+        // Assert
+        Assert.True(mainVm.IsPresetNameShared);
+    }
+
+    [Fact]
+    public void UpdateVulkanWithAddonSupportWarning_WhenVulkanSelectedAndAddonSupportChecked_AddsWarning()
+    {
+        // Arrange
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService, _config);
+
+        // Act
+        _addonsVm.IsAddonSupportChecked = true;
+        var vulkanApi = mainVm.AvailableApis.FirstOrDefault(a => a.Api == GraphicsApi.Vulkan);
+        vulkanApi!.IsSelected = true;
+
+        // Assert
+        Assert.Contains(UIStrings.Vulkan_Addon_Warning, mainVm.WarningTexts);
+    }
+
+    [Fact]
+    public void UpdateVulkanWithAddonSupportWarning_WhenVulkanSelectedButAddonSupportNotChecked_RemovesWarning()
+    {
+        // Arrange
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService, _config);
+        _addonsVm.IsAddonSupportChecked = true;
+        var vulkanApi = mainVm.AvailableApis.FirstOrDefault(a => a.Api == GraphicsApi.Vulkan);
+        vulkanApi!.IsSelected = true;
+
+        // Act
+        _addonsVm.IsAddonSupportChecked = false;
+
+        // Assert
+        Assert.DoesNotContain(UIStrings.Vulkan_Addon_Warning, mainVm.WarningTexts);
+    }
+
+    [Fact]
+    public void UpdateVulkanWithAddonSupportWarning_WhenNonVulkanSelected_RemovesWarning()
+    {
+        // Arrange
+        var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService, _config);
+        _addonsVm.IsAddonSupportChecked = true;
+        var vulkanApi = mainVm.AvailableApis.FirstOrDefault(a => a.Api == GraphicsApi.Vulkan);
+        vulkanApi!.IsSelected = true;
+
+        // Act
+        var dxgiApi = mainVm.AvailableApis.FirstOrDefault(a => a.Api == GraphicsApi.DXGI);
+        vulkanApi!.IsSelected = false;
+        dxgiApi!.IsSelected = true;
+
+        // Assert
+        Assert.DoesNotContain(UIStrings.Vulkan_Addon_Warning, mainVm.WarningTexts);
+    }
 }

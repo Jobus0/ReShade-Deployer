@@ -319,9 +319,10 @@ public partial class MainViewModel : ObservableObject
 
     private void UpdateVulkanWithAddonSupportWarning()
     {
-        GraphicsApi api = AvailableApis.FirstOrDefault(a => a.IsSelected)?.Api ?? GraphicsApi.DXGI;
+        var selectedApi = AvailableApis.FirstOrDefault(a => a.IsSelected);
+        bool isVulkan = selectedApi != null && selectedApi.Api == GraphicsApi.Vulkan;
         
-        if (api == GraphicsApi.Vulkan && Addons.IsAddonSupportChecked)
+        if (isVulkan && Addons.IsAddonSupportChecked)
         {
             if (!WarningTexts.Contains(UIStrings.Vulkan_Addon_Warning))
                 WarningTexts.Add(UIStrings.Vulkan_Addon_Warning);
