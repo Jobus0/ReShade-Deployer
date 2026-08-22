@@ -119,7 +119,7 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The target application is known to have blocked or banned the usage of ReShade..
+        ///   Looks up a localized string similar to The target application is known to have blocked or banned the use of ReShade..
         /// </summary>
         public static string BannedGameWarning {
             get {

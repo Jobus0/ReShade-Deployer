@@ -298,7 +298,7 @@ The following files will be deleted:</value>
         <value>No preset folder name entered.</value>
     </data>
     <data name="BannedGameWarning" xml:space="preserve">
-        <value>The target application is known to have blocked or banned the usage of ReShade.</value>
+        <value>The target application is known to have blocked or banned the use of ReShade.</value>
     </data>
     <data name="Detected" xml:space="preserve">
         <value>Detected</value>
