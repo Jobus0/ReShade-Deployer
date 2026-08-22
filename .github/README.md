@@ -1,7 +1,11 @@
 # ReShade Deployer
 ### A centralized alternative to the official ReShade installer
 
-![Main Window](Readme/MainWindow.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="Readme/MainWindow_Dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="Readme/MainWindow_Light.png">
+  <img alt="Main Window UI" src="Readme/MainWindow_Dark.png">
+</picture>
 
 ## Who is this for?
 Those who want to:
@@ -25,17 +29,16 @@ A minimal installer program that lets you:
 
 ## Installation
 1. Download the [latest release](https://github.com/Jobus0/ReShade-Deployer/releases/latest).
-2. Extract **ReShade Deployer.exe** anywhere you want it.
+2. Extract **ReShadeDeployer.exe** anywhere you want it.
    - This is where you must keep your **Shaders**, **Textures**, and **Add-ons** folders.
-   - If you already have a folder for **Shaders** and **Textures**, you can place **ReShade Deployer.exe** in the same folder.
+   - If you already have a folder for **Shaders** and **Textures**, you can place **ReShadeDeployer.exe** in the same folder.
 3. Run the program and allow the first-time setup.
 
 ### Optional Steps
-- Enable [Context Menu Deploy](#context-menu) from the **⚙**options menu.
-- Put a **ReShade.ini** and/or **ReShadePreset.ini** next to **ReShade Deployer.exe** to make the deployer automatically include those .ini:s when deploying to games.
+- Enable [Context Menu Deploy](#context-menu) from the **⚙** options menu.
+- Put a **ReShade.ini** and/or **ReShadePreset.ini** next to **ReShadeDeployer.exe** to make the deployer automatically include those .ini:s when deploying to games.
    - When your custom **ReShade.ini** is deployed, some specific settings (like the search paths) will be overriden or created if missing.
-- Put **.addon32** and **.addon64** files in the **Add-ons** folder (either loosely or grouped in a sub-folder).
-  - See more in [**Advanced Add-ons Usage**](ADDONS.md).
+- Put **.addon32** and **.addon64** files in the **Add-ons** folder (either loose or in a subfolder) to make them deployable from the app. See more in [**Advanced Add-ons Usage**](ADDONS.md).
 
 ### Folder Structure
 ```
@@ -49,43 +52,33 @@ ReShade
 │   ├── My Add-on
 │   │   └── *.addon32/addon64       # Add-on files grouped in sub-folder
 │   └── *.addon32/addon64           # Add-on files loose in Add-ons root
-├── ReShade Deployer.exe
+├── ReShadeDeployer.exe
 ├── ReShade.ini                     # Optional
 └── ReShadePreset.ini               # Optional
 ```
 
 ## Usage
-There are two ways to use ReShade Deployer: Running it normally, or running it from Windows's context menu.
-
-### Normal
 1. Run the program.
-2. Select the game you want to deploy ReShade to using the 'Select Game' button.
+2. Select the game you want to deploy ReShade to using the 'Browse...' button.
 3. The target graphics API (DirectX, Vulkan, etc) should be automatically selected. If not, select it manually. If you are unsure, check the API section of the game's [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home) page.
 4. (Optional) Check the Add-on Support toggle and select your add-ons from the dropdown list.
-5. Press the 'Deploy to Game' button.
+5. Press the 'Deploy ReShade' button.
 6. If an existing ReShade preset is detected, it will ask whether to overwrite it.
 
-### Context Menu
-To enable this, run the program, and from the **⚙**options menu, check the **Context Menu Deploy** option.
-1. Right-click any game .exe or shortcut in Windows's file explorer or desktop, and select 'Deploy ReShade'.
-2. The target graphics API (DirectX, Vulkan, etc) should be automatically selected. If not, select it manually. If you are unsure, check the API section of the game's [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home) page.
-3. (Optional) Check the Add-on Support toggle and select your add-ons from the dropdown list.
-4. Press the 'Deploy to Game' button.
-5. If an existing ReShade preset is detected, it will ask whether to overwrite it.
+### Run From Context Menu
+To enable this, run the program, and from the **⚙** options menu, check the **Context Menu Deploy** option.
 
-![Main Window](Readme/Deployment.webp)
+Then, right-click any game .exe or shortcut in Windows's file explorer or desktop, and select 'Deploy ReShade'.
 
-Note in the video above how "**DirectX 10 or later**" is in bold. That means the API was automatically detected.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="Readme/Deployment_Dark.webp">
+  <source media="(prefers-color-scheme: light)" srcset="Readme/Deployment_Light.webp">
+  <img alt="Main Window UI" src="Readme/Deployment_Dark.webp">
+</picture>
+
+Note in the video above next to "**DirectX 10 or later**" that there is a "**Detected**" badge, showing that the API was automatically detected by analyzing the game's executable.
 
 ## Uninstallation
-1. Use **Uninstall** from the **⚙**options menu in ReShade Deployer.
+1. Use **Uninstall** from the **⚙** options menu in ReShade Deployer.
     - This will remove all ReShade Deployer registry entries and the Vulkan ReShade layer.
-2. Delete **ReShade Deployer.exe**.
-
-## Contributing
-Pull requests and request issues are welcome.
-
-### Languages
-Want to help translate ReShade Deployer into another language? ReShade Deployer uses the .NET XML resource (.resx) system for all UI text.
-
-For example, to translate to French, just duplicate *UIStrings.resx* and name it *UIStrings.fr.resx* and start translating the values. The program language is automatically selected based on your OS's language.
+2. Delete **ReShadeDeployer.exe**.
