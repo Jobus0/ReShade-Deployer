@@ -200,9 +200,9 @@ public partial class UpdaterViewModel : ObservableObject
     {
         IsUpdateEnabled = false;
 
-        await _reShadeUpdater.Update(specificVersion);
+        bool success = await _reShadeUpdater.Update(specificVersion);
 
-        if (_reShadeUpdater.TryGetLocalReShadeVersionNumber(out string version))
+        if (success && _reShadeUpdater.TryGetLocalReShadeVersionNumber(out string version))
         {
             VersionLabelContent = version;
 

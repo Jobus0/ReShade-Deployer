@@ -77,9 +77,10 @@ public class ReShadeUpdaterTests
         _downloadService.Failures[websiteUrl] = new HttpRequestException("Host unresolved");
 
         // Act
-        await _updater.Update();
+        bool result = await _updater.Update();
 
         // Assert
+        Assert.False(result);
         Assert.Single(_messageBox.ShowCalls);
         Assert.Equal(UIStrings.ConnectionError, _messageBox.ShowCalls[0].ContentText);
     }
@@ -97,9 +98,10 @@ public class ReShadeUpdaterTests
         _fileSystem.WithFileVersionInfo(dllPath, v => v.SetFileVersion("5.9.2.0"));
 
         // Act
-        await _updater.Update();
+        bool result = await _updater.Update();
 
         // Assert
+        Assert.False(result);
         Assert.Single(_messageBox.ShowCalls);
         Assert.Equal(UIStrings.UpdateError, _messageBox.ShowCalls[0].ContentText);
         // Verify no downloads were initiated
@@ -134,9 +136,10 @@ public class ReShadeUpdaterTests
             System.Text.Encoding.UTF8.GetBytes("[Compatibility]");
 
         // Act
-        await _updater.Update();
+        bool result = await _updater.Update();
 
         // Assert
+        Assert.True(result);
         // 1. Verify files are downloaded
         Assert.Contains(_downloadService.DownloadCalls, call => call.Url.Contains("ReShade_Setup_6.0.0.exe"));
         Assert.Contains(_downloadService.DownloadCalls, call => call.Url.Contains("ReShade_Setup_6.0.0_Addon.exe"));

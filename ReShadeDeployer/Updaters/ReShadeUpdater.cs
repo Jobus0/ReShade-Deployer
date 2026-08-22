@@ -16,7 +16,8 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
     /// <summary>
     /// Download the latest version of ReShade (including add-on support version) from the official website and extract it into the lib folder.
     /// </summary>
-    public async Task Update(string? specificVersion = null)
+    /// <returns>True if the update was successful, false otherwise.</returns>
+    public async Task<bool> Update(string? specificVersion = null)
     {
         // Make sure the required folders exist
         CreateDirectories();
@@ -27,9 +28,9 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
             string addonUrl = $"https://reshade.me/downloads/ReShade_Setup_{specificVersion}_Addon.exe";
 
             if (await DownloadAndExtractReShade(standardUrl, Paths.Dlls))
-            {
                 await DownloadAndExtractReShade(addonUrl, Paths.AddonDlls);
-            }
+            else
+                return false;
         }
         else
         {
@@ -41,7 +42,7 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
             catch
             {
                 await messageBox.Show(UIStrings.ConnectionError_Title, UIStrings.ConnectionError);
-                return;
+                return false;
             }
 
             string downloadUrl = Regex.Match(websiteContent, "/downloads/\\S*.exe").ToString();
@@ -49,14 +50,14 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
             if (TryGetLocalReShadeVersionNumber(out string localVersion) && localVersion == VersionParser.Parse(downloadUrl))
             {
                 await messageBox.Show(UIStrings.UpdateUnavailable_Title, UIStrings.UpdateError);
-                return;
+                return false;
             }
             
             // Download the standard and the add-on supported ReShade files.
             if (await DownloadAndExtractReShade(WebsiteUrl + downloadUrl, Paths.Dlls))
-            {
                 await DownloadAndExtractReShade(WebsiteUrl + Regex.Match(websiteContent, "/downloads/\\S*_Addon.exe"), Paths.AddonDlls);
-            }
+            else
+                return false;
         }
         
         // Download Compatibility.ini
@@ -65,6 +66,8 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
             await downloadService.Download("https://raw.githubusercontent.com/crosire/reshade-shaders/list/Compatibility.ini", Paths.CompatibilityIni);
         }
         catch { /* Ignore. File is nice, but not necessary. */ }
+
+        return true;
     }
 
     /// <summary>
