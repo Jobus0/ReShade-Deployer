@@ -63,4 +63,32 @@ public class RegistryHelperTests
         bool result = _registryHelper.IsContextMenuActionRegistered(actionName);
         Assert.False(result);
     }
+
+    [Fact]
+    public void GetContextMenuActionCommand_ReturnsCommand_WhenActionIsRegistered()
+    {
+        // Arrange
+        string actionName = "Deploy ReShade";
+        string command = "C:\\Path\\To\\Deployer.exe \"%1\"";
+        _registryHelper.RegisterContextMenuAction(actionName, command);
+
+        // Act
+        string? result = _registryHelper.GetContextMenuActionCommand(actionName);
+
+        // Assert
+        Assert.Equal(command, result);
+    }
+
+    [Fact]
+    public void GetContextMenuActionCommand_ReturnsNull_WhenActionIsNotRegistered()
+    {
+        // Arrange
+        string actionName = "Deploy ReShade";
+
+        // Act
+        string? result = _registryHelper.GetContextMenuActionCommand(actionName);
+
+        // Assert
+        Assert.Null(result);
+    }
 }

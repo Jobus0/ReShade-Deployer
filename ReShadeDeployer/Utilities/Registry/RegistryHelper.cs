@@ -36,4 +36,20 @@ public class RegistryHelper(IRegistry registry)
         using IRegistryKey? key = registry.ClassesRoot.OpenSubKey(ActionNameToPath(actionName));
         return key != null;
     }
+    
+    public string? GetContextMenuActionCommand(string actionName)
+    {
+        // Open the registry key for the action
+        using IRegistryKey? key = registry.ClassesRoot.OpenSubKey(ActionNameToPath(actionName));
+        if (key == null)
+            return null;
+        
+        // Open the command subkey
+        using IRegistryKey? commandKey = key.OpenSubKey("command");
+        if (commandKey == null)
+            return null;
+        
+        // Return the command string from the default value
+        return commandKey.GetValue("") as string;
+    }
 }
