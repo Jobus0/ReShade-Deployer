@@ -69,7 +69,7 @@ public class PresetDeployerTests
         string expectedPath = _fileSystem.Path.Combine(Paths.Presets, "MyGame", "ReShadePreset.ini");
         Assert.True(_fileSystem.File.Exists(expectedPath));
         string content = _fileSystem.File.ReadAllText(expectedPath);
-        Assert.Equal(string.Empty, content);
+        Assert.Equal(PresetDeployer.GetDefaultContent(), content);
     }
 
     [Fact]

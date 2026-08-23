@@ -19,7 +19,7 @@ public class PresetDeployer(IFileSystem fileSystem)
         if (fileSystem.File.Exists(Paths.ReShadePresetIni))
             fileSystem.File.Copy(Paths.ReShadePresetIni, destPath, true);
         else if (!string.IsNullOrEmpty(presetName))
-            fileSystem.File.WriteAllText(GetPath(executableContext, presetName), string.Empty);
+            fileSystem.File.WriteAllText(GetPath(executableContext, presetName), GetDefaultContent());
     }
 
     /// <summary>
@@ -34,5 +34,14 @@ public class PresetDeployer(IFileSystem fileSystem)
             return fileSystem.Path.Combine(Paths.Presets, presetName, "ReShadePreset.ini");
         
         return fileSystem.Path.Combine(executableContext.DirectoryPath, "ReShadePreset.ini");
+    }
+
+    /// <summary>
+    /// Gets the default content for a ReShade preset file.
+    /// </summary>
+    /// <returns>The default preset content string.</returns>
+    public static string GetDefaultContent()
+    {
+        return "Techniques=\nTechniqueSorting=";
     }
 }
