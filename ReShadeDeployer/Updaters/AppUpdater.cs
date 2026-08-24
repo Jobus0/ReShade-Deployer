@@ -1,15 +1,17 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using ReShadeDeployer.Registry;
 using Testably.Abstractions;
 
 namespace ReShadeDeployer;
 
-public class AppUpdater(IFileSystem fileSystem, IDownloadService downloadService, IMessageBox messageBox)
+public class AppUpdater(IFileSystem fileSystem, IDownloadService downloadService, IMessageBox messageBox, RegistryHelper registryHelper)
 {
     private const string GithubUrl = "https://api.github.com/repos/Jobus0/ReShade-Deployer/releases/latest";
     
@@ -116,6 +118,16 @@ public class AppUpdater(IFileSystem fileSystem, IDownloadService downloadService
                     fileSystem.File.Delete(oldExe);
                 }
                 catch { /* Ignored */ }
+            }
+            
+            // Check if "Deploy ReShade" context menu action exists and points to old exe path
+            string? existingCommand = registryHelper.GetContextMenuActionCommand("Deploy ReShade");
+            if (existingCommand != null && existingCommand.Contains(Environment.ProcessPath!.Replace("ReShadeDeployer.exe", "ReShade Deployer.exe")))
+            {
+                // Re-register with new exe path (without space)
+                registryHelper.RegisterContextMenuAction("Deploy ReShade",
+                    Environment.ProcessPath! + " \"%1\"",
+                    Environment.ProcessPath! + ",0");
             }
         }
 

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO.Compression;
+using ReShadeDeployer.Registry;
 using Testably.Abstractions.Testing;
 
 namespace ReShadeDeployer.Tests.Updaters;
@@ -9,6 +10,7 @@ public class AppUpdaterTests
     private readonly MockFileSystem _fileSystem;
     private readonly MockDownloadService _downloadService;
     private readonly MockMessageBox _messageBox;
+    private readonly RegistryHelper _registryHelper;
     private readonly AppUpdater _updater;
     private readonly string _currentExePath;
 
@@ -17,7 +19,8 @@ public class AppUpdaterTests
         _fileSystem = new MockFileSystem();
         _downloadService = new MockDownloadService(_fileSystem);
         _messageBox = new MockMessageBox();
-        _updater = new AppUpdater(_fileSystem, _downloadService, _messageBox);
+        _registryHelper = new RegistryHelper(new MockRegistry());
+        _updater = new AppUpdater(_fileSystem, _downloadService, _messageBox, _registryHelper);
 
         // Resolve current process main module filename and pre-create it in mock filesystem
         _currentExePath = Process.GetCurrentProcess().MainModule!.FileName;
@@ -142,6 +145,49 @@ public class AppUpdaterTests
         // 2. Verify current exe was not moved (still exists, and no .oldver exists)
         Assert.True(_fileSystem.File.Exists(_currentExePath));
         Assert.False(_fileSystem.File.Exists(_currentExePath + ".oldver"));
+    }
+
+    [Fact]
+    public async Task CleanUpOldVersion_ShouldUpdateContextMenuAction_WhenOldExePathExists()
+    {
+        // Arrange
+        string oldExePath = _currentExePath.Replace("ReShadeDeployer.exe", "ReShade Deployer.exe") + ".oldver";
+        _fileSystem.File.WriteAllText(oldExePath, "old exe content");
+        
+        // Register the context menu action with the old exe path
+        string oldCommand = oldExePath.Replace(".oldver", "") + " \"%1\"";
+        _registryHelper.RegisterContextMenuAction("Deploy ReShade", oldCommand);
+
+        // Act
+        await _updater.CleanUpOldVersion();
+
+        // Assert
+        // Verify the context menu action was updated with the new exe path
+        string? newCommand = _registryHelper.GetContextMenuActionCommand("Deploy ReShade");
+        Assert.NotNull(newCommand);
+        Assert.Contains(_currentExePath, newCommand);
+        Assert.DoesNotContain("ReShade Deployer.exe", newCommand);
+    }
+
+    [Fact]
+    public async Task CleanUpOldVersion_ShouldNotUpdateContextMenuAction_WhenCommandDoesNotContainOldExePath()
+    {
+        // Arrange
+        string oldExePath = _currentExePath.Replace("ReShadeDeployer.exe", "ReShade Deployer.exe") + ".oldver";
+        _fileSystem.File.WriteAllText(oldExePath, "old exe content");
+        
+        // Register the context menu action with a DIFFERENT path (not the old exe path)
+        string differentCommand = "C:\\Some\\Other\\Path\\Deployer.exe \"%1\"";
+        _registryHelper.RegisterContextMenuAction("Deploy ReShade", differentCommand);
+
+        // Act
+        await _updater.CleanUpOldVersion();
+
+        // Assert
+        // Verify the context menu action was NOT updated (still has the different command)
+        string? newCommand = _registryHelper.GetContextMenuActionCommand("Deploy ReShade");
+        Assert.NotNull(newCommand);
+        Assert.Equal(differentCommand, newCommand);
     }
 
     private byte[] CreateMockZipArchiveBytes(string filename, string content)

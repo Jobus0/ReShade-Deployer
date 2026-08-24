@@ -22,6 +22,7 @@ public class MainViewModelTests
     private readonly PresetDeployer _presetDeployer;
     private readonly AddonsDeployer _addonsDeployer;
     private readonly DeploymentOrchestrator _orchestrator;
+    private readonly RegistryHelper _registryHelper;
     
     private readonly ReShadeUndeployer _undeployer;
     private readonly ExecutableContextFactory _factory;
@@ -34,6 +35,7 @@ public class MainViewModelTests
     {
         _fileSystem = new MockFileSystem();
         _registry = new MockRegistry();
+        _registryHelper = new RegistryHelper(_registry);
         _messageBox = new MockMessageBox();
         _snackbarService = new MockSnackbarService();
         _iconExtractor = new MockIconExtractor();
@@ -42,7 +44,7 @@ public class MainViewModelTests
         var fileHelper = new FileHelper(_fileSystem);
         var downloadService = new MockDownloadService(_fileSystem);
 
-        _appUpdater = new AppUpdater(_fileSystem, downloadService, _messageBox);
+        _appUpdater = new AppUpdater(_fileSystem, downloadService, _messageBox, _registryHelper);
         _reShadeUpdater = new ReShadeUpdater(_fileSystem, fileHelper, downloadService, _messageBox);
         _vulkanDeployer = new VulkanSystemWideDeployer(_fileSystem, _registry);
         _dllDeployer = new DllDeployer(_fileSystem, _vulkanDeployer);

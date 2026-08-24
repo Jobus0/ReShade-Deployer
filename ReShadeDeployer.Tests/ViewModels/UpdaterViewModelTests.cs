@@ -1,3 +1,4 @@
+using ReShadeDeployer.Registry;
 using Testably.Abstractions.Testing;
 using ReShadeDeployer.ViewModels;
 using Wpf.Ui.Controls;
@@ -14,6 +15,7 @@ public class UpdaterViewModelTests
 
     private readonly AppUpdater _appUpdater;
     private readonly ReShadeUpdater _reShadeUpdater;
+    private readonly RegistryHelper _registryHelper;
 
     public UpdaterViewModelTests()
     {
@@ -24,7 +26,8 @@ public class UpdaterViewModelTests
         _config = new MockConfig();
 
         var fileHelper = new FileHelper(_fileSystem);
-        _appUpdater = new AppUpdater(_fileSystem, _downloadService, _messageBox);
+        _registryHelper = new RegistryHelper(new MockRegistry());
+        _appUpdater = new AppUpdater(_fileSystem, _downloadService, _messageBox, _registryHelper);
         _reShadeUpdater = new ReShadeUpdater(_fileSystem, fileHelper, _downloadService, _messageBox);
 
         // Pre-create necessary directories
