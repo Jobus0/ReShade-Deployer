@@ -92,13 +92,13 @@ public class IniFileConfigTests
     }
 
     [Fact]
-    public void UseLocalPresets_GetSet_WritesToIni()
+    public void UseCentralizedPresets_GetSet_WritesToIni()
     {
         // Act
-        _config.UseLocalPresets = true;
+        _config.CentralizedPresets = true;
         
         // Assert
-        Assert.True(_config.UseLocalPresets);
+        Assert.True(_config.CentralizedPresets);
     }
 
     [Fact]

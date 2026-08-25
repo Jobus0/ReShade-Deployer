@@ -30,9 +30,9 @@ public interface IConfig
     bool AlwaysExitOnDeploy { get; set; }
 
     /// <summary>
-    /// Whether to store presets locally in the Presets folder.
+    /// Whether to store presets centrally in the Presets folder.
     /// </summary>
-    bool UseLocalPresets { get; set; }
+    bool CentralizedPresets { get; set; }
     
     string[] LastSelectedAddons { get; set; }
 }

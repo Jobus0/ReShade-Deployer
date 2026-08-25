@@ -70,19 +70,19 @@
                     </StackPanel>
                 </ui:Card>
                 
-                <StackPanel Visibility="{Binding Settings.UseLocalPresets, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel Visibility="{Binding Settings.CentralizedPresets, Converter={StaticResource BoolToVisibility}}">
                     <TextBlock Text="Preset Name" FontWeight="SemiBold" Margin="10 0" />
                     <ui:Card Margin="0, 0, 0, 14" Padding="14 10">
                         <StackPanel>
-                            <ui:TextBox Text="{Binding LocalPresetName, UpdateSourceTrigger=PropertyChanged}" 
-                                        FontSize="13" PlaceholderText="{x:Static rd:UIStrings.LocalPresetName_Placeholder}"
+                            <ui:TextBox Text="{Binding CentralizedPresetName, UpdateSourceTrigger=PropertyChanged}" 
+                                        FontSize="13" PlaceholderText="{x:Static rd:UIStrings.CentralizedPresetName_Placeholder}"
                                         Padding="8 6"
                                         ToolTipService.ShowOnDisabled="True"
                                         rd:TextBoxValidation.HighlightEmpty="True"
                                         IsEnabled="{Binding SelectedExecutableContext, Converter={StaticResource NullToBool}}">
                                 <ui:TextBox.Style>
                                     <Style TargetType="ui:TextBox" BasedOn="{StaticResource {x:Type ui:TextBox}}">
-                                        <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.LocalPresetName_Tooltip}" />
+                                        <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.CentralizedPresetName_Tooltip}" />
                                         <Style.Triggers>
                                             <Trigger Property="IsEnabled" Value="False">
                                                 <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.SelectExecutableFirst}" />
@@ -94,7 +94,7 @@
                             <DockPanel Margin="8 8 8 0"
                                      Visibility="{Binding IsPresetNameShared, Converter={StaticResource BoolToVisibility}}">
                                 <ui:SymbolIcon Symbol="Info16" DockPanel.Dock="Left" Margin="0 0 8 0" VerticalAlignment="Center" Foreground="{DynamicResource GrayForegroundBrush}" />
-                                <TextBlock Text="{x:Static rd:UIStrings.LocalPresetName_Shared}" FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource GrayForegroundBrush}"/>
+                                <TextBlock Text="{x:Static rd:UIStrings.CentralizedPresetName_Shared}" FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource GrayForegroundBrush}"/>
                             </DockPanel>
                         </StackPanel>
                     </ui:Card>
@@ -133,11 +133,11 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding IsDeployEnabled}" Value="True" />
-                                            <Condition Binding="{Binding Settings.UseLocalPresets}" Value="True" />
-                                            <Condition Binding="{Binding LocalPresetName}" Value="" />
+                                            <Condition Binding="{Binding Settings.CentralizedPresets}" Value="True" />
+                                            <Condition Binding="{Binding CentralizedPresetName}" Value="" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="IsEnabled" Value="False" />
-                                        <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.LocalPresetName_Missing}" />
+                                        <Setter Property="ToolTip" Value="{x:Static rd:UIStrings.CentralizedPresetName_Missing}" />
                                     </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>

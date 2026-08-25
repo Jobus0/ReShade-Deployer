@@ -282,20 +282,11 @@ The following files will be deleted:</value>
     <data name="SelectedGame" xml:space="preserve">
         <value>No game selected</value>
     </data>
-    <data name="UseLocalPresets" xml:space="preserve">
-        <value>Use local presets</value>
+    <data name="CentralizedPresets" xml:space="preserve">
+        <value>Centralized presets</value>
     </data>
-    <data name="UseLocalPresets_Tooltip" xml:space="preserve">
-        <value>Store the ReShadePreset.ini in the Deployer's local Presets folder instead of the game folder.</value>
-    </data>
-    <data name="PresetFolderNameDialog_Title" xml:space="preserve">
-        <value>Preset Folder Name</value>
-    </data>
-    <data name="PresetFolderNameDialog_Content" xml:space="preserve">
-        <value>Enter a name for the preset folder:</value>
-    </data>
-    <data name="PresetFolderNameDialog_NoName" xml:space="preserve">
-        <value>No preset folder name entered.</value>
+    <data name="CentralizedPresets_Tooltip" xml:space="preserve">
+        <value>Keeps your game presets organized centrally in the Deployer's 'Presets' folder instead of placing them in the game directory.</value>
     </data>
     <data name="BannedGameWarning" xml:space="preserve">
         <value>The target application is known to have blocked or banned the use of ReShade.</value>
@@ -306,16 +297,16 @@ The following files will be deleted:</value>
     <data name="SelectExecutableFirst" xml:space="preserve">
         <value>Select a game executable first.</value>
     </data>
-    <data name="LocalPresetName_Tooltip" xml:space="preserve">
-        <value>The name to use for the local preset folder.</value>
+    <data name="CentralizedPresetName_Tooltip" xml:space="preserve">
+        <value>The name to use for the centralized preset folder.</value>
     </data>
-    <data name="LocalPresetName_Placeholder" xml:space="preserve">
+    <data name="CentralizedPresetName_Placeholder" xml:space="preserve">
         <value>Enter name...</value>
     </data>
-    <data name="LocalPresetName_Missing" xml:space="preserve">
+    <data name="CentralizedPresetName_Missing" xml:space="preserve">
         <value>A preset name is required.</value>
     </data>
-    <data name="LocalPresetName_Shared" xml:space="preserve">
+    <data name="CentralizedPresetName_Shared" xml:space="preserve">
         <value>Another game uses this preset name. Deploying will make them share preset.</value>
     </data>
 </root>

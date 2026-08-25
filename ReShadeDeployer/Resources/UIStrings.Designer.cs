@@ -146,6 +146,60 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A preset name is required..
+        /// </summary>
+        public static string CentralizedPresetName_Missing {
+            get {
+                return ResourceManager.GetString("CentralizedPresetName_Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter name....
+        /// </summary>
+        public static string CentralizedPresetName_Placeholder {
+            get {
+                return ResourceManager.GetString("CentralizedPresetName_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another game uses this preset name. Deploying will make them share preset..
+        /// </summary>
+        public static string CentralizedPresetName_Shared {
+            get {
+                return ResourceManager.GetString("CentralizedPresetName_Shared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name to use for the centralized preset folder..
+        /// </summary>
+        public static string CentralizedPresetName_Tooltip {
+            get {
+                return ResourceManager.GetString("CentralizedPresetName_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Centralized presets.
+        /// </summary>
+        public static string CentralizedPresets {
+            get {
+                return ResourceManager.GetString("CentralizedPresets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keeps your game presets organized centrally in the Deployer&apos;s &apos;Presets&apos; folder instead of placing them in the game directory..
+        /// </summary>
+        public static string CentralizedPresets_Tooltip {
+            get {
+                return ResourceManager.GetString("CentralizedPresets_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ReShade website (https://reshade.me) is down or the connection was blocked..
         /// </summary>
         public static string ConnectionError {
@@ -419,42 +473,6 @@ namespace ReShadeDeployer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A preset name is required..
-        /// </summary>
-        public static string LocalPresetName_Missing {
-            get {
-                return ResourceManager.GetString("LocalPresetName_Missing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter name....
-        /// </summary>
-        public static string LocalPresetName_Placeholder {
-            get {
-                return ResourceManager.GetString("LocalPresetName_Placeholder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Another game uses this preset name. Deploying will make them share preset..
-        /// </summary>
-        public static string LocalPresetName_Shared {
-            get {
-                return ResourceManager.GetString("LocalPresetName_Shared", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The name to use for the local preset folder..
-        /// </summary>
-        public static string LocalPresetName_Tooltip {
-            get {
-                return ResourceManager.GetString("LocalPresetName_Tooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Notice.
         /// </summary>
         public static string Notice {
@@ -496,33 +514,6 @@ namespace ReShadeDeployer {
         public static string OpenGL_Tooltip {
             get {
                 return ResourceManager.GetString("OpenGL_Tooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter a name for the preset folder:.
-        /// </summary>
-        public static string PresetFolderNameDialog_Content {
-            get {
-                return ResourceManager.GetString("PresetFolderNameDialog_Content", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No preset folder name entered..
-        /// </summary>
-        public static string PresetFolderNameDialog_NoName {
-            get {
-                return ResourceManager.GetString("PresetFolderNameDialog_NoName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preset Folder Name.
-        /// </summary>
-        public static string PresetFolderNameDialog_Title {
-            get {
-                return ResourceManager.GetString("PresetFolderNameDialog_Title", resourceCulture);
             }
         }
         
@@ -807,24 +798,6 @@ namespace ReShadeDeployer {
         public static string UpdateUnavailable_Title {
             get {
                 return ResourceManager.GetString("UpdateUnavailable_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use local presets.
-        /// </summary>
-        public static string UseLocalPresets {
-            get {
-                return ResourceManager.GetString("UseLocalPresets", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Store the ReShadePreset.ini in the Deployer&apos;s local Presets folder instead of the game folder..
-        /// </summary>
-        public static string UseLocalPresets_Tooltip {
-            get {
-                return ResourceManager.GetString("UseLocalPresets_Tooltip", resourceCulture);
             }
         }
         

@@ -178,10 +178,10 @@ public class DeploymentOrchestratorTests
     }
 
     [Fact]
-    public async Task DeployReShadeForExecutable_LocalPresetsEnabled_DeploysToLocalPresetsFolder()
+    public async Task DeployReShadeForExecutable_CentralizedPresetsEnabled_DeploysToCentralizedPresetsFolder()
     {
         // Arrange
-        _config.UseLocalPresets = true;
+        _config.CentralizedPresets = true;
         _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "template preset content");
         
         // Act
@@ -192,27 +192,27 @@ public class DeploymentOrchestratorTests
         catch (NullReferenceException) { }
 
         // Assert
-        string expectedLocalPresetPath = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder", "ReShadePreset.ini");
-        Assert.True(_fileSystem.File.Exists(expectedLocalPresetPath));
-        Assert.Equal("template preset content", _fileSystem.File.ReadAllText(expectedLocalPresetPath));
+        string expectedCentralizedPresetPath = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder", "ReShadePreset.ini");
+        Assert.True(_fileSystem.File.Exists(expectedCentralizedPresetPath));
+        Assert.Equal("template preset content", _fileSystem.File.ReadAllText(expectedCentralizedPresetPath));
 
         string reshadeIniPath = _fileSystem.Path.Combine(_executableContext.DirectoryPath, "ReShade.ini");
         Assert.True(_fileSystem.File.Exists(reshadeIniPath));
         string reshadeIniContent = _fileSystem.File.ReadAllText(reshadeIniPath);
-        Assert.Contains($"PresetPath={expectedLocalPresetPath}", reshadeIniContent);
+        Assert.Contains($"PresetPath={expectedCentralizedPresetPath}", reshadeIniContent);
     }
 
     [Fact]
-    public async Task DeployReShadeForExecutable_LocalPresetsEnabled_OverwritePromptDeclined_DoesNotCopyPresetButDeploysOthers()
+    public async Task DeployReShadeForExecutable_CentralizedPresetsEnabled_OverwritePromptDeclined_DoesNotCopyPresetButDeploysOthers()
     {
         // Arrange
-        _config.UseLocalPresets = true;
+        _config.CentralizedPresets = true;
         _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "template preset content");
         
-        string localPresetDir = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder");
-        _fileSystem.Directory.CreateDirectory(localPresetDir);
-        string localPresetPath = _fileSystem.Path.Combine(localPresetDir, "ReShadePreset.ini");
-        _fileSystem.File.WriteAllText(localPresetPath, "original preset content");
+        string centralizedPresetDir = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder");
+        _fileSystem.Directory.CreateDirectory(centralizedPresetDir);
+        string centralizedPresetPath = _fileSystem.Path.Combine(centralizedPresetDir, "ReShadePreset.ini");
+        _fileSystem.File.WriteAllText(centralizedPresetPath, "original preset content");
 
         // Dialog (overwrite prompt) returns Secondary/Cancel
         _messageBox.NextResults.Enqueue(MessageBoxResult.Secondary);
@@ -229,12 +229,12 @@ public class DeploymentOrchestratorTests
         Assert.Contains(UIStrings.PresetOverwrite, _messageBox.ShowCalls[0].ContentText);
 
         // Original content is preserved
-        Assert.Equal("original preset content", _fileSystem.File.ReadAllText(localPresetPath));
+        Assert.Equal("original preset content", _fileSystem.File.ReadAllText(centralizedPresetPath));
 
         // ReShade.ini still points to it
         string reshadeIniPath = _fileSystem.Path.Combine(_executableContext.DirectoryPath, "ReShade.ini");
         Assert.True(_fileSystem.File.Exists(reshadeIniPath));
         string reshadeIniContent = _fileSystem.File.ReadAllText(reshadeIniPath);
-        Assert.Contains($"PresetPath={localPresetPath}", reshadeIniContent);
+        Assert.Contains($"PresetPath={centralizedPresetPath}", reshadeIniContent);
     }
 }

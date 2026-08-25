@@ -12,7 +12,7 @@ public class IniDeployer(IFileSystem fileSystem)
     /// </summary>
     /// <param name="executableContext">Context for the executable to deploy.</param>
     /// <param name="addons">List of addons being deployed. Used to update EffectSearchPaths and TextureSearchPaths.</param>
-    /// <param name="presetPath">Path to the local preset folder, if used at all. Deploys to game's folder if null.</param>
+    /// <param name="presetPath">Path to the centralized preset folder, if used at all. Deploys to game's folder if null.</param>
     public void Deploy(ExecutableContext executableContext, IList<AddonItem> addons, string? presetPath = null)
     {
         string path = fileSystem.Path.Combine(executableContext.DirectoryPath, "ReShade.ini");

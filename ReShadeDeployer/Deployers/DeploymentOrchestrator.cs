@@ -21,7 +21,7 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
     /// <param name="api">Target API name (dxgi, d3d9, opengl32, vulkan).</param>
     /// <param name="addonSupport">Whether to deploy the addon supported DLL instead of the normal one.</param>
     /// <param name="addons">List of addons to deploy.</param>
-    /// <param name="presetName">Optional preset folder name for local presets.</param>
+    /// <param name="presetName">Optional preset folder name for centralized presets.</param>
     public async Task DeployReShadeForExecutable(ExecutableContext executableContext, GraphicsApi api, bool addonSupport, IList<AddonItem> addons, string? presetName = null)
     {
         if (api == GraphicsApi.D3D9 && executableContext.IsD3D8)
@@ -31,9 +31,9 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
 
         string? presetPath = null;
         bool doDeployPreset = false;
-        bool useLocalPresets = !string.IsNullOrWhiteSpace(presetName);
+        bool useCentralizedPresets = !string.IsNullOrWhiteSpace(presetName);
 
-        if (fileSystem.File.Exists(Paths.ReShadePresetIni) || useLocalPresets)
+        if (fileSystem.File.Exists(Paths.ReShadePresetIni) || useCentralizedPresets)
         {
             presetPath = presetDeployer.GetPath(executableContext, presetName);
             

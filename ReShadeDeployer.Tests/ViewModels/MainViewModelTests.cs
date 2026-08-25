@@ -133,20 +133,20 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public void LocalPresetName_WhenSet_RemovesInvalidPathCharacters()
+    public void CentralizedPresetName_WhenSet_RemovesInvalidPathCharacters()
     {
         // Arrange
         var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService, _config);
 
         // Act
-        mainVm.LocalPresetName = "Bad<Folder>:\"/\\|?*Name";
+        mainVm.CentralizedPresetName = "Bad<Folder>:\"/\\|?*Name";
 
         // Assert
-        Assert.Equal("BadFolderName", mainVm.LocalPresetName);
+        Assert.Equal("BadFolderName", mainVm.CentralizedPresetName);
     }
 
     [Fact]
-    public void TargetExecutable_WhenExistingPresetPathContainsInvalidPathCharacters_SanitizesLocalPresetName()
+    public void TargetExecutable_WhenExistingPresetPathContainsInvalidPathCharacters_SanitizesCentralizedPresetName()
     {
         // Arrange
         var mainVm = new MainViewModel(_fileSystem, _orchestrator, _undeployer, _factory, _updaterVm, _settingsVm, _addonsVm, _messageBox, _iconExtractor, _snackbarService, _config);
@@ -160,7 +160,7 @@ public class MainViewModelTests
         mainVm.TargetExecutable(gamePath);
 
         // Assert
-        Assert.Equal("BadFolderName", mainVm.LocalPresetName);
+        Assert.Equal("BadFolderName", mainVm.CentralizedPresetName);
     }
 
     [Fact]
@@ -280,10 +280,10 @@ public class MainViewModelTests
         _fileSystem.File.WriteAllText(_fileSystem.Path.Combine(presetFolder, "ReShadePreset.ini"), "preset content");
 
         mainVm.TargetExecutable(gamePath);
-        mainVm.LocalPresetName = "MyPreset";
+        mainVm.CentralizedPresetName = "MyPreset";
 
         // Act
-        // UpdateIsPresetNameShared is called automatically when LocalPresetName is set
+        // UpdateIsPresetNameShared is called automatically when CentralizedPresetName is set
 
         // Assert
         Assert.True(mainVm.IsPresetNameShared);
@@ -310,10 +310,10 @@ public class MainViewModelTests
         _fileSystem.File.WriteAllText(reshadeIniPath, $"PresetPath={expectedPresetPath}");
 
         mainVm.TargetExecutable(gamePath);
-        mainVm.LocalPresetName = "MyPreset";
+        mainVm.CentralizedPresetName = "MyPreset";
 
         // Act
-        // UpdateIsPresetNameShared is called automatically when LocalPresetName is set
+        // UpdateIsPresetNameShared is called automatically when CentralizedPresetName is set
 
         // Assert
         Assert.False(mainVm.IsPresetNameShared);
@@ -340,10 +340,10 @@ public class MainViewModelTests
         _fileSystem.File.WriteAllText(reshadeIniPath, $"PresetPath={differentPresetPath}");
 
         mainVm.TargetExecutable(gamePath);
-        mainVm.LocalPresetName = "MyPreset";
+        mainVm.CentralizedPresetName = "MyPreset";
 
         // Act
-        // UpdateIsPresetNameShared is called automatically when LocalPresetName is set
+        // UpdateIsPresetNameShared is called automatically when CentralizedPresetName is set
 
         // Assert
         Assert.True(mainVm.IsPresetNameShared);

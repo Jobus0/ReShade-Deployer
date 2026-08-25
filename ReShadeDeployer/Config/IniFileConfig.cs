@@ -65,12 +65,12 @@ public class IniFileConfig(IFileSystem fileSystem) : IConfig
     }
 
     /// <summary>
-    /// Whether to store presets locally in the Presets folder.
+    /// Whether to store presets centrally in the Presets folder.
     /// </summary>
-    public bool UseLocalPresets
+    public bool CentralizedPresets
     {
-        get => bool.TryParse(Read(nameof(UseLocalPresets)), out bool value) && value;
-        set => Write(nameof(UseLocalPresets), value.ToString());
+        get => bool.TryParse(Read(nameof(CentralizedPresets)), out bool value) && value;
+        set => Write(nameof(CentralizedPresets), value.ToString());
     }
 
     public string[] LastSelectedAddons

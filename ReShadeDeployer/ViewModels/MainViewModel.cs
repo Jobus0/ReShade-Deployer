@@ -72,7 +72,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isPresetNameShared;
 
-    public string LocalPresetName
+    public string CentralizedPresetName
     {
         get;
         set
@@ -124,7 +124,7 @@ public partial class MainViewModel : ObservableObject
         Addons.AddonSupportCheckedChanged += (isChecked) => UpdateVulkanWithAddonSupportWarning();
         Settings.PropertyChanged += (sender, args) =>
         {
-            if (args.PropertyName == nameof(Settings.UseLocalPresets))
+            if (args.PropertyName == nameof(Settings.CentralizedPresets))
             {
                 DeployCommand.NotifyCanExecuteChanged();
             }
@@ -179,7 +179,7 @@ public partial class MainViewModel : ObservableObject
 
         var api = AvailableApis.FirstOrDefault(a => a.IsSelected)?.Api ?? GraphicsApi.DXGI;
         var addonSupport = Addons.IsAddonSupportChecked;
-        var presetName = _config.UseLocalPresets && !string.IsNullOrWhiteSpace(LocalPresetName) ? LocalPresetName : null;
+        var presetName = _config.CentralizedPresets && !string.IsNullOrWhiteSpace(CentralizedPresetName) ? CentralizedPresetName : null;
 
         try
         {
@@ -204,7 +204,7 @@ public partial class MainViewModel : ObservableObject
         if (SelectedExecutableContext == null || !IsDeployEnabled)
             return false;
 
-        if (Settings.UseLocalPresets && string.IsNullOrWhiteSpace(LocalPresetName))
+        if (Settings.CentralizedPresets && string.IsNullOrWhiteSpace(CentralizedPresetName))
             return false;
 
         return true;
@@ -268,7 +268,7 @@ public partial class MainViewModel : ObservableObject
 
         IsDeployEnabled = true;
 
-        LocalPresetName = GetDefaultPresetFolderName(executablePath);
+        CentralizedPresetName = GetDefaultPresetFolderName(executablePath);
 
         WarningTexts.Clear();
 
@@ -343,14 +343,14 @@ public partial class MainViewModel : ObservableObject
 
     private void UpdateIsPresetNameShared()
     {
-        if (SelectedExecutableContext == null || string.IsNullOrWhiteSpace(LocalPresetName))
+        if (SelectedExecutableContext == null || string.IsNullOrWhiteSpace(CentralizedPresetName))
         {
             IsPresetNameShared = false;
             return;
         }
 
-        // Check if the named preset folder exists in the local Presets directory
-        string presetFolder = _fileSystem.Path.Combine(Paths.Presets, LocalPresetName);
+        // Check if the named preset folder exists in the centralized Presets directory
+        string presetFolder = _fileSystem.Path.Combine(Paths.Presets, CentralizedPresetName);
         if (!_fileSystem.Directory.Exists(presetFolder))
         {
             IsPresetNameShared = false;
@@ -358,7 +358,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         // The expected PresetPath value that a correctly configured game would have
-        string expectedPresetPath = _fileSystem.Path.Combine(Paths.Presets, LocalPresetName, "ReShadePreset.ini");
+        string expectedPresetPath = _fileSystem.Path.Combine(Paths.Presets, CentralizedPresetName, "ReShadePreset.ini");
 
         // Check whether the game's ReShade.ini already points to this preset
         string reshadeIniPath = _fileSystem.Path.Combine(SelectedExecutableContext.DirectoryPath, "ReShade.ini");

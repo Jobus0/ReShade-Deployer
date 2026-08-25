@@ -44,7 +44,7 @@ public class PresetDeployerTests
     }
     
     [Fact]
-    public void Deploy_CreatesEmptyReShadePresetIniWhenSourceExistsWithLocalPresetsEnabled()
+    public void Deploy_CreatesEmptyReShadePresetIniWhenSourceExistsWithCentralizedPresetsEnabled()
     {
         // Arrange
         _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "Preset content");
@@ -60,7 +60,7 @@ public class PresetDeployerTests
     }
     
     [Fact]
-    public void Deploy_CreatesEmptyReShadePresetIniWhenSourceDoesNotExistWithLocalPresetsEnabled()
+    public void Deploy_CreatesEmptyReShadePresetIniWhenSourceDoesNotExistWithCentralizedPresetsEnabled()
     {
         // Act
         _deployer.Deploy(_executableContext, "MyGame");

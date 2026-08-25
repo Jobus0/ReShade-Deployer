@@ -8,7 +8,7 @@ public class PresetDeployer(IFileSystem fileSystem)
     /// Deploy ReShadePreset.ini to a directory.
     /// </summary>
     /// <param name="executableContext">Context for the executable to deploy.</param>
-    /// <param name="presetName">Optional name of the preset folder for local storage.</param>
+    /// <param name="presetName">Optional name of the preset folder for centralized storage.</param>
     public void Deploy(ExecutableContext executableContext, string? presetName = null)
     {
         string destPath = GetPath(executableContext, presetName);
@@ -26,7 +26,7 @@ public class PresetDeployer(IFileSystem fileSystem)
     /// Gets the path to the ReShadePreset.ini file based on the executable context.
     /// </summary>
     /// <param name="executableContext">The context of the executable for which to get the path.</param>
-    /// <param name="presetName">Optional name of the preset folder for local storage.</param>
+    /// <param name="presetName">Optional name of the preset folder for centralized storage.</param>
     /// <returns>The full path to the ReShadePreset.ini file.</returns>
     public string GetPath(ExecutableContext executableContext, string? presetName = null)
     {
