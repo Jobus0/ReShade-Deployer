@@ -1,6 +1,11 @@
 # ReShade Deployer
 ### A centralized alternative to the official ReShade installer
 
+[![GitHub Release](https://img.shields.io/github/v/release/Jobus0/ReShade-Deployer?color=blue)](https://github.com/Jobus0/ReShade-Deployer/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/Jobus0/ReShade-Deployer/total?color=green)](https://github.com/Jobus0/ReShade-Deployer/releases)
+[![License](https://img.shields.io/github/license/Jobus0/ReShade-Deployer)](../LICENSE.md)
+[![Target](https://img.shields.io/badge/.NET-10.0-512BD4)](https://dotnet.microsoft.com/en-us/download/dotnet/10.0/runtime)
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="Readme/MainWindow_Dark.png">
   <source media="(prefers-color-scheme: light)" srcset="Readme/MainWindow_Light.png">
