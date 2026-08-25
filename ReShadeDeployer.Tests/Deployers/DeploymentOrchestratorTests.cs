@@ -39,6 +39,7 @@ public class DeploymentOrchestratorTests
         
         _orchestrator = new DeploymentOrchestrator(
             _fileSystem,
+            fileHelper,
             _dllDeployer,
             _iniDeployer,
             _presetDeployer,
@@ -237,4 +238,102 @@ public class DeploymentOrchestratorTests
         string reshadeIniContent = _fileSystem.File.ReadAllText(reshadeIniPath);
         Assert.Contains($"PresetPath={centralizedPresetPath}", reshadeIniContent);
     }
+
+    [Fact]
+    public async Task DeployReShadeForExecutable_PresetDeployment_ExistingPresetIdentical_DoesNotPromptUser()
+    {
+        // Arrange
+        _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "same preset content");
+        
+        string targetPresetPath = _fileSystem.Path.Combine(_executableContext.DirectoryPath, "ReShadePreset.ini");
+        _fileSystem.File.WriteAllText(targetPresetPath, "same preset content");
+
+        // Act
+        try
+        {
+            await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>());
+        }
+        catch (NullReferenceException)
+        {
+            // Expected NRE
+        }
+
+        // Assert
+        Assert.Empty(_messageBox.ShowCalls);
+        Assert.Equal("same preset content", _fileSystem.File.ReadAllText(targetPresetPath));
+    }
+
+    [Fact]
+    public async Task DeployReShadeForExecutable_CentralizedPresetsEnabled_ExistingPresetIdentical_DoesNotPromptUser()
+    {
+        // Arrange
+        _config.CentralizedPresets = true;
+        _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "same centralized preset content");
+        
+        string centralizedPresetDir = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder");
+        _fileSystem.Directory.CreateDirectory(centralizedPresetDir);
+        string centralizedPresetPath = _fileSystem.Path.Combine(centralizedPresetDir, "ReShadePreset.ini");
+        _fileSystem.File.WriteAllText(centralizedPresetPath, "same centralized preset content");
+
+        // Act
+        try
+        {
+            await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>(), "TestPresetFolder");
+        }
+        catch (NullReferenceException) { }
+
+        // Assert
+        Assert.Empty(_messageBox.ShowCalls);
+        Assert.Equal("same centralized preset content", _fileSystem.File.ReadAllText(centralizedPresetPath));
+    }
+
+    [Fact]
+    public async Task DeployReShadeForExecutable_CentralizedPresetsEnabled_ExistingPresetIsDefaultContent_DoesNotPromptUser()
+    {
+        // Arrange
+        _config.CentralizedPresets = true;
+        // Paths.ReShadePresetIni does not exist
+        
+        string centralizedPresetDir = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder");
+        _fileSystem.Directory.CreateDirectory(centralizedPresetDir);
+        string centralizedPresetPath = _fileSystem.Path.Combine(centralizedPresetDir, "ReShadePreset.ini");
+        _fileSystem.File.WriteAllText(centralizedPresetPath, PresetDeployer.GetDefaultContent());
+
+        // Act
+        try
+        {
+            await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>(), "TestPresetFolder");
+        }
+        catch (NullReferenceException) { }
+
+        // Assert
+        Assert.Empty(_messageBox.ShowCalls);
+        Assert.Equal(PresetDeployer.GetDefaultContent(), _fileSystem.File.ReadAllText(centralizedPresetPath));
+    }
+
+    [Fact]
+    public async Task DeployReShadeForExecutable_CentralizedPresetsEnabled_ExistingPresetIsDefaultContentWithCrlf_OverwritesWithLocalPresetWithoutPrompt()
+    {
+        // Arrange
+        _config.CentralizedPresets = true;
+        _fileSystem.File.WriteAllText(Paths.ReShadePresetIni, "custom template preset content");
+        
+        string centralizedPresetDir = _fileSystem.Path.Combine(Paths.Presets, "TestPresetFolder");
+        _fileSystem.Directory.CreateDirectory(centralizedPresetDir);
+        string centralizedPresetPath = _fileSystem.Path.Combine(centralizedPresetDir, "ReShadePreset.ini");
+        _fileSystem.File.WriteAllText(centralizedPresetPath, "Techniques=\r\nTechniqueSorting=\r\n");
+
+        // Act
+        try
+        {
+            await _orchestrator.DeployReShadeForExecutable(_executableContext, GraphicsApi.DXGI, addonSupport: false, new List<AddonItem>(), "TestPresetFolder");
+        }
+        catch (NullReferenceException) { }
+
+        // Assert
+        Assert.Empty(_messageBox.ShowCalls);
+        Assert.Equal("custom template preset content", _fileSystem.File.ReadAllText(centralizedPresetPath));
+    }
 }
+
+

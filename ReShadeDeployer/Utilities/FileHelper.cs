@@ -1,6 +1,7 @@
+using System;
 using System.IO;
-
 using System.IO.Abstractions;
+using System.Linq;
 
 namespace ReShadeDeployer;
 
@@ -85,5 +86,34 @@ public class FileHelper(IFileSystem fileSystem)
             fileSystem.Directory.CreateDirectory(fileSystem.Path.GetDirectoryName(destinationPath) ?? destinationPath);
             fileSystem.File.Copy(sourcePath, destinationPath, overwrite);
         }
+    }
+
+    /// <summary>
+    /// Checks whether two files exist and have identical contents.
+    /// </summary>
+    /// <param name="path1">Path to the first file.</param>
+    /// <param name="path2">Path to the second file.</param>
+    /// <returns>True if both files exist and their contents are identical; otherwise, false.</returns>
+    public bool AreFilesEqual(string path1, string path2)
+    {
+        if (string.IsNullOrEmpty(path1) || string.IsNullOrEmpty(path2))
+            return false;
+
+        if (!fileSystem.File.Exists(path1) || !fileSystem.File.Exists(path2))
+            return false;
+
+        if (string.Equals(path1, path2, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var fileInfo1 = fileSystem.FileInfo.New(path1);
+        var fileInfo2 = fileSystem.FileInfo.New(path2);
+
+        if (fileInfo1.Length != fileInfo2.Length)
+            return false;
+
+        byte[] file1Bytes = fileSystem.File.ReadAllBytes(path1);
+        byte[] file2Bytes = fileSystem.File.ReadAllBytes(path2);
+
+        return file1Bytes.AsSpan().SequenceEqual(file2Bytes);
     }
 }

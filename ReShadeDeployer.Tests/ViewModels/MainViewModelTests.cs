@@ -54,6 +54,7 @@ public class MainViewModelTests
         
         _orchestrator = new DeploymentOrchestrator(
             _fileSystem,
+            fileHelper,
             _dllDeployer,
             _iniDeployer,
             _presetDeployer,

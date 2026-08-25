@@ -10,7 +10,7 @@ namespace ReShadeDeployer;
 /// <summary>
 /// Provides methods for deploying ReShade for an executable: DLLs, INI files, and presets.
 /// </summary>
-public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeployer,
+public class DeploymentOrchestrator(IFileSystem fileSystem, FileHelper fileHelper, DllDeployer dllDeployer,
     IniDeployer iniDeployer, PresetDeployer presetDeployer, AddonsDeployer addonsDeployer,
     IMessageBox messageBox)
 {
@@ -32,16 +32,40 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
         string? presetPath = null;
         bool doDeployPreset = false;
         bool useCentralizedPresets = !string.IsNullOrWhiteSpace(presetName);
+        bool defaultPresetExists = fileSystem.File.Exists(Paths.ReShadePresetIni);
 
-        if (fileSystem.File.Exists(Paths.ReShadePresetIni) || useCentralizedPresets)
+        if (defaultPresetExists || useCentralizedPresets)
         {
             presetPath = presetDeployer.GetPath(executableContext, presetName);
             
             bool presetAlreadyExists = fileSystem.File.Exists(presetPath);
-            doDeployPreset = !presetAlreadyExists || await messageBox.Show(UIStrings.PresetOverwrite_Title,
-                UIStrings.PresetOverwrite,
-                primaryButtonText: UIStrings.PresetOverwrite_Yes, ControlAppearance.Danger,
-                closeButtonText: UIStrings.PresetOverwrite_No) == MessageBoxResult.Primary;
+            bool isIdentical = defaultPresetExists &&
+                               presetAlreadyExists &&
+                               fileHelper.AreFilesEqual(Paths.ReShadePresetIni, presetPath);
+
+            bool isExistingCentralDefault = useCentralizedPresets &&
+                                           presetAlreadyExists &&
+                                           IsPresetDefaultContent(presetPath);
+
+            if (!presetAlreadyExists)
+            {
+                doDeployPreset = true;
+            }
+            else if (isIdentical)
+            {
+                doDeployPreset = false;
+            }
+            else if (isExistingCentralDefault)
+            {
+                doDeployPreset = defaultPresetExists;
+            }
+            else
+            {
+                doDeployPreset = await messageBox.Show(UIStrings.PresetOverwrite_Title,
+                    UIStrings.PresetOverwrite,
+                    primaryButtonText: UIStrings.PresetOverwrite_Yes, ControlAppearance.Danger,
+                    closeButtonText: UIStrings.PresetOverwrite_No) == MessageBoxResult.Primary;
+            }
         }
 
         try
@@ -56,6 +80,22 @@ public class DeploymentOrchestrator(IFileSystem fileSystem, DllDeployer dllDeplo
         catch (Exception ex) when (ex is not DeploymentException)
         {
             throw new DeploymentException(ex);
+        }
+    }
+
+    private bool IsPresetDefaultContent(string presetPath)
+    {
+        try
+        {
+            string content = fileSystem.File.ReadAllText(presetPath);
+            return string.Equals(
+                content.Replace("\r\n", "\n").Trim(),
+                PresetDeployer.GetDefaultContent().Replace("\r\n", "\n").Trim(),
+                StringComparison.Ordinal);
+        }
+        catch
+        {
+            return false;
         }
     }
 }

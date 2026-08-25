@@ -1,4 +1,4 @@
-﻿using System.IO.Abstractions;
+using System.IO.Abstractions;
 using Testably.Abstractions.Testing;
 
 namespace ReShadeDeployer.Tests.Utilities;
@@ -152,5 +152,89 @@ public class FileHelperTests
 
         // Assert
         Assert.Equal("new content", _fileSystem.File.ReadAllText(destFile));
+    }
+
+    [Fact]
+    public void AreFilesEqual_ReturnsFalse_WhenFirstFileDoesNotExist()
+    {
+        string tempDir = _fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "test");
+        _fileSystem.Directory.CreateDirectory(tempDir);
+        string file2 = _fileSystem.Path.Combine(tempDir, "file2.txt");
+        _fileSystem.File.WriteAllText(file2, "content");
+
+        bool result = _fileHelper.AreFilesEqual(_fileSystem.Path.Combine(tempDir, "nonexistent.txt"), file2);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void AreFilesEqual_ReturnsFalse_WhenSecondFileDoesNotExist()
+    {
+        string tempDir = _fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "test");
+        _fileSystem.Directory.CreateDirectory(tempDir);
+        string file1 = _fileSystem.Path.Combine(tempDir, "file1.txt");
+        _fileSystem.File.WriteAllText(file1, "content");
+
+        bool result = _fileHelper.AreFilesEqual(file1, _fileSystem.Path.Combine(tempDir, "nonexistent.txt"));
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void AreFilesEqual_ReturnsFalse_WhenLengthsDiffer()
+    {
+        string tempDir = _fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "test");
+        _fileSystem.Directory.CreateDirectory(tempDir);
+        string file1 = _fileSystem.Path.Combine(tempDir, "file1.txt");
+        string file2 = _fileSystem.Path.Combine(tempDir, "file2.txt");
+        _fileSystem.File.WriteAllText(file1, "short");
+        _fileSystem.File.WriteAllText(file2, "longer content");
+
+        bool result = _fileHelper.AreFilesEqual(file1, file2);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void AreFilesEqual_ReturnsFalse_WhenLengthsMatchButContentsDiffer()
+    {
+        string tempDir = _fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "test");
+        _fileSystem.Directory.CreateDirectory(tempDir);
+        string file1 = _fileSystem.Path.Combine(tempDir, "file1.txt");
+        string file2 = _fileSystem.Path.Combine(tempDir, "file2.txt");
+        _fileSystem.File.WriteAllText(file1, "abcde");
+        _fileSystem.File.WriteAllText(file2, "abxyz");
+
+        bool result = _fileHelper.AreFilesEqual(file1, file2);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void AreFilesEqual_ReturnsTrue_WhenFilesAreIdentical()
+    {
+        string tempDir = _fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "test");
+        _fileSystem.Directory.CreateDirectory(tempDir);
+        string file1 = _fileSystem.Path.Combine(tempDir, "file1.txt");
+        string file2 = _fileSystem.Path.Combine(tempDir, "file2.txt");
+        _fileSystem.File.WriteAllText(file1, "same content");
+        _fileSystem.File.WriteAllText(file2, "same content");
+
+        bool result = _fileHelper.AreFilesEqual(file1, file2);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void AreFilesEqual_ReturnsTrue_WhenPathsAreSameAndFileExists()
+    {
+        string tempDir = _fileSystem.Path.Combine(_fileSystem.Path.GetTempPath(), "test");
+        _fileSystem.Directory.CreateDirectory(tempDir);
+        string file1 = _fileSystem.Path.Combine(tempDir, "file1.txt");
+        _fileSystem.File.WriteAllText(file1, "same file");
+
+        bool result = _fileHelper.AreFilesEqual(file1, file1);
+
+        Assert.True(result);
     }
 }
