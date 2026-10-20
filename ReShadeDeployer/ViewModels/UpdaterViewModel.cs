@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -64,9 +65,14 @@ public partial class UpdaterViewModel : ObservableObject
             VersionLabelContent = version;
             CheckForNewReShadeVersion(version);
         }
-        else
+        else if (_reShadeUpdater.GetLocalReShadeDlls().All(dll => dll.Status == ReShadeDllStatus.Missing))
         {
             RequestFirstTimeSetup?.Invoke();
+        }
+        else
+        {
+            // ReShade has been downloaded before, but one or more DLLs have been deleted, overwritten or mismatched.
+            _ = ValidateReShadeInstallation();
         }
 
         _ = _appUpdater.CleanUpOldVersion();
@@ -129,6 +135,48 @@ public partial class UpdaterViewModel : ObservableObject
     /// if an executable is already targeted. Subscribe to this event.
     /// </summary>
     public event Action? ReShadeDownloadCompleted;
+
+    /// <summary>
+    /// Validate that all four local ReShade DLLs exist, are genuine ReShade files and share the same version.
+    /// If not, show a message box listing the correct and flawed DLLs, and offer to re-download ReShade
+    /// (using the highest local version found, or the latest version if no valid DLL remains).
+    /// </summary>
+    /// <returns>True if the installation is valid, or was successfully repaired. False otherwise.</returns>
+    public async Task<bool> ValidateReShadeInstallation()
+    {
+        var dlls = _reShadeUpdater.GetLocalReShadeDlls();
+        if (dlls.All(dll => dll.Status == ReShadeDllStatus.Valid))
+            return true;
+
+        // All DLLs with status Valid share the highest local version.
+        string? highestVersion = dlls.FirstOrDefault(dll => dll.Status == ReShadeDllStatus.Valid)?.Version;
+        if (highestVersion != null)
+            VersionLabelContent = highestVersion;
+
+        string dllList = string.Join(Environment.NewLine, dlls.Select(dll => dll.Status switch
+        {
+            ReShadeDllStatus.Valid => $"✓ {dll.Name}: {dll.Version}",
+            ReShadeDllStatus.Missing => $"✗ {dll.Name}: {UIStrings.ReShadeValidation_Missing}",
+            ReShadeDllStatus.InvalidFile => $"✗ {dll.Name}: {UIStrings.ReShadeValidation_InvalidFile}",
+            ReShadeDllStatus.VersionMismatch => $"✗ {dll.Name}: {string.Format(UIStrings.ReShadeValidation_VersionMismatch, dll.Version)}",
+            _ => throw new ArgumentOutOfRangeException(nameof(dll.Status), dll.Status, null)
+        }));
+
+        string question = highestVersion != null
+            ? string.Format(UIStrings.ReShadeValidation_Redownload, highestVersion)
+            : UIStrings.ReShadeValidation_RedownloadLatest;
+
+        var result = await _messageBox.Show(UIStrings.ReShadeValidation_Title,
+            string.Format(UIStrings.ReShadeValidation_Content, dllList, question),
+            primaryButtonText: UIStrings.ReShadeValidation_RedownloadButton,
+            closeButtonText: UIStrings.Cancel);
+
+        if (result != MessageBoxResult.Primary)
+            return false;
+
+        await DownloadReShade(highestVersion);
+        return _reShadeUpdater.TryGetLocalReShadeVersionNumber(out _);
+    }
 
     private async void CheckForNewDeployerVersion(bool force = false)
     {

@@ -57,10 +57,7 @@ public class UpdaterViewModelTests
     public void Initialize_WhenLocalReShadeExists_SetsVersionLabel()
     {
         // Arrange
-        // Write a dummy ReShade64.dll and set its version info
-        string dllPath = _fileSystem.Path.Combine(Paths.Dlls, "ReShade64.dll");
-        _fileSystem.File.WriteAllText(dllPath, "dummy ReShade DLL");
-        _fileSystem.WithFileVersionInfo(dllPath, v => v.SetFileVersion("5.8.0.0"));
+        TestHelpers.CreateMockReShadeInstallation(_fileSystem, "5.8.0.0");
 
         _config.LatestReShadeVersionNumber = "5.8.0";
         _config.LatestReShadeVersionNumberCheckDate = DateTime.Now; // skip online check
@@ -72,15 +69,14 @@ public class UpdaterViewModelTests
 
         // Assert
         Assert.Equal("5.8.0", viewModel.VersionLabelContent);
+        Assert.Empty(_messageBox.ShowCalls);
     }
 
     [Fact]
     public void Initialize_WhenLocalReShadeExistsAndNewerVersionExists_SetsUpdateButtonContent()
     {
         // Arrange
-        string dllPath = _fileSystem.Path.Combine(Paths.Dlls, "ReShade64.dll");
-        _fileSystem.File.WriteAllText(dllPath, "dummy ReShade DLL");
-        _fileSystem.WithFileVersionInfo(dllPath, v => v.SetFileVersion("5.8.0.0"));
+        TestHelpers.CreateMockReShadeInstallation(_fileSystem, "5.8.0.0");
 
         // Setup latest version in config as a newer version, and check date as recently checked
         _config.LatestReShadeVersionNumber = "5.9.2";
@@ -94,6 +90,102 @@ public class UpdaterViewModelTests
         // Assert
         Assert.Equal("5.8.0", viewModel.VersionLabelContent);
         Assert.Equal("5.9.2", viewModel.UpdateButtonContent);
+    }
+
+    [Fact]
+    public void Initialize_WhenLocalReShadeIsPartiallyMissing_ShowsValidationPromptInsteadOfFirstTimeSetup()
+    {
+        // Arrange
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.Dlls, "ReShade64.dll", "6.3.0.0");
+        _messageBox.NextResults.Enqueue(MessageBoxResult.None); // Cancel
+
+        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox, _snackbarService);
+        bool firstTimeSetupFired = false;
+        viewModel.RequestFirstTimeSetup += () => firstTimeSetupFired = true;
+
+        // Act
+        viewModel.Initialize();
+
+        // Assert
+        Assert.False(firstTimeSetupFired);
+        Assert.Single(_messageBox.ShowCalls);
+        Assert.Equal(UIStrings.ReShadeValidation_Title, _messageBox.ShowCalls[0].Title);
+        Assert.Equal("6.3.0", viewModel.VersionLabelContent);
+    }
+
+    [Fact]
+    public async Task ValidateReShadeInstallation_WhenAllFilesAreValid_ReturnsTrueWithoutPrompt()
+    {
+        // Arrange
+        TestHelpers.CreateMockReShadeInstallation(_fileSystem, "6.3.0.0");
+        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox, _snackbarService);
+
+        // Act
+        bool result = await viewModel.ValidateReShadeInstallation();
+
+        // Assert
+        Assert.True(result);
+        Assert.Empty(_messageBox.ShowCalls);
+    }
+
+    [Fact]
+    public async Task ValidateReShadeInstallation_WhenFilesAreFlawed_ListsCorrectAndFlawedFiles()
+    {
+        // Arrange
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.Dlls, "ReShade64.dll", "6.3.0.0");
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.AddonDlls, "ReShade64.dll", "1.0.0.0", fileDescription: "Some other DLL");
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.AddonDlls, "ReShade32.dll", "6.2.1.0");
+        _messageBox.NextResults.Enqueue(MessageBoxResult.None); // Cancel
+
+        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox, _snackbarService);
+
+        // Act
+        bool result = await viewModel.ValidateReShadeInstallation();
+
+        // Assert
+        Assert.False(result);
+        Assert.Single(_messageBox.ShowCalls);
+        string content = _messageBox.ShowCalls[0].ContentText;
+        Assert.Contains("✓ ReShade64: 6.3.0", content);
+        Assert.Contains($"✗ ReShade32: {UIStrings.ReShadeValidation_Missing}", content);
+        Assert.Contains($"✗ ReShade64 (Addon Support): {UIStrings.ReShadeValidation_InvalidFile}", content);
+        Assert.Contains($"✗ ReShade32 (Addon Support): {string.Format(UIStrings.ReShadeValidation_VersionMismatch, "6.2.1")}", content);
+        Assert.Contains(string.Format(UIStrings.ReShadeValidation_Redownload, "6.3.0"), content);
+        Assert.Empty(_downloadService.DownloadCalls);
+    }
+
+    [Fact]
+    public async Task ValidateReShadeInstallation_WhenUserAccepts_RedownloadsHighestLocalVersion()
+    {
+        // Arrange
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.Dlls, "ReShade64.dll", "6.3.0.0");
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.Dlls, "ReShade32.dll", "6.2.1.0");
+        _messageBox.NextResults.Enqueue(MessageBoxResult.Primary); // Re-download
+
+        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox, _snackbarService);
+
+        // Act
+        await viewModel.ValidateReShadeInstallation();
+
+        // Assert
+        Assert.Contains(_downloadService.DownloadCalls, call => call.Url == "https://reshade.me/downloads/ReShade_Setup_6.3.0.exe");
+    }
+
+    [Fact]
+    public async Task ValidateReShadeInstallation_WhenNoValidFileRemains_OffersLatestVersion()
+    {
+        // Arrange
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.Dlls, "ReShade64.dll", "1.0.0.0", fileDescription: "Some other DLL");
+        _messageBox.NextResults.Enqueue(MessageBoxResult.None); // Cancel
+
+        var viewModel = new UpdaterViewModel(_appUpdater, _reShadeUpdater, _config, _messageBox, _snackbarService);
+
+        // Act
+        bool result = await viewModel.ValidateReShadeInstallation();
+
+        // Assert
+        Assert.False(result);
+        Assert.Contains(UIStrings.ReShadeValidation_RedownloadLatest, _messageBox.ShowCalls[0].ContentText);
     }
 
     [Fact]

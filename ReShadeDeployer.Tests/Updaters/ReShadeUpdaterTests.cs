@@ -41,14 +41,10 @@ public class ReShadeUpdaterTests
     }
 
     [Fact]
-    public void TryGetLocalReShadeVersionNumber_ShouldReturnTrueAndParsedVersion_WhenFileExists()
+    public void TryGetLocalReShadeVersionNumber_ShouldReturnTrueAndParsedVersion_WhenAllFilesAreValid()
     {
         // Arrange
-        string dllPath = _fileSystem.Path.Combine(Paths.Dlls, "ReShade64.dll");
-        _fileSystem.File.WriteAllText(dllPath, "mock dll content");
-        
-        // Mock the FileVersionInfo structure in Testably
-        _fileSystem.WithFileVersionInfo(dllPath, v => v.SetFileVersion("5.9.2.0"));
+        TestHelpers.CreateMockReShadeInstallation(_fileSystem, "5.9.2.0");
 
         // Act
         bool result = _updater.TryGetLocalReShadeVersionNumber(out string version);
@@ -67,6 +63,76 @@ public class ReShadeUpdaterTests
         // Assert
         Assert.False(result);
         Assert.Equal(string.Empty, version);
+    }
+
+    [Fact]
+    public void TryGetLocalReShadeVersionNumber_ShouldReturnFalse_WhenOnlyOneFileExists()
+    {
+        // Arrange
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.Dlls, "ReShade64.dll", "5.9.2.0");
+
+        // Act
+        bool result = _updater.TryGetLocalReShadeVersionNumber(out string version);
+
+        // Assert
+        Assert.False(result);
+        Assert.Equal(string.Empty, version);
+    }
+
+    [Fact]
+    public void GetLocalReShadeDlls_ShouldReturnAllValid_WhenAllFilesAreCorrect()
+    {
+        // Arrange
+        TestHelpers.CreateMockReShadeInstallation(_fileSystem, "6.3.0.1234");
+
+        // Act
+        var dlls = _updater.GetLocalReShadeDlls();
+
+        // Assert
+        Assert.Equal(4, dlls.Count);
+        Assert.Contains(new ReShadeDllInfo("ReShade64", "6.3.0", ReShadeDllStatus.Valid), dlls);
+        Assert.Contains(new ReShadeDllInfo("ReShade32", "6.3.0", ReShadeDllStatus.Valid), dlls);
+        Assert.Contains(new ReShadeDllInfo("ReShade64 (Addon Support)", "6.3.0", ReShadeDllStatus.Valid), dlls);
+        Assert.Contains(new ReShadeDllInfo("ReShade32 (Addon Support)", "6.3.0", ReShadeDllStatus.Valid), dlls);
+    }
+
+    [Fact]
+    public void GetLocalReShadeDlls_ShouldFlagMissingInvalidAndMismatchedFiles()
+    {
+        // Arrange
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.Dlls, "ReShade64.dll", "6.3.0.0");
+        // ReShade32.dll is missing
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.AddonDlls, "ReShade64.dll", "1.0.0.0", fileDescription: "Microsoft DirectX Graphics Infrastructure");
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.AddonDlls, "ReShade32.dll", "6.2.1.0");
+
+        // Act
+        var dlls = _updater.GetLocalReShadeDlls();
+
+        // Assert
+        Assert.Equal(4, dlls.Count);
+        Assert.Contains(new ReShadeDllInfo("ReShade64", "6.3.0", ReShadeDllStatus.Valid), dlls);
+        Assert.Contains(new ReShadeDllInfo("ReShade32", null, ReShadeDllStatus.Missing), dlls);
+        Assert.Contains(new ReShadeDllInfo("ReShade64 (Addon Support)", null, ReShadeDllStatus.InvalidFile), dlls);
+        Assert.Contains(new ReShadeDllInfo("ReShade32 (Addon Support)", "6.2.1", ReShadeDllStatus.VersionMismatch), dlls);
+    }
+
+    [Fact]
+    public void GetLocalReShadeDlls_ShouldUseHighestVersionAsReference_WhenVersionsDiffer()
+    {
+        // Arrange
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.Dlls, "ReShade64.dll", "6.2.1.0");
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.Dlls, "ReShade32.dll", "6.2.1.0");
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.AddonDlls, "ReShade64.dll", "6.2.1.0");
+        TestHelpers.CreateMockReShadeDll(_fileSystem, Paths.AddonDlls, "ReShade32.dll", "6.10.0.0");
+
+        // Act
+        var dlls = _updater.GetLocalReShadeDlls();
+
+        // Assert
+        Assert.Contains(new ReShadeDllInfo("ReShade64", "6.2.1", ReShadeDllStatus.VersionMismatch), dlls);
+        Assert.Contains(new ReShadeDllInfo("ReShade32", "6.2.1", ReShadeDllStatus.VersionMismatch), dlls);
+        Assert.Contains(new ReShadeDllInfo("ReShade64 (Addon Support)", "6.2.1", ReShadeDllStatus.VersionMismatch), dlls);
+        Assert.Contains(new ReShadeDllInfo("ReShade32 (Addon Support)", "6.10.0", ReShadeDllStatus.Valid), dlls);
     }
 
     [Fact]
@@ -93,9 +159,7 @@ public class ReShadeUpdaterTests
         _downloadService.WebsiteContentResponses[websiteUrl] = 
             "<html><body><a href=\"/downloads/ReShade_Setup_5.9.2.exe\">Download</a></body></html>";
 
-        string dllPath = _fileSystem.Path.Combine(Paths.Dlls, "ReShade64.dll");
-        _fileSystem.File.WriteAllText(dllPath, "mock dll content");
-        _fileSystem.WithFileVersionInfo(dllPath, v => v.SetFileVersion("5.9.2.0"));
+        TestHelpers.CreateMockReShadeInstallation(_fileSystem, "5.9.2.0");
 
         // Act
         bool result = await _updater.Update();

@@ -1,4 +1,4 @@
-﻿using Testably.Abstractions.Testing;
+using Testably.Abstractions.Testing;
 
 namespace ReShadeDeployer.Tests;
 
@@ -48,5 +48,29 @@ public static class TestHelpers
         fileSystem.Directory.CreateDirectory(directoryPath);
         fileSystem.Directory.CreateDirectory(AppContext.BaseDirectory);
         return fileSystem;
+    }
+
+    /// <summary>
+    /// Writes a mock ReShade DLL with the given file version and description.
+    /// </summary>
+    public static string CreateMockReShadeDll(MockFileSystem fileSystem, string directory, string fileName, string fileVersion,
+        string fileDescription = "crosire's ReShade post-processing injector")
+    {
+        string path = fileSystem.Path.Combine(directory, fileName);
+        fileSystem.Directory.CreateDirectory(directory);
+        fileSystem.File.WriteAllText(path, "mock dll content");
+        fileSystem.WithFileVersionInfo(path, v => v.SetFileVersion(fileVersion).SetFileDescription(fileDescription));
+        return path;
+    }
+
+    /// <summary>
+    /// Writes all four mock ReShade DLLs (32/64-bit, with and without add-on support) with the given file version.
+    /// </summary>
+    public static void CreateMockReShadeInstallation(MockFileSystem fileSystem, string fileVersion)
+    {
+        CreateMockReShadeDll(fileSystem, Paths.Dlls, "ReShade64.dll", fileVersion);
+        CreateMockReShadeDll(fileSystem, Paths.Dlls, "ReShade32.dll", fileVersion);
+        CreateMockReShadeDll(fileSystem, Paths.AddonDlls, "ReShade64.dll", fileVersion);
+        CreateMockReShadeDll(fileSystem, Paths.AddonDlls, "ReShade32.dll", fileVersion);
     }
 }

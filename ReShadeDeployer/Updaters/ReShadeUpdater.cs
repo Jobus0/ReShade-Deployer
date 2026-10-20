@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Compression;
@@ -157,22 +158,79 @@ public class ReShadeUpdater(IFileSystem fileSystem, FileHelper fileHelper, IDown
     }
     
     /// <summary>
-    /// Check the file attribute of the downloaded ReShade DLL and get its version.
+    /// Check the file attributes of all four local ReShade DLLs (32/64-bit, with and without add-on support) and get their shared version.
     /// </summary>
-    /// <param name="version">The version string of the ReShade DLL.</param>
-    /// <returns>True if the file exists, false otherwise.</returns>
+    /// <param name="version">The version string of the ReShade DLLs, or an empty string if the installation isn't valid.</param>
+    /// <returns>True if all four DLLs exist, are genuine ReShade files and share the same version, false otherwise.</returns>
     public bool TryGetLocalReShadeVersionNumber(out string version)
     {
-        string path = fileSystem.Path.Combine(Paths.Dlls, "ReShade64.dll");
-        if (fileSystem.File.Exists(path))
+        var dlls = GetLocalReShadeDlls();
+        if (dlls.All(dll => dll.Status == ReShadeDllStatus.Valid))
         {
-            string fileVersion = fileSystem.FileVersionInfo.GetVersionInfo(path).FileVersion!;
-            version = fileVersion.Substring(0, fileVersion.LastIndexOf('.'));
+            version = dlls.First().Version!;
             return true;
         }
 
         version = string.Empty;
         return false;
+    }
+
+    /// <summary>
+    /// Check that all four local ReShade DLLs (32/64-bit, with and without add-on support) exist,
+    /// contain "ReShade" in their file description, and share the same version.
+    /// DLLs that are older or newer than the highest local version are flagged as <see cref="ReShadeDllStatus.VersionMismatch"/>.
+    /// </summary>
+    /// <returns>The name, version and validation status of each of the four DLLs.</returns>
+    public HashSet<ReShadeDllInfo> GetLocalReShadeDlls()
+    {
+        (string Name, string Path)[] dllPaths =
+        [
+            ("ReShade64", fileSystem.Path.Combine(Paths.Dlls, "ReShade64.dll")),
+            ("ReShade32", fileSystem.Path.Combine(Paths.Dlls, "ReShade32.dll")),
+            ("ReShade64 (Addon Support)", fileSystem.Path.Combine(Paths.AddonDlls, "ReShade64.dll")),
+            ("ReShade32 (Addon Support)", fileSystem.Path.Combine(Paths.AddonDlls, "ReShade32.dll"))
+        ];
+
+        var dlls = dllPaths.Select(dll => ReadReShadeDll(dll.Name, dll.Path)).ToList();
+
+        // The highest version among the genuine ReShade DLLs is considered the "correct" one.
+        string? highestVersion = null;
+        foreach (var dll in dlls.Where(dll => dll.Version != null))
+        {
+            if (highestVersion == null || VersionParser.IsNewerThan(dll.Version!, highestVersion))
+                highestVersion = dll.Version;
+        }
+
+        return dlls
+            .Select(dll => dll.Status == ReShadeDllStatus.Valid
+                           && VersionParser.Compare(dll.Version!, highestVersion!) != VersionParser.VersionComparisonResult.Equal
+                ? dll with { Status = ReShadeDllStatus.VersionMismatch }
+                : dll)
+            .ToHashSet();
+    }
+
+    /// <summary>
+    /// Read the file attributes of a single ReShade DLL and get its version.
+    /// </summary>
+    /// <param name="name">Display name of the DLL.</param>
+    /// <param name="path">Path to the DLL.</param>
+    /// <returns>The DLL's info, with status either Valid, Missing or InvalidFile.</returns>
+    private ReShadeDllInfo ReadReShadeDll(string name, string path)
+    {
+        if (!fileSystem.File.Exists(path))
+            return new ReShadeDllInfo(name, null, ReShadeDllStatus.Missing);
+
+        var fileVersionInfo = fileSystem.FileVersionInfo.GetVersionInfo(path);
+        if (fileVersionInfo.FileDescription?.Contains("ReShade") != true)
+            return new ReShadeDllInfo(name, null, ReShadeDllStatus.InvalidFile);
+
+        // ReShade file versions are formatted like "6.3.0.1234", where the last part is the build number.
+        string fileVersion = VersionParser.Parse(fileVersionInfo.FileVersion ?? string.Empty);
+        int lastDotIndex = fileVersion.LastIndexOf('.');
+        if (lastDotIndex <= 0)
+            return new ReShadeDllInfo(name, null, ReShadeDllStatus.InvalidFile);
+
+        return new ReShadeDllInfo(name, fileVersion[..lastDotIndex], ReShadeDllStatus.Valid);
     }
     
     /// <summary>

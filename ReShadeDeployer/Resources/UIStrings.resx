@@ -309,4 +309,32 @@ The following files will be deleted:</value>
     <data name="CentralizedPresetName_Shared" xml:space="preserve">
         <value>Another game uses this preset name. Deploying will make them share preset.</value>
     </data>
+    <data name="ReShadeValidation_Title" xml:space="preserve">
+        <value>ReShade files damaged</value>
+    </data>
+    <data name="ReShadeValidation_Content" xml:space="preserve">
+        <value>One or more of ReShade Deployer's ReShade files are missing or have been changed. This usually happens when a game or another program overwrites or deletes a file that ReShade was deployed as, and will cause ReShade to stop working in your games.
+
+{0}
+
+{1}</value>
+    </data>
+    <data name="ReShadeValidation_Missing" xml:space="preserve">
+        <value>file is missing</value>
+    </data>
+    <data name="ReShadeValidation_InvalidFile" xml:space="preserve">
+        <value>not a valid ReShade file</value>
+    </data>
+    <data name="ReShadeValidation_VersionMismatch" xml:space="preserve">
+        <value>{0} (different version)</value>
+    </data>
+    <data name="ReShadeValidation_Redownload" xml:space="preserve">
+        <value>Do you want to re-download ReShade {0} to fix this?</value>
+    </data>
+    <data name="ReShadeValidation_RedownloadLatest" xml:space="preserve">
+        <value>Do you want to download the latest version of ReShade to fix this?</value>
+    </data>
+    <data name="ReShadeValidation_RedownloadButton" xml:space="preserve">
+        <value>Re-download</value>
+    </data>
 </root>
